@@ -20,9 +20,7 @@ from models.job_application import (
     JobApplication
 )
 
-from models.worker_profile import (
-    WorkerProfile
-)
+from models import WorkerProfile
 
 from models.worker_skill import (
     WorkerSkill
