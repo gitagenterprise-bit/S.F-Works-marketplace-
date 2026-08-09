@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 
 from flask_jwt_extended import (
     create_access_token,
@@ -19,6 +19,10 @@ auth_bp = Blueprint(
     "auth",
     __name__
 )
+
+@auth_bp.route("/register", methods=["GET"])
+def register_page():
+    return render_template("register.html")
 
 @auth_bp.route(
     "/register/customer",
