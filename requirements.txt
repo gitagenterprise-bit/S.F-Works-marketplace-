@@ -1,9 +1,9 @@
 Flask
 Flask-SQLAlchemy
-psycopg2-binary
 Flask-Migrate
 Flask-JWT-Extended
+Flask-CORS
+psycopg[binary]
 python-dotenv
-Werkzeug
 gunicorn
-email-validator
+Werkzeug
