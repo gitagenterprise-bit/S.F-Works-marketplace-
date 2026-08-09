@@ -1,16 +1,746 @@
 <div
     id="loadingOverlay"
     class="loading-overlay"
+    aria-hidden="true"
+    role="status"
+    aria-live="polite"
 >
+
+    <div class="loading-backdrop"></div>
+
 
     <div class="loading-card">
 
-        <div class="spinner"></div>
 
-        <span>
-            Please wait...
-        </span>
+        <!-- =================================================
+             BRAND
+        ================================================== -->
+
+        <div class="loading-brand">
+
+            <div class="loading-brand-mark">
+                SF
+            </div>
+
+            <div class="loading-brand-text">
+
+                <strong>
+                    S. F Works
+                </strong>
+
+                <span>
+                    Trusted Marketplace
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             LOADER
+        ================================================== -->
+
+        <div class="premium-loader">
+
+            <div class="loader-ring"></div>
+
+            <div class="loader-ring-inner"></div>
+
+            <div class="loader-dot">
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MESSAGE
+        ================================================== -->
+
+        <div class="loading-message">
+
+            <strong>
+                Please wait
+            </strong>
+
+            <span>
+                Preparing your experience...
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             PROGRESS
+        ================================================== -->
+
+        <div class="loading-progress">
+
+            <div class="loading-progress-bar"></div>
+
+        </div>
+
+
+        <div class="loading-status">
+            Secure &nbsp;•&nbsp; Fast &nbsp;•&nbsp; Reliable
+        </div>
 
     </div>
 
 </div>
+
+
+<style>
+
+/* =========================================================
+   S. F WORKS — PREMIUM LOADING OVERLAY
+========================================================= */
+
+.loading-overlay {
+
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        99999;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        20px;
+
+    opacity:
+        0;
+
+    visibility:
+        hidden;
+
+    pointer-events:
+        none;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+
+/* =========================================================
+   ACTIVE
+========================================================= */
+
+.loading-overlay.active {
+
+    opacity:
+        1;
+
+    visibility:
+        visible;
+
+    pointer-events:
+        auto;
+}
+
+
+/* =========================================================
+   BACKDROP
+========================================================= */
+
+.loading-backdrop {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    background:
+        rgba(2, 6, 23, 0.68);
+
+    backdrop-filter:
+        blur(8px);
+
+    -webkit-backdrop-filter:
+        blur(8px);
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.loading-card {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    width:
+        min(
+            360px,
+            100%
+        );
+
+    padding:
+        34px 30px 28px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    text-align:
+        center;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.12);
+
+    border-radius:
+        24px;
+
+    background:
+        rgba(15,23,42,0.92);
+
+    box-shadow:
+        0 30px 90px
+        rgba(0,0,0,0.40);
+
+    animation:
+        loadingCardIn 0.3s ease both;
+}
+
+
+@keyframes loadingCardIn {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(12px)
+            scale(0.97);
+    }
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.loading-brand {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    margin-bottom:
+        28px;
+}
+
+
+.loading-brand-mark {
+
+    width:
+        39px;
+
+    height:
+        39px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    color:
+        #ffffff;
+
+    font-family:
+        var(--font-heading);
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+
+    box-shadow:
+        0 8px 22px
+        rgba(37,99,235,0.30);
+}
+
+
+.loading-brand-text {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        flex-start;
+
+    line-height:
+        1.1;
+}
+
+
+.loading-brand-text strong {
+
+    color:
+        #ffffff;
+
+    font-family:
+        var(--font-heading);
+
+    font-size:
+        14px;
+
+    font-weight:
+        800;
+}
+
+
+.loading-brand-text span {
+
+    margin-top:
+        3px;
+
+    color:
+        #64748b;
+
+    font-size:
+        8px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        0.6px;
+
+    text-transform:
+        uppercase;
+}
+
+
+/* =========================================================
+   PREMIUM LOADER
+========================================================= */
+
+.premium-loader {
+
+    position:
+        relative;
+
+    width:
+        76px;
+
+    height:
+        76px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    margin:
+        4px 0 24px;
+}
+
+
+/* Outer ring */
+
+.loader-ring {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    border:
+        3px solid
+        rgba(255,255,255,0.08);
+
+    border-top-color:
+        #3b82f6;
+
+    border-right-color:
+        #60a5fa;
+
+    border-radius:
+        50%;
+
+    animation:
+        loaderRotate 1s
+        linear infinite;
+}
+
+
+/* Inner ring */
+
+.loader-ring-inner {
+
+    position:
+        absolute;
+
+    width:
+        48px;
+
+    height:
+        48px;
+
+    border:
+        2px solid
+        rgba(96,165,250,0.12);
+
+    border-bottom-color:
+        #60a5fa;
+
+    border-radius:
+        50%;
+
+    animation:
+        loaderRotateReverse 0.8s
+        linear infinite;
+}
+
+
+/* Center dot */
+
+.loader-dot {
+
+    width:
+        8px;
+
+    height:
+        8px;
+
+    border-radius:
+        50%;
+
+    background:
+        #60a5fa;
+
+    box-shadow:
+        0 0 18px
+        rgba(96,165,250,0.80);
+
+    animation:
+        loaderPulse 1s
+        ease-in-out infinite;
+}
+
+
+@keyframes loaderRotate {
+
+    to {
+
+        transform:
+            rotate(360deg);
+    }
+}
+
+
+@keyframes loaderRotateReverse {
+
+    to {
+
+        transform:
+            rotate(-360deg);
+    }
+}
+
+
+@keyframes loaderPulse {
+
+    0%,
+    100% {
+
+        transform:
+            scale(0.7);
+
+        opacity:
+            0.55;
+    }
+
+    50% {
+
+        transform:
+            scale(1.15);
+
+        opacity:
+            1;
+    }
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.loading-message {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+}
+
+
+.loading-message strong {
+
+    color:
+        #ffffff;
+
+    font-family:
+        var(--font-heading);
+
+    font-size:
+        15px;
+
+    font-weight:
+        700;
+}
+
+
+.loading-message span {
+
+    margin-top:
+        5px;
+
+    color:
+        #94a3b8;
+
+    font-size:
+        11px;
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.loading-progress {
+
+    width:
+        100%;
+
+    height:
+        3px;
+
+    margin-top:
+        23px;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(255,255,255,0.07);
+}
+
+
+.loading-progress-bar {
+
+    width:
+        35%;
+
+    height:
+        100%;
+
+    border-radius:
+        inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #60a5fa
+        );
+
+    box-shadow:
+        0 0 12px
+        rgba(59,130,246,0.60);
+
+    animation:
+        loadingProgress 1.5s
+        ease-in-out infinite;
+}
+
+
+@keyframes loadingProgress {
+
+    0% {
+
+        transform:
+            translateX(-130%);
+    }
+
+    50% {
+
+        transform:
+            translateX(100%);
+    }
+
+    100% {
+
+        transform:
+            translateX(300%);
+    }
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.loading-status {
+
+    margin-top:
+        12px;
+
+    color:
+        #475569;
+
+    font-size:
+        8px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        0.7px;
+
+    text-transform:
+        uppercase;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .loading-card {
+
+        width:
+            min(
+                330px,
+                calc(100% - 20px)
+            );
+
+        padding:
+            30px 24px 25px;
+
+        border-radius:
+            21px;
+    }
+
+
+    .loading-brand {
+
+        margin-bottom:
+            24px;
+    }
+
+
+    .premium-loader {
+
+        width:
+            68px;
+
+        height:
+            68px;
+
+        margin-bottom:
+            21px;
+    }
+
+
+    .loader-ring-inner {
+
+        width:
+            43px;
+
+        height:
+            43px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .loading-card,
+    .loader-ring,
+    .loader-ring-inner,
+    .loader-dot,
+    .loading-progress-bar {
+
+        animation:
+            none !important;
+    }
+}
+
+    </style>
