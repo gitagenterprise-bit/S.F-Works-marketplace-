@@ -38,6 +38,12 @@ worker_bp = Blueprint(
     __name__
 )
 
+@app.route("/worker/dashboard")
+def worker_dashboard():
+    return render_template("worker/dashboard.html")
+
+
+
 @worker_bp.route(
     "/dashboard",
     methods=["GET"]
