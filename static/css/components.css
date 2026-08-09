@@ -1,0 +1,363 @@
+.top-navbar {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+    background:
+        rgba(255, 255, 255, 0.92);
+
+    backdrop-filter:
+        blur(18px);
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+
+.nav-container {
+
+    width: min(
+        100% - 32px,
+        var(--container)
+    );
+
+    min-height: 76px;
+
+    margin: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 24px;
+}
+
+
+.brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    flex-shrink: 0;
+}
+
+
+.brand-mark {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 12px;
+
+    display: grid;
+
+    place-items: center;
+
+    color: #ffffff;
+
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+
+    box-shadow:
+        0 8px 20px
+        rgba(
+            37,
+            99,
+            235,
+            0.25
+        );
+}
+
+
+.brand-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    line-height: 1.15;
+}
+
+
+.brand-text strong {
+    font-size: 16px;
+}
+
+
+.brand-text span {
+
+    color:
+        var(--muted);
+
+    font-size: 11px;
+
+    margin-top: 3px;
+}
+
+
+.desktop-nav {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 28px;
+}
+
+
+.desktop-nav a {
+
+    color:
+        #475569;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition:
+        color .2s ease;
+}
+
+
+.desktop-nav a:hover {
+    color:
+        var(--primary);
+}
+
+
+.nav-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 44px;
+
+    padding:
+        0 18px;
+
+    border-radius:
+        10px;
+
+    border:
+        1px solid transparent;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    transition:
+        all .2s ease;
+}
+
+
+.btn-primary {
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #4f46e5
+        );
+
+    box-shadow:
+        0 8px 18px
+        rgba(
+            37,
+            99,
+            235,
+            .18
+        );
+}
+
+
+.btn-primary:hover {
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 12px 24px
+        rgba(
+            37,
+            99,
+            235,
+            .24
+        );
+}
+
+
+.btn-outline {
+
+    color:
+        var(--text);
+
+    border-color:
+        var(--border);
+
+    background:
+        var(--surface);
+}
+
+
+.btn-outline:hover {
+
+    border-color:
+        var(--primary);
+
+    color:
+        var(--primary);
+}
+
+.card {
+
+    background:
+        var(--surface);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        var(--radius-lg);
+
+    box-shadow:
+        var(--shadow-sm);
+}
+
+
+.card-body {
+    padding: 24px;
+}
+
+
+.card-hover {
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+
+.card-hover:hover {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        var(--shadow-md);
+
+    border-color:
+        #cbd5e1;
+}
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    margin-bottom: 18px;
+}
+
+
+.form-label {
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color:
+        #334155;
+}
+
+
+.form-control {
+
+    width: 100%;
+
+    min-height: 46px;
+
+    padding:
+        0 14px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        10px;
+
+    background:
+        #ffffff;
+
+    color:
+        var(--text);
+
+    outline: none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+
+textarea.form-control {
+
+    padding:
+        12px 14px;
+
+    min-height:
+        120px;
+
+    resize:
+        vertical;
+}
+
+
+.form-control:focus {
+
+    border-color:
+        var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            37,
+            99,
+            235,
+            .10
+        );
+}
+
