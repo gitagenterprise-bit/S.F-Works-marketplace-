@@ -82,6 +82,20 @@ def create_app():
     )
 
     # --------------------------------
+    # Home
+    # --------------------------------
+
+    @app.route("/")
+    def home():
+
+        return jsonify({
+            "name": "S. F Works Marketplace",
+            "message": "API is running successfully",
+            "status": "online",
+            "version": "1.0.0"
+        })
+
+    # --------------------------------
     # Health Check
     # --------------------------------
 
