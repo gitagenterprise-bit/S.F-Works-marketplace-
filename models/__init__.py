@@ -3,6 +3,7 @@ from models.customer import CustomerProfile
 from models.worker import WorkerProfile
 from models.category import Category
 from models.job import Job, JobImage
+from models.job_application import JobApplication
 
 
 __all__ = [
@@ -11,5 +12,6 @@ __all__ = [
     "WorkerProfile",
     "Category",
     "Job",
-    "JobImage"
+    "JobImage",
+    "JobApplication"
 ]
