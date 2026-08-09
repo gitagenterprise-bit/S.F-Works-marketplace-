@@ -87,7 +87,7 @@ def create_app():
 
     @app.route("/")
     def home():
-        return render_template("index.html")
+        return render_template("public/home.html")
 
     # --------------------------------
     # Health Check
