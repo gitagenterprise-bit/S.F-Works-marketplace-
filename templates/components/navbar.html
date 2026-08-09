@@ -1,15 +1,22 @@
-<header class="top-navbar">
+<header class="top-navbar" id="topNavbar">
 
     <div class="nav-container">
+
+
+        <!-- =================================================
+             BRAND
+        ================================================== -->
 
         <a
             href="/"
             class="brand"
+            aria-label="S. F Works Home"
         >
 
             <div class="brand-mark">
-                SF
+                <span>SF</span>
             </div>
+
 
             <div class="brand-text">
 
@@ -18,7 +25,7 @@
                 </strong>
 
                 <span>
-                    Marketplace
+                    Trusted Marketplace
                 </span>
 
             </div>
@@ -26,53 +33,1303 @@
         </a>
 
 
-        <nav class="desktop-nav">
+        <!-- =================================================
+             DESKTOP NAVIGATION
+        ================================================== -->
 
-            <a href="/">
-                Home
+        <nav
+            class="desktop-nav"
+            aria-label="Main Navigation"
+        >
+
+            <a
+                href="/"
+                class="nav-link {% if request.path == '/' %}active{% endif %}"
+            >
+                <span>Home</span>
             </a>
 
-            <a href="/jobs">
-                Find Jobs
+
+            <a
+                href="/jobs"
+                class="nav-link {% if request.path.startswith('/jobs') %}active{% endif %}"
+            >
+                <span>Find Jobs</span>
             </a>
 
-            <a href="/workers">
-                Find Workers
+
+            <a
+                href="/workers"
+                class="nav-link {% if request.path.startswith('/workers') %}active{% endif %}"
+            >
+                <span>Find Workers</span>
             </a>
 
-            <a href="/about">
-                About
+
+            <a
+                href="/about"
+                class="nav-link {% if request.path.startswith('/about') %}active{% endif %}"
+            >
+                <span>About</span>
             </a>
 
         </nav>
 
 
+        <!-- =================================================
+             RIGHT ACTIONS
+        ================================================== -->
+
         <div class="nav-actions">
+
 
             <a
                 href="/login"
-                class="btn btn-outline"
+                class="nav-login"
             >
                 Login
             </a>
 
+
             <a
                 href="/register"
-                class="btn btn-primary"
+                class="nav-register"
             >
-                Get Started
+                <span>
+                    Get Started
+                </span>
+
+                <span class="register-arrow">
+                    →
+                </span>
             </a>
+
+
+            <!-- MOBILE MENU BUTTON -->
 
             <button
                 class="mobile-menu-btn"
                 id="mobileMenuBtn"
                 type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="mobileNav"
             >
-                ☰
+
+                <span></span>
+                <span></span>
+                <span></span>
+
             </button>
 
         </div>
 
     </div>
 
+
+    <!-- =====================================================
+         MOBILE NAVIGATION
+    ====================================================== -->
+
+    <div
+        class="mobile-nav"
+        id="mobileNav"
+        aria-hidden="true"
+    >
+
+        <div class="mobile-nav-inner">
+
+
+            <a
+                href="/"
+                class="mobile-nav-link {% if request.path == '/' %}active{% endif %}"
+            >
+
+                <span class="mobile-nav-icon">
+                    ⌂
+                </span>
+
+                <span>
+                    Home
+                </span>
+
+            </a>
+
+
+            <a
+                href="/jobs"
+                class="mobile-nav-link {% if request.path.startswith('/jobs') %}active{% endif %}"
+            >
+
+                <span class="mobile-nav-icon">
+                    ◫
+                </span>
+
+                <span>
+                    Find Jobs
+                </span>
+
+            </a>
+
+
+            <a
+                href="/workers"
+                class="mobile-nav-link {% if request.path.startswith('/workers') %}active{% endif %}"
+            >
+
+                <span class="mobile-nav-icon">
+                    ◉
+                </span>
+
+                <span>
+                    Find Workers
+                </span>
+
+            </a>
+
+
+            <a
+                href="/about"
+                class="mobile-nav-link {% if request.path.startswith('/about') %}active{% endif %}"
+            >
+
+                <span class="mobile-nav-icon">
+                    ⓘ
+                </span>
+
+                <span>
+                    About
+                </span>
+
+            </a>
+
+
+            <div class="mobile-nav-divider"></div>
+
+
+            <a
+                href="/login"
+                class="mobile-login"
+            >
+                Login
+            </a>
+
+
+            <a
+                href="/register"
+                class="mobile-register"
+            >
+                Get Started
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </div>
+
 </header>
+
+
+<style>
+
+/* =========================================================
+   S. F WORKS — PREMIUM NAVBAR
+========================================================= */
+
+.top-navbar {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+    width: 100%;
+
+    background:
+        rgba(255, 255, 255, 0.92);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    border-bottom:
+        1px solid rgba(226, 232, 240, 0.75);
+
+    transition:
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+
+/* =========================================================
+   NAV CONTAINER
+========================================================= */
+
+.nav-container {
+
+    width:
+        min(
+            1180px,
+            calc(100% - 48px)
+        );
+
+    min-height:
+        76px;
+
+    margin:
+        0 auto;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        30px;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.brand {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        11px;
+
+    flex-shrink:
+        0;
+}
+
+
+.brand-mark {
+
+    width:
+        42px;
+
+    height:
+        42px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    color:
+        #ffffff;
+
+    font-family:
+        var(--font-heading);
+
+    font-size:
+        13px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        -0.5px;
+
+    box-shadow:
+        0 8px 18px
+        rgba(37, 99, 235, 0.22);
+}
+
+
+.brand-text {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    line-height:
+        1.1;
+}
+
+
+.brand-text strong {
+
+    color:
+        #0f172a;
+
+    font-family:
+        var(--font-heading);
+
+    font-size:
+        16px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        -0.3px;
+}
+
+
+.brand-text span {
+
+    margin-top:
+        4px;
+
+    color:
+        #94a3b8;
+
+    font-size:
+        9px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        0.7px;
+
+    text-transform:
+        uppercase;
+}
+
+
+/* =========================================================
+   DESKTOP NAV
+========================================================= */
+
+.desktop-nav {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        4px;
+
+    margin-left:
+        auto;
+
+    margin-right:
+        auto;
+}
+
+
+.nav-link {
+
+    position:
+        relative;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    min-height:
+        42px;
+
+    padding:
+        0 14px;
+
+    border-radius:
+        10px;
+
+    color:
+        #64748b;
+
+    font-size:
+        13px;
+
+    font-weight:
+        600;
+
+    transition:
+        all 0.2s ease;
+}
+
+
+.nav-link:hover {
+
+    color:
+        #0f172a;
+
+    background:
+        #f8fafc;
+}
+
+
+.nav-link.active {
+
+    color:
+        #2563eb;
+
+    background:
+        #eff6ff;
+}
+
+
+.nav-link.active::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    left:
+        50%;
+
+    bottom:
+        -1px;
+
+    width:
+        18px;
+
+    height:
+        2px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius:
+        99px;
+
+    background:
+        #2563eb;
+}
+
+
+/* =========================================================
+   RIGHT ACTIONS
+========================================================= */
+
+.nav-actions {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    flex-shrink:
+        0;
+}
+
+
+.nav-login {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    min-height:
+        42px;
+
+    padding:
+        0 14px;
+
+    border-radius:
+        10px;
+
+    color:
+        #334155;
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
+
+    transition:
+        all 0.2s ease;
+}
+
+
+.nav-login:hover {
+
+    color:
+        #2563eb;
+
+    background:
+        #eff6ff;
+}
+
+
+/* =========================================================
+   REGISTER CTA
+========================================================= */
+
+.nav-register {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    min-height:
+        44px;
+
+    padding:
+        0 16px;
+
+    border-radius:
+        11px;
+
+    background:
+        #0f172a;
+
+    color:
+        #ffffff;
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
+
+    box-shadow:
+        0 8px 20px
+        rgba(15, 23, 42, 0.16);
+
+    transition:
+        all 0.25s ease;
+}
+
+
+.nav-register:hover {
+
+    background:
+        #1e293b;
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 12px 25px
+        rgba(15, 23, 42, 0.20);
+}
+
+
+.register-arrow {
+
+    font-size:
+        16px;
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+.nav-register:hover .register-arrow {
+
+    transform:
+        translateX(3px);
+}
+
+
+/* =========================================================
+   MOBILE BUTTON
+========================================================= */
+
+.mobile-menu-btn {
+
+    display:
+        none;
+
+    width:
+        42px;
+
+    height:
+        42px;
+
+    padding:
+        0;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius:
+        11px;
+
+    background:
+        #ffffff;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    flex-direction:
+        column;
+
+    gap:
+        4px;
+
+    transition:
+        all 0.2s ease;
+}
+
+
+.mobile-menu-btn:hover {
+
+    background:
+        #f8fafc;
+
+    border-color:
+        #cbd5e1;
+}
+
+
+.mobile-menu-btn span {
+
+    display:
+        block;
+
+    width:
+        17px;
+
+    height:
+        2px;
+
+    border-radius:
+        10px;
+
+    background:
+        #0f172a;
+
+    transition:
+        transform 0.25s ease,
+        opacity 0.2s ease;
+}
+
+
+/* =========================================================
+   MOBILE NAV
+========================================================= */
+
+.mobile-nav {
+
+    display:
+        none;
+
+    max-height:
+        0;
+
+    overflow:
+        hidden;
+
+    background:
+        rgba(255,255,255,0.98);
+
+    border-top:
+        1px solid transparent;
+
+    transition:
+        max-height 0.35s ease,
+        border-color 0.25s ease;
+}
+
+
+.mobile-nav.open {
+
+    max-height:
+        600px;
+
+    border-top-color:
+        #f1f5f9;
+}
+
+
+.mobile-nav-inner {
+
+    padding:
+        10px 16px 20px;
+}
+
+
+/* =========================================================
+   MOBILE LINKS
+========================================================= */
+
+.mobile-nav-link {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        13px;
+
+    min-height:
+        48px;
+
+    margin-top:
+        4px;
+
+    padding:
+        0 12px;
+
+    border-radius:
+        11px;
+
+    color:
+        #475569;
+
+    font-size:
+        14px;
+
+    font-weight:
+        600;
+
+    transition:
+        all 0.2s ease;
+}
+
+
+.mobile-nav-link:hover {
+
+    background:
+        #f8fafc;
+
+    color:
+        #0f172a;
+}
+
+
+.mobile-nav-link.active {
+
+    background:
+        #eff6ff;
+
+    color:
+        #2563eb;
+}
+
+
+.mobile-nav-icon {
+
+    width:
+        29px;
+
+    height:
+        29px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        8px;
+
+    background:
+        #f8fafc;
+
+    color:
+        #64748b;
+
+    font-size:
+        14px;
+}
+
+
+.mobile-nav-link.active
+.mobile-nav-icon {
+
+    background:
+        #dbeafe;
+
+    color:
+        #2563eb;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.mobile-nav-divider {
+
+    height:
+        1px;
+
+    margin:
+        13px 8px;
+
+    background:
+        #e2e8f0;
+}
+
+
+/* =========================================================
+   MOBILE LOGIN
+========================================================= */
+
+.mobile-login {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    min-height:
+        46px;
+
+    margin-top:
+        7px;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius:
+        11px;
+
+    color:
+        #334155;
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
+}
+
+
+.mobile-login:hover {
+
+    background:
+        #f8fafc;
+}
+
+
+/* =========================================================
+   MOBILE REGISTER
+========================================================= */
+
+.mobile-register {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        10px;
+
+    min-height:
+        48px;
+
+    margin-top:
+        9px;
+
+    border-radius:
+        11px;
+
+    background:
+        #2563eb;
+
+    color:
+        #ffffff;
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, 0.20);
+}
+
+
+.mobile-register span {
+
+    font-size:
+        16px;
+}
+
+
+/* =========================================================
+   SCROLLED STATE
+========================================================= */
+
+.top-navbar.scrolled {
+
+    background:
+        rgba(255,255,255,0.97);
+
+    box-shadow:
+        0 8px 30px
+        rgba(15, 23, 42, 0.07);
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .desktop-nav {
+
+        gap:
+            0;
+    }
+
+
+    .nav-link {
+
+        padding:
+            0 9px;
+
+        font-size:
+            12px;
+    }
+
+
+    .brand-text span {
+
+        display:
+            none;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 720px) {
+
+    .nav-container {
+
+        width:
+            calc(100% - 28px);
+
+        min-height:
+            68px;
+    }
+
+
+    .desktop-nav {
+
+        display:
+            none;
+    }
+
+
+    .nav-login,
+    .nav-register {
+
+        display:
+            none;
+    }
+
+
+    .mobile-menu-btn {
+
+        display:
+            flex;
+    }
+
+
+    .mobile-nav {
+
+        display:
+            block;
+    }
+
+
+    .brand-mark {
+
+        width:
+            39px;
+
+        height:
+            39px;
+
+        border-radius:
+            11px;
+    }
+
+
+    .brand-text strong {
+
+        font-size:
+            15px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .nav-container {
+
+        width:
+            calc(100% - 22px);
+    }
+
+
+    .brand-mark {
+
+        width:
+            37px;
+
+        height:
+            37px;
+    }
+
+
+    .brand-text strong {
+
+        font-size:
+            14px;
+    }
+}
+
+</style>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const navbar =
+            document.getElementById(
+                "topNavbar"
+            );
+
+
+        const menuButton =
+            document.getElementById(
+                "mobileMenuBtn"
+            );
+
+
+        const mobileNav =
+            document.getElementById(
+                "mobileNav"
+            );
+
+
+        /* =============================================
+           MOBILE MENU
+        ============================================== */
+
+        if (
+            menuButton &&
+            mobileNav
+        ) {
+
+            menuButton.addEventListener(
+                "click",
+                function () {
+
+                    const isOpen =
+                        mobileNav.classList.toggle(
+                            "open"
+                        );
+
+
+                    menuButton.setAttribute(
+                        "aria-expanded",
+                        isOpen
+                    );
+
+
+                    mobileNav.setAttribute(
+                        "aria-hidden",
+                        !isOpen
+                    );
+
+
+                    menuButton.classList.toggle(
+                        "active",
+                        isOpen
+                    );
+
+                }
+            );
+
+
+            /* Close after navigation */
+
+            const mobileLinks =
+                mobileNav.querySelectorAll(
+                    "a"
+                );
+
+
+            mobileLinks.forEach(
+                function (link) {
+
+                    link.addEventListener(
+                        "click",
+                        function () {
+
+                            mobileNav.classList.remove(
+                                "open"
+                            );
+
+                            menuButton.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                            mobileNav.setAttribute(
+                                "aria-hidden",
+                                "true"
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =============================================
+           NAVBAR SCROLL EFFECT
+        ============================================== */
+
+        function updateNavbar() {
+
+            if (!navbar) {
+                return;
+            }
+
+
+            if (
+                window.scrollY > 10
+            ) {
+
+                navbar.classList.add(
+                    "scrolled"
+                );
+
+            } else {
+
+                navbar.classList.remove(
+                    "scrolled"
+                );
+
+            }
+
+        }
+
+
+        updateNavbar();
+
+
+        window.addEventListener(
+            "scroll",
+            updateNavbar,
+            {
+                passive: true
+            }
+        );
+
+
+        /* =============================================
+           CLOSE MOBILE MENU ON RESIZE
+        ============================================== */
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (
+                    window.innerWidth > 720
+                ) {
+
+                    if (mobileNav) {
+
+                        mobileNav.classList.remove(
+                            "open"
+                        );
+
+                    }
+
+
+                    if (menuButton) {
+
+                        menuButton.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+);
+
+                    </script>
