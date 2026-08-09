@@ -107,6 +107,13 @@ class User(db.Model):
         cascade="all, delete-orphan"
     )
 
+    worker_profile = db.relationship(
+        "WorkerProfile",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
+
     # --------------------------------
     # Password
     # --------------------------------
