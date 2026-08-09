@@ -13,6 +13,9 @@ from extensions import db
 from models.job import Job
 
 from utils.decorators import role_required
+from models.job_application import (
+    JobApplication
+)
 
 
 customer_bp = Blueprint(
@@ -121,4 +124,156 @@ def my_jobs():
         }
 
     }), 200
+
+@customer_bp.route(
+    "/jobs/<int:job_id>/applications",
+    methods=["GET"]
+)
+@role_required("customer")
+def job_applications(job_id):
+
+    customer_id = get_jwt_identity()
+
+    job = db.session.get(
+        Job,
+        job_id
+    )
+
+    if not job:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Job not found"
+
+        }), 404
+
+    if job.customer_id != int(
+        customer_id
+    ):
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "You can only view applications for your own jobs"
+
+        }), 403
+
+    applications = (
+        JobApplication.query
+        .filter_by(
+            job_id=job.id
+        )
+        .order_by(
+            JobApplication.created_at.desc()
+        )
+        .all()
+    )
+
+    data = []
+
+    for application in applications:
+
+        worker = application.worker
+
+        worker_profile = (
+            worker.worker_profile
+            if worker
+            else None
+        )
+
+        data.append({
+
+            "id":
+                application.id,
+
+            "status":
+                application.status,
+
+            "proposed_amount":
+                float(
+                    application.proposed_amount
+                ),
+
+            "message":
+                application.message,
+
+            "availability":
+                application.availability,
+
+            "created_at":
+                application.created_at.isoformat(),
+
+            "worker": {
+
+                "id":
+                    worker.id,
+
+                "full_name":
+                    worker.full_name,
+
+                "profile_image":
+                    worker.profile_image,
+
+                "is_verified":
+                    worker.is_verified,
+
+                "profession":
+                    worker_profile.profession
+                    if worker_profile
+                    else None,
+
+                "experience_years":
+                    worker_profile.experience_years
+                    if worker_profile
+                    else None,
+
+                "rating":
+                    float(
+                        worker_profile.rating
+                    )
+                    if (
+                        worker_profile
+                        and worker_profile.rating
+                        is not None
+                    )
+                    else 0,
+
+                "total_reviews":
+                    worker_profile.total_reviews
+                    if worker_profile
+                    else 0
+            }
+
+        })
+
+    return jsonify({
+
+        "status": "success",
+
+        "job": {
+
+            "id":
+                job.id,
+
+            "title":
+                job.title,
+
+            "status":
+                job.status
+        },
+
+        "applications":
+            data,
+
+        "total":
+            len(data)
+
+    }), 200
+
+
 
