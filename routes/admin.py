@@ -26,6 +26,10 @@ admin_bp = Blueprint(
     __name__
 )
 
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    return render_template("admin/dashboard.html")
+
 @admin_bp.route(
     "/dashboard",
     methods=["GET"]
