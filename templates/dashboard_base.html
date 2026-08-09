@@ -20,9 +20,14 @@
         content="S. F Works Marketplace Dashboard"
     >
 
+    <meta
+        name="robots"
+        content="noindex, nofollow"
+    >
+
     <title>
         {% block title %}
-        Dashboard
+            Dashboard
         {% endblock %}
     </title>
 
@@ -54,12 +59,7 @@
 
 
     <!-- ==================================================
-         PAGE-SPECIFIC CSS
-         
-         Individual dashboard pages can use:
-         
-         {% block page_css %}
-         {% endblock %}
+         PAGE SPECIFIC CSS
     ================================================== -->
 
     {% block page_css %}
@@ -80,7 +80,7 @@
 
 
 <!-- ======================================================
-     APPLICATION SHELL
+     DASHBOARD APPLICATION SHELL
 ====================================================== -->
 
 <div
@@ -91,20 +91,16 @@
 
     <!-- ==================================================
          SIDEBAR
+         
+         IMPORTANT:
+         sidebar.html already contains <aside>
     ================================================== -->
 
-    <aside
-        class="dashboard-sidebar"
-        id="dashboardSidebar"
-    >
-
-        {% include "components/sidebar.html" %}
-
-    </aside>
+    {% include "components/sidebar.html" %}
 
 
     <!-- ==================================================
-         MOBILE OVERLAY
+         MOBILE SIDEBAR OVERLAY
     ================================================== -->
 
     <div
@@ -115,7 +111,7 @@
 
 
     <!-- ==================================================
-         MAIN AREA
+         MAIN DASHBOARD AREA
     ================================================== -->
 
     <main
@@ -128,17 +124,17 @@
              TOP HEADER
         ================================================== -->
 
-        <header
-            class="dashboard-header"
-        >
+        <header class="dashboard-header">
 
 
-            <!-- LEFT SIDE -->
+            <!-- ==============================================
+                 HEADER LEFT
+            =============================================== -->
 
             <div class="dashboard-header-left">
 
 
-                <!-- MOBILE MENU -->
+                <!-- MOBILE MENU BUTTON -->
 
                 <button
                     type="button"
@@ -156,32 +152,42 @@
                 </button>
 
 
-                <!-- PAGE TITLE -->
+                <!-- PAGE HEADING -->
 
                 <div class="dashboard-heading">
 
+
+                    <!-- EYEBROW -->
+
                     <div class="dashboard-heading-eyebrow">
 
-                        <span class="dashboard-status-dot"></span>
+                        <span
+                            class="dashboard-status-dot"
+                            aria-hidden="true"
+                        ></span>
 
                         S. F Works
 
                     </div>
 
 
+                    <!-- PAGE TITLE -->
+
                     <h1>
 
                         {% block page_title %}
-                        Dashboard
+                            Dashboard
                         {% endblock %}
 
                     </h1>
 
 
+                    <!-- PAGE SUBTITLE -->
+
                     <p>
 
                         {% block page_subtitle %}
-                        Manage your work and marketplace activity.
+                            Manage your work and marketplace activity.
                         {% endblock %}
 
                     </p>
@@ -191,12 +197,16 @@
             </div>
 
 
-            <!-- RIGHT SIDE -->
+            <!-- ==============================================
+                 HEADER RIGHT
+            =============================================== -->
 
             <div class="dashboard-header-right">
 
 
-                <!-- NOTIFICATION -->
+                <!-- ==========================================
+                     NOTIFICATION BUTTON
+                =========================================== -->
 
                 <button
                     type="button"
@@ -242,12 +252,17 @@
                 </button>
 
 
-                <!-- USER AREA -->
+                <!-- ==========================================
+                     USER ACCOUNT
+                =========================================== -->
 
                 <div
                     class="dashboard-user-wrapper"
                     id="dashboardUserWrapper"
                 >
+
+
+                    <!-- USER BUTTON -->
 
                     <button
                         type="button"
@@ -255,6 +270,7 @@
                         id="dashboardUserButton"
                         aria-expanded="false"
                         aria-haspopup="menu"
+                        aria-controls="dashboardUserMenu"
                     >
 
 
@@ -268,7 +284,7 @@
                         </span>
 
 
-                        <!-- USER INFO -->
+                        <!-- USER INFORMATION -->
 
                         <span class="dashboard-user-info">
 
@@ -287,7 +303,7 @@
                         </span>
 
 
-                        <!-- ARROW -->
+                        <!-- DROPDOWN ARROW -->
 
                         <svg
                             class="dashboard-user-arrow"
@@ -309,7 +325,9 @@
                     </button>
 
 
-                    <!-- USER DROPDOWN -->
+                    <!-- ======================================
+                         USER DROPDOWN
+                    ======================================= -->
 
                     <div
                         class="dashboard-user-menu"
@@ -318,17 +336,28 @@
                         aria-hidden="true"
                     >
 
-                        <div class="dashboard-user-menu-header">
+
+                        <!-- MENU HEADER -->
+
+                        <div
+                            class="dashboard-user-menu-header"
+                        >
 
                             <span
-                                class="dashboard-user-avatar dashboard-user-avatar-large"
+                                class="
+                                    dashboard-user-avatar
+                                    dashboard-user-avatar-large
+                                "
                             >
                                 SF
                             </span>
 
+
                             <div>
 
-                                <strong>
+                                <strong
+                                    id="dashboardMenuUserName"
+                                >
                                     Worker Account
                                 </strong>
 
@@ -341,8 +370,14 @@
                         </div>
 
 
-                        <div class="dashboard-user-menu-divider"></div>
+                        <!-- DIVIDER -->
 
+                        <div
+                            class="dashboard-user-menu-divider"
+                        ></div>
+
+
+                        <!-- PROFILE -->
 
                         <a
                             href="/worker/profile"
@@ -383,6 +418,8 @@
                         </a>
 
 
+                        <!-- SETTINGS -->
+
                         <a
                             href="/worker/settings"
                             class="dashboard-user-menu-item"
@@ -403,12 +440,56 @@
                                     aria-hidden="true"
                                 >
 
-                                    <path
-                                        d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="3"
                                     />
 
                                     <path
-                                        d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.55V20h-2.4v-.21a1.7 1.7 0 0 0-1.03-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.55-1.03H6v-2.4h.85A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.55 1.03H22v2.4h-.21A1.7 1.7 0 0 0 19.4 15Z"
+                                        d="
+                                            M19.4 15
+                                            a1.7 1.7 0 0 0 .34 1.88
+                                            l.06.06
+                                            -1.7 1.7
+                                            -.06-.06
+                                            a1.7 1.7 0 0 0-1.88-.34
+                                            1.7 1.7 0 0 0-1.03 1.55
+                                            V20
+                                            h-2.4
+                                            v-.21
+                                            a1.7 1.7 0 0 0-1.03-1.55
+                                            1.7 1.7 0 0 0-1.88.34
+                                            l-.06.06
+                                            -1.7-1.7
+                                            .06-.06
+                                            A1.7 1.7 0 0 0 8.4 15
+                                            a1.7 1.7 0 0 0-1.55-1.03
+                                            H6
+                                            v-2.4
+                                            h.85
+                                            A1.7 1.7 0 0 0 8.4 10
+                                            a1.7 1.7 0 0 0-.34-1.88
+                                            L8 8.06
+                                            l1.7-1.7
+                                            .06.06
+                                            a1.7 1.7 0 0 0 1.88.34
+                                            A1.7 1.7 0 0 0 12.67 5.2
+                                            V5
+                                            h2.4
+                                            v.2
+                                            a1.7 1.7 0 0 0 1.03 1.56
+                                            1.7 1.7 0 0 0 1.88-.34
+                                            l.06-.06
+                                            1.7 1.7
+                                            -.06.06
+                                            a1.7 1.7 0 0 0-.34 1.88
+                                            1.7 1.7 0 0 0 1.55 1.03
+                                            H22
+                                            v2.4
+                                            h-.21
+                                            A1.7 1.7 0 0 0 19.4 15
+                                        "
                                     />
 
                                 </svg>
@@ -420,12 +501,21 @@
                         </a>
 
 
-                        <div class="dashboard-user-menu-divider"></div>
+                        <!-- DIVIDER -->
 
+                        <div
+                            class="dashboard-user-menu-divider"
+                        ></div>
+
+
+                        <!-- LOGOUT -->
 
                         <button
                             type="button"
-                            class="dashboard-user-menu-item dashboard-logout-button"
+                            class="
+                                dashboard-user-menu-item
+                                dashboard-logout-button
+                            "
                             id="logoutButton"
                             role="menuitem"
                         >
@@ -474,7 +564,7 @@
 
 
         <!-- ==================================================
-             PAGE CONTENT
+             MAIN PAGE CONTENT
         ================================================== -->
 
         <section
@@ -483,7 +573,6 @@
         >
 
             {% block dashboard_content %}
-
             {% endblock %}
 
         </section>
@@ -503,6 +592,7 @@
 
             </div>
 
+
             <div>
 
                 Trusted Work Marketplace
@@ -517,7 +607,7 @@
 
 
 <!-- ======================================================
-     GLOBAL DASHBOARD JAVASCRIPT
+     DASHBOARD JAVASCRIPT
 ====================================================== -->
 
 <script>
@@ -585,7 +675,7 @@
 
 
     /* ==================================================
-       MOBILE SIDEBAR
+       SIDEBAR
     ================================================== */
 
     function openSidebar() {
@@ -615,6 +705,10 @@
             );
 
         }
+
+        document.body.classList.add(
+            "dashboard-menu-open"
+        );
 
     }
 
@@ -647,6 +741,10 @@
 
         }
 
+        document.body.classList.remove(
+            "dashboard-menu-open"
+        );
+
     }
 
 
@@ -656,16 +754,17 @@
             "click",
             function () {
 
-                if (
+                const isOpen =
+                    layout &&
                     layout.classList.contains(
                         "sidebar-open"
-                    )
-                ) {
+                    );
+
+                if (isOpen) {
 
                     closeSidebar();
 
-                }
-                else {
+                } else {
 
                     openSidebar();
 
@@ -688,7 +787,7 @@
 
 
     /* ==================================================
-       CLOSE SIDEBAR AFTER MOBILE NAVIGATION
+       MOBILE NAVIGATION
     ================================================== */
 
     if (sidebar) {
@@ -721,7 +820,7 @@
 
 
     /* ==================================================
-       USER DROPDOWN
+       USER MENU
     ================================================== */
 
     function openUserMenu() {
@@ -787,6 +886,7 @@
                 event.stopPropagation();
 
                 if (
+                    userMenu &&
                     userMenu.classList.contains(
                         "is-open"
                     )
@@ -794,8 +894,7 @@
 
                     closeUserMenu();
 
-                }
-                else {
+                } else {
 
                     openUserMenu();
 
@@ -813,10 +912,10 @@
 
             if (
                 userMenu &&
+                userButton &&
                 !userMenu.contains(
                     event.target
                 ) &&
-                userButton &&
                 !userButton.contains(
                     event.target
                 )
@@ -831,7 +930,7 @@
 
 
     /* ==================================================
-       ESC KEY
+       ESCAPE KEY
     ================================================== */
 
     document.addEventListener(
@@ -853,9 +952,6 @@
 
     /* ==================================================
        LOGOUT
-       
-       IMPORTANT:
-       This clears JWT from localStorage.
     ================================================== */
 
     if (logoutButton) {
@@ -863,6 +959,10 @@
         logoutButton.addEventListener(
             "click",
             function () {
+
+                /*
+                 * Remove JWT tokens
+                 */
 
                 localStorage.removeItem(
                     "access_token"
@@ -876,8 +976,18 @@
                     "access_token"
                 );
 
-                window.location.href =
-                    "/login";
+                sessionStorage.removeItem(
+                    "refresh_token"
+                );
+
+
+                /*
+                 * Redirect to login
+                 */
+
+                window.location.replace(
+                    "/login"
+                );
 
             }
         );
@@ -895,7 +1005,7 @@
 
     const sidebarLinks =
         document.querySelectorAll(
-            ".dashboard-sidebar a"
+            ".dashboard-sidebar a.sidebar-link"
         );
 
 
@@ -911,6 +1021,7 @@
                 return;
             }
 
+
             try {
 
                 const url =
@@ -918,6 +1029,21 @@
                         href,
                         window.location.origin
                     );
+
+
+                /*
+                 * Remove hard-coded active state
+                 * before calculating current page.
+                 */
+
+                link.classList.remove(
+                    "active"
+                );
+
+
+                /*
+                 * Exact match
+                 */
 
                 if (
                     url.pathname ===
@@ -930,10 +1056,50 @@
 
                 }
 
+
+                /*
+                 * Worker dashboard fallback
+                 */
+
+                if (
+                    currentPath ===
+                        "/worker/dashboard" &&
+                    url.pathname ===
+                        "/worker/dashboard"
+                ) {
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                }
+
             }
             catch (error) {
 
-                // Ignore invalid links
+                /*
+                 * Ignore invalid URLs.
+                 */
+
+            }
+
+        }
+    );
+
+
+    /* ==================================================
+       WINDOW RESIZE
+    ================================================== */
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            if (
+                window.innerWidth > 900
+            ) {
+
+                closeSidebar();
 
             }
 
@@ -948,11 +1114,6 @@
 
 <!-- ======================================================
      PAGE-SPECIFIC JAVASCRIPT
-     
-     Individual pages can add:
-     
-     {% block page_js %}
-     {% endblock %}
 ====================================================== -->
 
 {% block page_js %}
@@ -969,4 +1130,4 @@
 
 </body>
 
-                            </html>
+    </html>
