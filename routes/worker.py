@@ -1,7 +1,8 @@
 from flask import (
     Blueprint,
     request,
-    jsonify
+    jsonify,
+    render_template
 )
 
 from flask_jwt_extended import (
