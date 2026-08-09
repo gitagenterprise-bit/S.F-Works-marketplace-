@@ -465,3 +465,248 @@ def create_job():
         }
 
     }), 201
+
+@jobs_bp.route(
+    "/<int:job_id>",
+    methods=["PUT"]
+)
+@role_required("customer")
+def update_job(job_id):
+
+    user_id = get_jwt_identity()
+
+    job = db.session.get(
+        Job,
+        job_id
+    )
+
+    if not job:
+
+        return jsonify({
+            "status": "error",
+            "message": "Job not found"
+        }), 404
+
+    if job.customer_id != int(user_id):
+
+        return jsonify({
+            "status": "error",
+            "message": "You can only edit your own jobs"
+        }), 403
+
+    if job.status != "open":
+
+        return jsonify({
+            "status": "error",
+            "message": "Only open jobs can be edited"
+        }), 400
+
+    data = request.get_json()
+
+    if not data:
+
+        return jsonify({
+            "status": "error",
+            "message": "Request body is required"
+        }), 400
+
+    if "title" in data:
+
+        if not data["title"].strip():
+
+            return jsonify({
+                "status": "error",
+                "message": "Title cannot be empty"
+            }), 400
+
+        job.title = data["title"].strip()
+
+    if "description" in data:
+
+        if not data["description"].strip():
+
+            return jsonify({
+                "status": "error",
+                "message": "Description cannot be empty"
+            }), 400
+
+        job.description = (
+            data["description"].strip()
+        )
+
+    if "category_id" in data:
+
+        category = db.session.get(
+            Category,
+            data["category_id"]
+        )
+
+        if not category:
+
+            return jsonify({
+                "status": "error",
+                "message": "Invalid category"
+            }), 400
+
+        job.category_id = category.id
+
+    if "budget_min" in data:
+
+        job.budget_min = data[
+            "budget_min"
+        ]
+
+    if "budget_max" in data:
+
+        job.budget_max = data[
+            "budget_max"
+        ]
+
+    if "location" in data:
+
+        job.location = (
+            data["location"].strip()
+        )
+
+    if "city" in data:
+
+        job.city = (
+            data["city"].strip()
+            if data["city"]
+            else None
+        )
+
+    if "state" in data:
+
+        job.state = (
+            data["state"].strip()
+            if data["state"]
+            else None
+        )
+
+    if "pincode" in data:
+
+        job.pincode = (
+            data["pincode"].strip()
+            if data["pincode"]
+            else None
+        )
+
+    if "latitude" in data:
+
+        job.latitude = data["latitude"]
+
+    if "longitude" in data:
+
+        job.longitude = data["longitude"]
+
+    if "priority" in data:
+
+        job.priority = data[
+            "priority"
+        ]
+
+    db.session.commit()
+
+    return jsonify({
+
+        "status": "success",
+
+        "message": "Job updated successfully",
+
+        "job": {
+            "id": job.id,
+            "title": job.title,
+            "status": job.status
+        }
+
+    }), 200
+
+@jobs_bp.route(
+    "/<int:job_id>",
+    methods=["DELETE"]
+)
+@role_required("customer")
+def delete_job(job_id):
+
+    user_id = get_jwt_identity()
+
+    job = db.session.get(
+        Job,
+        job_id
+    )
+
+    if not job:
+
+        return jsonify({
+            "status": "error",
+            "message": "Job not found"
+        }), 404
+
+    if job.customer_id != int(user_id):
+
+        return jsonify({
+            "status": "error",
+            "message": "You can only delete your own jobs"
+        }), 403
+
+    if job.status != "open":
+
+        return jsonify({
+            "status": "error",
+            "message": "Only open jobs can be deleted"
+        }), 400
+
+    db.session.delete(job)
+
+    db.session.commit()
+
+    return jsonify({
+
+        "status": "success",
+
+        "message": "Job deleted successfully"
+
+    }), 200
+
+@jobs_bp.route(
+    "/categories",
+    methods=["GET"]
+)
+def categories():
+
+    categories = Category.query.filter_by(
+        is_active=True
+    ).order_by(
+        Category.name.asc()
+    ).all()
+
+    data = []
+
+    for category in categories:
+
+        data.append({
+
+            "id": category.id,
+
+            "name": category.name,
+
+            "slug": category.slug,
+
+            "description":
+                category.description,
+
+            "icon":
+                category.icon,
+
+            "image":
+                category.image
+        })
+
+    return jsonify({
+
+        "status": "success",
+
+        "categories": data
+
+    }), 200
