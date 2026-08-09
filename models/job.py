@@ -129,6 +129,12 @@ class Job(db.Model):
         cascade="all, delete-orphan"
     )
 
+    applications = db.relationship(
+        "JobApplication",
+        back_populates="job",
+        cascade="all, delete-orphan"
+    )
+
     def __repr__(self):
 
         return (
