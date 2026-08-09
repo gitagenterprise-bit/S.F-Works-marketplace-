@@ -44,6 +44,8 @@ def create_app():
         app
     )
 
+    
+
     # ==================================================
     # Import ALL Models
     #
@@ -87,6 +89,8 @@ def create_app():
         auth_pages_bp
     )
 
+    from routes.worker import worker_bp
+
     app.register_blueprint(
         auth_bp,
         url_prefix="/api/auth"
@@ -94,6 +98,10 @@ def create_app():
 
     app.register_blueprint(
         auth_pages_bp
+    )
+
+    app.register_blueprint(
+        worker_bp
     )
 
     # ------------------------------
