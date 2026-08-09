@@ -23,6 +23,17 @@ customer_bp = Blueprint(
     __name__
 )
 
+
+
+@customer_bp.route(
+    "/dashboard"
+)
+def dashboard():
+
+    return render_template(
+        "customer/dashboard.html"
+)
+
 @customer_bp.route(
     "/jobs",
     methods=["GET"]
