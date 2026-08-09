@@ -1,7 +1,16 @@
-from flask import Flask, jsonify, render_template
+from flask import (
+    Flask,
+    jsonify,
+    render_template
+)
 
 from config import Config
-from extensions import db, migrate, jwt
+
+from extensions import (
+    db,
+    migrate,
+    jwt
+)
 
 
 def create_app():
@@ -10,19 +19,21 @@ def create_app():
         __name__
     )
 
-    # --------------------------------
+    # ==================================================
     # Configuration
-    # --------------------------------
+    # ==================================================
 
     app.config.from_object(
         Config
     )
 
-    # --------------------------------
+    # ==================================================
     # Extensions
-    # --------------------------------
+    # ==================================================
 
-    db.init_app(app)
+    db.init_app(
+        app
+    )
 
     migrate.init_app(
         app,
@@ -33,9 +44,12 @@ def create_app():
         app
     )
 
-    # --------------------------------
-    # Import Models
-    # --------------------------------
+    # ==================================================
+    # Import ALL Models
+    #
+    # IMPORTANT:
+    # Models must be imported before db.create_all()
+    # ==================================================
 
     from models import (
         User,
@@ -43,21 +57,35 @@ def create_app():
         WorkerProfile,
         Category,
         Job,
-        JobImage
+        JobImage,
+        JobApplication
     )
 
-    # --------------------------------
+    # ==================================================
+    # Automatically Create Database Tables
+    #
+    # This creates missing tables automatically on
+    # first Render startup.
+    #
+    # Existing tables are NOT deleted.
+    # ==================================================
+
+    with app.app_context():
+
+        db.create_all()
+
+    # ==================================================
     # Register Blueprints
-    # --------------------------------
+    # ==================================================
+
+    # ------------------------------
+    # Authentication
+    # ------------------------------
 
     from routes.auth import (
-    auth_bp,
-    auth_pages_bp
+        auth_bp,
+        auth_pages_bp
     )
-    from routes.customer import customer_bp
-    from routes.worker import worker_bp
-    from routes.jobs import jobs_bp
-    from routes.admin import admin_bp
 
     app.register_blueprint(
         auth_bp,
@@ -68,9 +96,25 @@ def create_app():
         auth_pages_bp
     )
 
+    # ------------------------------
+    # Customer API
+    # ------------------------------
+
+    from routes.customer import (
+        customer_bp
+    )
+
     app.register_blueprint(
         customer_bp,
         url_prefix="/api/customer"
+    )
+
+    # ------------------------------
+    # Worker API
+    # ------------------------------
+
+    from routes.worker import (
+        worker_bp
     )
 
     app.register_blueprint(
@@ -78,9 +122,25 @@ def create_app():
         url_prefix="/api/worker"
     )
 
+    # ------------------------------
+    # Jobs API
+    # ------------------------------
+
+    from routes.jobs import (
+        jobs_bp
+    )
+
     app.register_blueprint(
         jobs_bp,
         url_prefix="/api/jobs"
+    )
+
+    # ------------------------------
+    # Admin API
+    # ------------------------------
+
+    from routes.admin import (
+        admin_bp
     )
 
     app.register_blueprint(
@@ -88,38 +148,59 @@ def create_app():
         url_prefix="/api/admin"
     )
 
-    # --------------------------------
-    # Home
-    # --------------------------------
+    # ==================================================
+    # Home Page
+    # ==================================================
 
     @app.route("/")
     def home():
-        return render_template("public/home.html")
 
-    # --------------------------------
+        return render_template(
+            "public/home.html"
+        )
+
+    # ==================================================
     # Health Check
-    # --------------------------------
+    # ==================================================
 
     @app.route("/health")
     def health():
 
         return jsonify({
-            "status": "success",
-            "message": "S. F Works Marketplace API is running",
-            "service": "sf-works-marketplace"
+
+            "status":
+                "success",
+
+            "message":
+                "S. F Works Marketplace API is running",
+
+            "service":
+                "sf-works-marketplace"
+
         })
 
-    # --------------------------------
+    # ==================================================
     # API Root
-    # --------------------------------
+    # ==================================================
 
     @app.route("/api")
     def api_root():
 
         return jsonify({
-            "name": "S. F Works Marketplace",
-            "version": "1.0.0",
-            "status": "online"
+
+            "name":
+                "S. F Works Marketplace",
+
+            "version":
+                "1.0.0",
+
+            "status":
+                "online"
+
         })
+
+    # ==================================================
+    # Return Flask Application
+    # ==================================================
 
     return app
