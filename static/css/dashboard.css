@@ -360,3 +360,106 @@
     font-size:
         24px;
 }
+
+@media (
+    max-width: 900px
+) {
+
+    .dashboard-sidebar {
+
+        width:
+            76px;
+    }
+
+
+    .sidebar-brand {
+
+        justify-content:
+            center;
+
+        padding:
+            18px 10px;
+    }
+
+
+    .sidebar-brand > div:last-child {
+
+        display:
+            none;
+    }
+
+
+    .sidebar-link {
+
+        justify-content:
+            center;
+
+        font-size:
+            0;
+
+    }
+
+
+    .sidebar-link span {
+
+        font-size:
+            18px;
+    }
+
+
+    .dashboard-content {
+
+        padding:
+            20px;
+    }
+
+
+    .dashboard-header {
+
+        padding:
+            18px 20px;
+    }
+
+
+    .stats-grid {
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+}
+
+
+@media (
+    max-width: 600px
+) {
+
+    .dashboard-sidebar {
+
+        display:
+            none;
+    }
+
+
+    .dashboard-layout {
+
+        display:
+            block;
+    }
+
+
+    .dashboard-header h1 {
+
+        font-size:
+            20px;
+    }
+
+
+    .stats-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
