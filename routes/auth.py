@@ -12,7 +12,7 @@ from sqlalchemy import or_
 from extensions import db
 from models.user import User
 from models.customer import CustomerProfile
-from models.worker import WorkerProfile
+from models import WorkerProfile
 
 
 auth_bp = Blueprint(
