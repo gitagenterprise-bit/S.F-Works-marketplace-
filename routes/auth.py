@@ -10,10 +10,15 @@ from flask_jwt_extended import (
 from sqlalchemy import or_
 
 from extensions import db
+
 from models.user import User
 from models.customer import CustomerProfile
 from models import WorkerProfile
 
+
+# ========================================
+# AUTH API BLUEPRINT
+# ========================================
 
 auth_bp = Blueprint(
     "auth",
@@ -21,14 +26,44 @@ auth_bp = Blueprint(
 )
 
 
-@auth_bp.route("/login")
+# ========================================
+# AUTH PAGE BLUEPRINT
+# ========================================
+
+auth_pages_bp = Blueprint(
+    "auth_pages",
+    __name__
+)
+
+
+# ========================================
+# LOGIN PAGE
+# URL: /login
+# ========================================
+
+@auth_pages_bp.route("/login")
 def login_page():
-    return render_template("auth/login.html")
+    return render_template(
+        "auth/login.html"
+    )
 
 
-@auth_bp.route("/register")
+# ========================================
+# REGISTER PAGE
+# URL: /register
+# ========================================
+
+@auth_pages_bp.route("/register")
 def register_page():
-    return render_template("auth/register.html")
+    return render_template(
+        "auth/register.html"
+    )
+
+
+# ========================================
+# CUSTOMER REGISTER API
+# URL: /api/auth/register/customer
+# ========================================
 
 @auth_bp.route(
     "/register/customer",
@@ -79,6 +114,9 @@ def register_customer():
             "message": "Password must be at least 8 characters"
         }), 400
 
+    email = email.lower().strip()
+    phone = phone.strip()
+
     existing_user = User.query.filter(
         or_(
             User.email == email,
@@ -87,7 +125,6 @@ def register_customer():
     ).first()
 
     if existing_user:
-
         return jsonify({
             "status": "error",
             "message": "Email or phone already registered"
@@ -95,15 +132,14 @@ def register_customer():
 
     user = User(
         full_name=full_name.strip(),
-        email=email.lower().strip(),
-        phone=phone.strip(),
+        email=email,
+        phone=phone,
         role="customer"
     )
 
     user.set_password(password)
 
     db.session.add(user)
-
     db.session.flush()
 
     profile = CustomerProfile(
@@ -125,6 +161,12 @@ def register_customer():
             "role": user.role
         }
     }), 201
+
+
+# ========================================
+# WORKER REGISTER API
+# URL: /api/auth/register/worker
+# ========================================
 
 @auth_bp.route(
     "/register/worker",
@@ -182,6 +224,9 @@ def register_worker():
             "message": "Password must be at least 8 characters"
         }), 400
 
+    email = email.lower().strip()
+    phone = phone.strip()
+
     existing_user = User.query.filter(
         or_(
             User.email == email,
@@ -190,7 +235,6 @@ def register_worker():
     ).first()
 
     if existing_user:
-
         return jsonify({
             "status": "error",
             "message": "Email or phone already registered"
@@ -198,15 +242,14 @@ def register_worker():
 
     user = User(
         full_name=full_name.strip(),
-        email=email.lower().strip(),
-        phone=phone.strip(),
+        email=email,
+        phone=phone,
         role="worker"
     )
 
     user.set_password(password)
 
     db.session.add(user)
-
     db.session.flush()
 
     worker_profile = WorkerProfile(
@@ -235,6 +278,12 @@ def register_worker():
         }
     }), 201
 
+
+# ========================================
+# LOGIN API
+# URL: /api/auth/login
+# ========================================
+
 @auth_bp.route(
     "/login",
     methods=["POST"]
@@ -253,7 +302,6 @@ def login():
     password = data.get("password")
 
     if not email or not password:
-
         return jsonify({
             "status": "error",
             "message": "Email and password are required"
@@ -264,21 +312,18 @@ def login():
     ).first()
 
     if not user:
-
         return jsonify({
             "status": "error",
             "message": "Invalid email or password"
         }), 401
 
     if not user.check_password(password):
-
         return jsonify({
             "status": "error",
             "message": "Invalid email or password"
         }), 401
 
     if not user.is_active:
-
         return jsonify({
             "status": "error",
             "message": "Your account has been disabled"
@@ -312,6 +357,12 @@ def login():
         }
     }), 200
 
+
+# ========================================
+# CURRENT USER
+# URL: /api/auth/me
+# ========================================
+
 @auth_bp.route(
     "/me",
     methods=["GET"]
@@ -327,7 +378,6 @@ def current_user():
     )
 
     if not user:
-
         return jsonify({
             "status": "error",
             "message": "User not found"
@@ -393,6 +443,12 @@ def current_user():
         "user": response
     }), 200
 
+
+# ========================================
+# REFRESH TOKEN
+# URL: /api/auth/refresh
+# ========================================
+
 @auth_bp.route(
     "/refresh",
     methods=["POST"]
@@ -410,14 +466,12 @@ def refresh():
     )
 
     if not user:
-
         return jsonify({
             "status": "error",
             "message": "User not found"
         }), 404
 
     if not user.is_active:
-
         return jsonify({
             "status": "error",
             "message": "Account is disabled"
@@ -434,5 +488,3 @@ def refresh():
         "status": "success",
         "access_token": access_token
     }), 200
-
-
