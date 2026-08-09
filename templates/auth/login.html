@@ -6,88 +6,310 @@ Login | S. F Works Marketplace
 
 {% block content %}
 
-<div class="auth-page">
+<div class="auth-page"><div class="auth-card">
 
-    <div class="auth-card">
+    <div class="auth-header">
 
-        <div class="auth-header">
+        <span class="auth-badge">
+            S. F Works
+        </span>
 
-            <span class="auth-badge">
-                S. F Works
-            </span>
+        <h1>
+            Welcome Back
+        </h1>
 
-            <h1>
-                Welcome Back
-            </h1>
+        <p>
+            Login to continue to your marketplace account.
+        </p>
 
-            <p>
-                Login to continue to your marketplace account.
-            </p>
+    </div>
+
+
+    <form
+        id="loginForm"
+        method="POST"
+    >
+
+        <div class="form-group">
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+                required
+            >
 
         </div>
 
 
-        <form
-            method="POST"
-            action="{{ url_for('auth.login') }}"
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+            >
+
+        </div>
+
+
+        <div
+            id="loginMessage"
+            style="display: none;"
+        ></div>
+
+
+        <button
+            type="submit"
+            class="btn btn-primary auth-submit"
+            id="loginButton"
         >
+            Login
+        </button>
 
-            <div class="form-group">
-
-                <label>
-                    Email
-                </label>
-
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    required
-                >
-
-            </div>
+    </form>
 
 
-            <div class="form-group">
+    <div class="auth-footer">
 
-                <label>
-                    Password
-                </label>
+        Don't have an account?
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    required
-                >
-
-            </div>
-
-
-            <button
-                type="submit"
-                class="btn btn-primary auth-submit"
-            >
-                Login
-            </button>
-
-        </form>
-
-
-        <div class="auth-footer">
-
-            Don't have an account?
-
-            <a
-                href="{{ url_for('auth.register') }}"
-            >
-                Create Account
-            </a>
-
-        </div>
+        <a
+            href="{{ url_for('auth_pages.register_page') }}"
+        >
+            Create Account
+        </a>
 
     </div>
 
 </div>
 
-{% endblock %}
+</div><script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const form =
+            document.getElementById(
+                "loginForm"
+            );
+
+        const email =
+            document.getElementById(
+                "email"
+            );
+
+        const password =
+            document.getElementById(
+                "password"
+            );
+
+        const message =
+            document.getElementById(
+                "loginMessage"
+            );
+
+        const button =
+            document.getElementById(
+                "loginButton"
+            );
+
+
+        form.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                message.style.display =
+                    "none";
+
+                message.textContent =
+                    "";
+
+
+                button.disabled = true;
+
+                button.textContent =
+                    "Logging in...";
+
+
+                const data = {
+
+                    email:
+                        email.value
+                        .trim(),
+
+                    password:
+                        password.value
+
+                };
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/auth/login",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        data
+                                    )
+                            }
+                        );
+
+
+                    const result =
+                        await response.json();
+
+
+                    if (
+                        response.ok &&
+                        result.status === "success"
+                    ) {
+
+                        /*
+                         * Save JWT tokens
+                         */
+
+                        localStorage.setItem(
+                            "access_token",
+                            result.tokens.access_token
+                        );
+
+                        localStorage.setItem(
+                            "refresh_token",
+                            result.tokens.refresh_token
+                        );
+
+
+                        /*
+                         * Save user information
+                         */
+
+                        localStorage.setItem(
+                            "user",
+                            JSON.stringify(
+                                result.user
+                            )
+                        );
+
+
+                        message.style.display =
+                            "block";
+
+                        message.textContent =
+                            result.message ||
+                            "Login successful.";
+
+                        message.style.padding =
+                            "12px";
+
+                        message.style.marginBottom =
+                            "15px";
+
+
+                        /*
+                         * Redirect according to role
+                         */
+
+                        setTimeout(
+                            function () {
+
+                                if (
+                                    result.user.role ===
+                                    "worker"
+                                ) {
+
+                                    window.location.href =
+                                        "/worker/dashboard";
+
+                                } else {
+
+                                    window.location.href =
+                                        "/customer/dashboard";
+
+                                }
+
+                            },
+                            500
+                        );
+
+
+                    } else {
+
+                        message.style.display =
+                            "block";
+
+                        message.textContent =
+                            result.message ||
+                            "Invalid email or password.";
+
+                        message.style.padding =
+                            "12px";
+
+                        message.style.marginBottom =
+                            "15px";
+
+                    }
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Login error:",
+                        error
+                    );
+
+
+                    message.style.display =
+                        "block";
+
+                    message.textContent =
+                        "Unable to connect to the server. Please try again.";
+
+                    message.style.padding =
+                        "12px";
+
+                    message.style.marginBottom =
+                        "15px";
+
+                } finally {
+
+                    button.disabled = false;
+
+                    button.textContent =
+                        "Login";
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>{% endblock %}
