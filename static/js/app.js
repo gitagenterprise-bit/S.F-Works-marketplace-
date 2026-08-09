@@ -29,3 +29,36 @@ document.addEventListener(
 
     }
 );
+function showLoading() {
+
+    const overlay =
+        document.getElementById(
+            "loadingOverlay"
+        );
+
+    if (overlay) {
+
+        overlay.classList.add(
+            "active"
+        );
+
+    }
+}
+
+
+function hideLoading() {
+
+    const overlay =
+        document.getElementById(
+            "loadingOverlay"
+        );
+
+    if (overlay) {
+
+        overlay.classList.remove(
+            "active"
+        );
+
+    }
+}
+
