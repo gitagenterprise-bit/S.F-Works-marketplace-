@@ -252,6 +252,83 @@ def update_application_status(
         }
 
     }), 200
+@admin_bp.route(
+    "/workers/<int:worker_id>/verify",
+    methods=["PATCH"]
+)
+@role_required("admin")
+def verify_worker(worker_id):
 
+    profile = WorkerProfile.query.filter_by(
+        user_id=worker_id
+    ).first()
+
+    if not profile:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Worker profile not found"
+
+        }), 404
+
+    data = request.get_json()
+
+    action = data.get(
+        "action"
+    )
+
+    if action == "approve":
+
+        profile.is_verified = True
+
+        profile.verification_status = (
+            "approved"
+        )
+
+    elif action == "reject":
+
+        profile.is_verified = False
+
+        profile.verification_status = (
+            "rejected"
+        )
+
+    else:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Invalid verification action"
+
+        }), 400
+
+    db.session.commit()
+
+    return jsonify({
+
+        "status": "success",
+
+        "message":
+            "Worker verification updated",
+
+        "worker": {
+
+            "id":
+                worker_id,
+
+            "is_verified":
+                profile.is_verified,
+
+            "verification_status":
+                profile.verification_status
+
+        }
+
+    }), 200
 
 
