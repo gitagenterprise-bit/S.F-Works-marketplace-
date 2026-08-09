@@ -1,0 +1,9 @@
+Flask
+Flask-SQLAlchemy
+psycopg2-binary
+Flask-Migrate
+Flask-JWT-Extended
+python-dotenv
+Werkzeug
+gunicorn
+email-validator
