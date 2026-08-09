@@ -101,6 +101,12 @@ class User(db.Model):
         foreign_keys="Job.customer_id"
     )
 
+    job_applications = db.relationship(
+        "JobApplication",
+        back_populates="worker",
+        cascade="all, delete-orphan"
+    )
+
     # --------------------------------
     # Password
     # --------------------------------
