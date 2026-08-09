@@ -107,32 +107,17 @@ class User(db.Model):
         cascade="all, delete-orphan"
     )
 
-    worker_profile = db.relationship(
-        "WorkerProfile",
-        back_populates="user",
-        uselist=False,
-        cascade="all, delete-orphan"
-    )
-
     # --------------------------------
     # Password
     # --------------------------------
 
-    def set_password(
-        self,
-        password
-    ):
+    def set_password(self, password):
 
-        self.password_hash = (
-            generate_password_hash(
-                password
-            )
+        self.password_hash = generate_password_hash(
+            password
         )
 
-    def check_password(
-        self,
-        password
-    ):
+    def check_password(self, password):
 
         return check_password_hash(
             self.password_hash,
@@ -141,6 +126,4 @@ class User(db.Model):
 
     def __repr__(self):
 
-        return (
-            f"<User {self.email}>"
-  )
+        return f"<User {self.email}>"
