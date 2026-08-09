@@ -1,362 +1,381 @@
 <!-- =========================================================
-     S. F WORKS — PREMIUM WORKER DASHBOARD SIDEBAR
-     File: templates/components/sidebar.html
+     S. F WORKS
+     PREMIUM WORKER DASHBOARD SIDEBAR
+
+     File:
+     templates/components/sidebar.html
 
      IMPORTANT:
-     dashboard_base.html already contains:
+     This file does NOT contain <aside>.
+     dashboard_base.html must contain:
+
      <aside class="dashboard-sidebar">
-         
+         {% include "components/sidebar.html" %}
      </aside>
+========================================================= -->
 
-     Therefore this file MUST NOT contain another <aside>.
-========================================================= --><!-- =========================================================
+
+<!-- =========================================================
      SIDEBAR BRAND
-========================================================= --><div class="sidebar-brand"><a
-    href="/worker/dashboard"
-    class="sidebar-brand-link"
-    aria-label="S. F Works Worker Dashboard"
->
+========================================================= -->
 
-    <div
-        class="sidebar-brand-mark"
-        aria-hidden="true"
+<div class="sidebar-brand">
+
+    <a
+        href="/worker/dashboard"
+        class="sidebar-brand-link"
+        aria-label="S. F Works Worker Dashboard"
     >
-        SF
-    </div>
 
-    <div class="sidebar-brand-text">
-
-        <strong>
-            S. F Works
-        </strong>
-
-        <span>
-            Marketplace
+        <span
+            class="sidebar-brand-mark"
+            aria-hidden="true"
+        >
+            SF
         </span>
 
-    </div>
+        <span class="sidebar-brand-text">
 
-</a>
+            <strong>
+                S. F Works
+            </strong>
 
-</div><!-- =========================================================
-     NAVIGATION
-========================================================= --><nav
+            <small>
+                Worker Dashboard
+            </small>
+
+        </span>
+
+    </a>
+
+</div>
+
+
+<!-- =========================================================
+     SIDEBAR NAVIGATION
+========================================================= -->
+
+<nav
     class="sidebar-nav"
     aria-label="Worker dashboard navigation"
-><!-- =====================================================
-     DASHBOARD
-====================================================== -->
-
-<a
-    href="/worker/dashboard"
-    class="sidebar-link"
 >
 
-    <span
-        class="sidebar-icon"
-        aria-hidden="true"
+
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
+    <a
+        href="/worker/dashboard"
+        class="sidebar-link"
     >
 
-        <svg
-            viewBox="0 0 24 24"
+        <span
+            class="sidebar-icon"
+            aria-hidden="true"
         >
 
-            <rect
-                x="3"
-                y="3"
-                width="7"
-                height="7"
-                rx="1.5"
-            ></rect>
+            <svg viewBox="0 0 24 24">
+
+                <rect
+                    x="3"
+                    y="3"
+                    width="7"
+                    height="7"
+                    rx="1.5"
+                ></rect>
+
+                <rect
+                    x="14"
+                    y="3"
+                    width="7"
+                    height="7"
+                    rx="1.5"
+                ></rect>
+
+                <rect
+                    x="3"
+                    y="14"
+                    width="7"
+                    height="7"
+                    rx="1.5"
+                ></rect>
+
+                <rect
+                    x="14"
+                    y="14"
+                    width="7"
+                    height="7"
+                    rx="1.5"
+                ></rect>
+
+            </svg>
 
-            <rect
-                x="14"
-                y="3"
-                width="7"
-                height="7"
-                rx="1.5"
-            ></rect>
-
-            <rect
-                x="3"
-                y="14"
-                width="7"
-                height="7"
-                rx="1.5"
-            ></rect>
-
-            <rect
-                x="14"
-                y="14"
-                width="7"
-                height="7"
-                rx="1.5"
-            ></rect>
-
-        </svg>
-
-    </span>
-
-    <span class="sidebar-label">
-        Dashboard
-    </span>
-
-</a>
-
-
-<!-- =====================================================
-     FIND JOBS
-====================================================== -->
-
-<a
-    href="/jobs"
-    class="sidebar-link"
->
-
-    <span
-        class="sidebar-icon"
-        aria-hidden="true"
-    >
-
-        <svg
-            viewBox="0 0 24 24"
-        >
-
-            <circle
-                cx="11"
-                cy="11"
-                r="6.5"
-            ></circle>
-
-            <path
-                d="M16 16l5 5"
-            ></path>
-
-        </svg>
-
-    </span>
-
-    <span class="sidebar-label">
-        Find Jobs
-    </span>
-
-</a>
-
-
-<!-- =====================================================
-     MY PROFILE
-====================================================== -->
-
-<a
-    href="/profile"
-    class="sidebar-link"
->
-
-    <span
-        class="sidebar-icon"
-        aria-hidden="true"
-    >
-
-        <svg
-            viewBox="0 0 24 24"
-        >
-
-            <circle
-                cx="12"
-                cy="8"
-                r="3.5"
-            ></circle>
-
-            <path
-                d="M5 21c.8-4 3.2-6 7-6s6.2 2 7 6"
-            ></path>
-
-        </svg>
-
-    </span>
-
-    <span class="sidebar-label">
-        My Profile
-    </span>
-
-</a>
-
-
-<!-- =====================================================
-     APPLICATIONS
-====================================================== -->
-
-<a
-    href="/applications"
-    class="sidebar-link"
->
-
-    <span
-        class="sidebar-icon"
-        aria-hidden="true"
-    >
-
-        <svg
-            viewBox="0 0 24 24"
-        >
-
-            <rect
-                x="5"
-                y="3"
-                width="14"
-                height="18"
-                rx="2"
-            ></rect>
-
-            <path
-                d="M9 3.5h6"
-            ></path>
-
-            <path
-                d="M9 9h6"
-            ></path>
-
-            <path
-                d="M9 13h6"
-            ></path>
-
-            <path
-                d="M9 17h4"
-            ></path>
-
-        </svg>
-
-    </span>
-
-    <span class="sidebar-label">
-        Applications
-    </span>
-
-</a>
-
-
-<!-- =====================================================
-     SETTINGS
-====================================================== -->
-
-<a
-    href="/settings"
-    class="sidebar-link"
->
-
-    <span
-        class="sidebar-icon"
-        aria-hidden="true"
-    >
-
-        <svg
-            viewBox="0 0 24 24"
-        >
-
-            <circle
-                cx="12"
-                cy="12"
-                r="3"
-            ></circle>
-
-            <path
-                d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.5V20a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H6v-2.5h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V5h2.5v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1v2.5h-.1a1.7 1.7 0 0 0-1.6 1Z"
-            ></path>
-
-        </svg>
-
-    </span>
-
-    <span class="sidebar-label">
-        Settings
-    </span>
-
-</a>
-
-
-<!-- =====================================================
-     DIVIDER
-====================================================== -->
-
-<div
-    class="sidebar-divider"
-    aria-hidden="true"
-></div>
-
-
-<!-- =====================================================
-     SIGN OUT
-     
-     JavaScript in dashboard_base.html handles logout.
-     This is intentionally a button instead of /logout.
-====================================================== -->
-
-<button
-    type="button"
-    class="sidebar-link sidebar-logout-button"
-    id="sidebarLogoutButton"
->
-
-    <span
-        class="sidebar-icon"
-        aria-hidden="true"
-    >
-
-        <svg
-            viewBox="0 0 24 24"
-        >
-
-            <path
-                d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4"
-            ></path>
-
-            <path
-                d="M14 8l4 4-4 4"
-            ></path>
-
-            <path
-                d="M18 12H9"
-            ></path>
-
-        </svg>
-
-    </span>
-
-    <span class="sidebar-label">
-        Sign Out
-    </span>
-
-</button>
-
-</nav><!-- =========================================================
-     SIDEBAR FOOTER
-========================================================= --><div class="sidebar-footer"><div class="sidebar-secure">
-
-    <span
-        class="secure-dot"
-        aria-hidden="true"
-    ></span>
-
-    <div>
-
-        <strong>
-            Secure Platform
-        </strong>
-
-        <span>
-            Your data is protected
         </span>
+
+        <span class="sidebar-label">
+            Dashboard
+        </span>
+
+    </a>
+
+
+    <!-- =====================================================
+         FIND JOBS
+    ====================================================== -->
+
+    <a
+        href="/jobs"
+        class="sidebar-link"
+    >
+
+        <span
+            class="sidebar-icon"
+            aria-hidden="true"
+        >
+
+            <svg viewBox="0 0 24 24">
+
+                <circle
+                    cx="11"
+                    cy="11"
+                    r="6.5"
+                ></circle>
+
+                <path
+                    d="M16 16l5 5"
+                ></path>
+
+            </svg>
+
+        </span>
+
+        <span class="sidebar-label">
+            Find Jobs
+        </span>
+
+    </a>
+
+
+    <!-- =====================================================
+         MY PROFILE
+    ====================================================== -->
+
+    <a
+        href="/profile"
+        class="sidebar-link"
+    >
+
+        <span
+            class="sidebar-icon"
+            aria-hidden="true"
+        >
+
+            <svg viewBox="0 0 24 24">
+
+                <circle
+                    cx="12"
+                    cy="8"
+                    r="3.5"
+                ></circle>
+
+                <path
+                    d="M5 21c.8-4 3.2-6 7-6s6.2 2 7 6"
+                ></path>
+
+            </svg>
+
+        </span>
+
+        <span class="sidebar-label">
+            My Profile
+        </span>
+
+    </a>
+
+
+    <!-- =====================================================
+         APPLICATIONS
+    ====================================================== -->
+
+    <a
+        href="/applications"
+        class="sidebar-link"
+    >
+
+        <span
+            class="sidebar-icon"
+            aria-hidden="true"
+        >
+
+            <svg viewBox="0 0 24 24">
+
+                <rect
+                    x="5"
+                    y="3"
+                    width="14"
+                    height="18"
+                    rx="2"
+                ></rect>
+
+                <path d="M9 3.5h6"></path>
+
+                <path d="M9 9h6"></path>
+
+                <path d="M9 13h6"></path>
+
+                <path d="M9 17h4"></path>
+
+            </svg>
+
+        </span>
+
+        <span class="sidebar-label">
+            Applications
+        </span>
+
+    </a>
+
+
+    <!-- =====================================================
+         SETTINGS
+    ====================================================== -->
+
+    <a
+        href="/settings"
+        class="sidebar-link"
+    >
+
+        <span
+            class="sidebar-icon"
+            aria-hidden="true"
+        >
+
+            <svg viewBox="0 0 24 24">
+
+                <circle
+                    cx="12"
+                    cy="12"
+                    r="3"
+                ></circle>
+
+                <path
+                    d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.5V20a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H6v-2.5h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V5h2.5v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1v2.5h-.1a1.7 1.7 0 0 0-1.6 1Z"
+                ></path>
+
+            </svg>
+
+        </span>
+
+        <span class="sidebar-label">
+            Settings
+        </span>
+
+    </a>
+
+
+    <!-- =====================================================
+         DIVIDER
+    ====================================================== -->
+
+    <div
+        class="sidebar-divider"
+        aria-hidden="true"
+    ></div>
+
+
+    <!-- =====================================================
+         SIGN OUT
+    ====================================================== -->
+
+    <button
+        type="button"
+        class="sidebar-link sidebar-logout-button"
+        id="sidebarLogoutButton"
+    >
+
+        <span
+            class="sidebar-icon"
+            aria-hidden="true"
+        >
+
+            <svg viewBox="0 0 24 24">
+
+                <path
+                    d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4"
+                ></path>
+
+                <path
+                    d="M14 8l4 4-4 4"
+                ></path>
+
+                <path
+                    d="M18 12H9"
+                ></path>
+
+            </svg>
+
+        </span>
+
+        <span class="sidebar-label">
+            Sign Out
+        </span>
+
+    </button>
+
+</nav>
+
+
+<!-- =========================================================
+     SIDEBAR FOOTER
+========================================================= -->
+
+<div class="sidebar-footer">
+
+    <div class="sidebar-secure">
+
+        <span
+            class="secure-dot"
+            aria-hidden="true"
+        ></span>
+
+        <div class="sidebar-secure-content">
+
+            <strong>
+                Secure Platform
+            </strong>
+
+            <small>
+                Your data is protected
+            </small>
+
+        </div>
 
     </div>
 
 </div>
 
-</div><!-- =========================================================
-     SIDEBAR STYLES
-========================================================= --><style>
+
+<!-- =========================================================
+     SIDEBAR CSS
+========================================================= -->
+
+<style>
 
 /* =========================================================
-   S. F WORKS — PREMIUM SIDEBAR
+   RESET
+========================================================= */
+
+.dashboard-sidebar,
+.dashboard-sidebar * {
+
+    box-sizing: border-box;
+
+}
+
+
+/* =========================================================
+   SIDEBAR
 ========================================================= */
 
 .dashboard-sidebar {
@@ -366,19 +385,15 @@
     top: 0;
     left: 0;
 
-    z-index: 1000;
-
     width: 250px;
     height: 100vh;
+
+    z-index: 1000;
 
     display: flex;
     flex-direction: column;
 
-    box-sizing: border-box;
-
     padding: 22px 14px;
-
-    border-right: 1px solid #e2e8f0;
 
     background:
         linear-gradient(
@@ -386,6 +401,10 @@
             #ffffff 0%,
             #fbfdff 100%
         );
+
+    border-right:
+        1px solid
+        #e2e8f0;
 
     box-shadow:
         8px 0 30px
@@ -395,7 +414,11 @@
     overflow-y: auto;
 
     scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
+
+    scrollbar-color:
+        #cbd5e1
+        transparent;
+
 }
 
 
@@ -406,12 +429,14 @@
 .dashboard-sidebar::-webkit-scrollbar {
 
     width: 5px;
+
 }
 
 
 .dashboard-sidebar::-webkit-scrollbar-track {
 
     background: transparent;
+
 }
 
 
@@ -420,6 +445,7 @@
     border-radius: 10px;
 
     background: #cbd5e1;
+
 }
 
 
@@ -429,12 +455,15 @@
 
 .sidebar-brand {
 
+    width: 100%;
+
     flex-shrink: 0;
 
     padding:
-        3px
-        7px
-        25px;
+        2px
+        6px
+        24px;
+
 }
 
 
@@ -446,9 +475,12 @@
 
     gap: 11px;
 
+    width: 100%;
+
     color: inherit;
 
     text-decoration: none;
+
 }
 
 
@@ -457,12 +489,12 @@
     width: 42px;
     height: 42px;
 
+    flex-shrink: 0;
+
     display: flex;
 
     align-items: center;
     justify-content: center;
-
-    flex-shrink: 0;
 
     border-radius: 12px;
 
@@ -476,37 +508,37 @@
     color: #ffffff;
 
     font-family:
-        var(
-            --font-heading,
-            Inter,
-            system-ui,
-            sans-serif
-        );
+        Inter,
+        system-ui,
+        sans-serif;
 
     font-size: 13px;
 
     font-weight: 800;
 
-    letter-spacing: 0.2px;
+    letter-spacing: .2px;
 
     box-shadow:
         0 8px 20px
-        rgba(37, 99, 235, 0.22);
+        rgba(37, 99, 235, .22);
 
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+        transform .2s ease,
+        box-shadow .2s ease;
+
 }
 
 
 .sidebar-brand-link:hover
 .sidebar-brand-mark {
 
-    transform: translateY(-1px);
+    transform:
+        translateY(-1px);
 
     box-shadow:
         0 11px 25px
-        rgba(37, 99, 235, 0.28);
+        rgba(37, 99, 235, .28);
+
 }
 
 
@@ -519,32 +551,35 @@
     flex-direction: column;
 
     line-height: 1.1;
+
 }
 
 
 .sidebar-brand-text strong {
 
+    display: block;
+
     color: #0f172a;
 
     font-family:
-        var(
-            --font-heading,
-            Inter,
-            system-ui,
-            sans-serif
-        );
+        Inter,
+        system-ui,
+        sans-serif;
 
     font-size: 15px;
 
     font-weight: 800;
 
     white-space: nowrap;
+
 }
 
 
-.sidebar-brand-text span {
+.sidebar-brand-text small {
 
-    margin-top: 4px;
+    display: block;
+
+    margin-top: 5px;
 
     color: #94a3b8;
 
@@ -552,11 +587,12 @@
 
     font-weight: 700;
 
-    letter-spacing: 0.7px;
+    letter-spacing: .65px;
 
     text-transform: uppercase;
 
     white-space: nowrap;
+
 }
 
 
@@ -566,20 +602,23 @@
 
 .sidebar-nav {
 
+    width: 100%;
+
+    flex: 1;
+
+    min-height: 0;
+
     display: flex;
 
     flex-direction: column;
 
     gap: 5px;
 
-    flex: 1;
-
-    min-height: 0;
 }
 
 
 /* =========================================================
-   SIDEBAR LINK
+   LINKS
 ========================================================= */
 
 .sidebar-link {
@@ -589,17 +628,20 @@
     width: 100%;
     min-height: 46px;
 
+    flex-shrink: 0;
+
     display: flex;
 
     align-items: center;
 
     gap: 12px;
 
-    box-sizing: border-box;
+    padding:
+        0 12px;
 
-    padding: 0 12px;
-
-    border: 1px solid transparent;
+    border:
+        1px solid
+        transparent;
 
     border-radius: 11px;
 
@@ -607,8 +649,7 @@
 
     color: #64748b;
 
-    font-family:
-        inherit;
+    font-family: inherit;
 
     font-size: 12px;
 
@@ -623,28 +664,33 @@
     cursor: pointer;
 
     transition:
-        color 0.2s ease,
-        background 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+        color .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+
 }
 
 
 .sidebar-link:hover {
 
-    color: #1e3a8a;
+    color: #1d4ed8;
 
     background: #f8fafc;
 
     border-color: #eef2f7;
 
-    transform: translateX(2px);
+    transform:
+        translateX(2px);
+
 }
 
 
 /* =========================================================
-   ACTIVE
+   ACTIVE LINK
+
+   JavaScript below automatically adds .active
 ========================================================= */
 
 .sidebar-link.active {
@@ -662,7 +708,8 @@
 
     box-shadow:
         0 5px 15px
-        rgba(37, 99, 235, 0.06);
+        rgba(37, 99, 235, .06);
+
 }
 
 
@@ -673,15 +720,18 @@
     position: absolute;
 
     left: -14px;
+
     top: 8px;
 
     width: 3px;
+
     height: 30px;
 
     border-radius:
         0 4px 4px 0;
 
     background: #2563eb;
+
 }
 
 
@@ -694,18 +744,19 @@
     width: 20px;
     height: 20px;
 
+    flex-shrink: 0;
+
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    flex-shrink: 0;
-
     color: #94a3b8;
 
     transition:
-        color 0.2s ease,
-        transform 0.2s ease;
+        color .2s ease,
+        transform .2s ease;
+
 }
 
 
@@ -721,7 +772,9 @@
     stroke-width: 1.8;
 
     stroke-linecap: round;
+
     stroke-linejoin: round;
+
 }
 
 
@@ -730,7 +783,9 @@
 
     color: #2563eb;
 
-    transform: scale(1.05);
+    transform:
+        scale(1.05);
+
 }
 
 
@@ -738,6 +793,7 @@
 .sidebar-icon {
 
     color: #2563eb;
+
 }
 
 
@@ -751,11 +807,12 @@
 
     min-width: 0;
 
-    white-space: nowrap;
-
     overflow: hidden;
 
+    white-space: nowrap;
+
     text-overflow: ellipsis;
+
 }
 
 
@@ -765,7 +822,8 @@
 
 .sidebar-divider {
 
-    width: calc(100% - 16px);
+    width:
+        calc(100% - 16px);
 
     height: 1px;
 
@@ -775,11 +833,12 @@
         13px 8px;
 
     background: #eef2f7;
+
 }
 
 
 /* =========================================================
-   LOGOUT
+   LOGOUT BUTTON
 ========================================================= */
 
 .sidebar-logout-button {
@@ -788,9 +847,12 @@
 
     -webkit-appearance: none;
 
-    border: 1px solid transparent;
+    border:
+        1px solid
+        transparent;
 
     outline: none;
+
 }
 
 
@@ -801,6 +863,7 @@
     background: #fef2f2;
 
     border-color: #fee2e2;
+
 }
 
 
@@ -808,6 +871,7 @@
 .sidebar-icon {
 
     color: #dc2626;
+
 }
 
 
@@ -817,22 +881,25 @@
 
 .sidebar-footer {
 
+    width: 100%;
+
     flex-shrink: 0;
 
     padding:
-        15px
-        7px
-        4px;
+        15px 6px 3px;
 
     margin-top: 8px;
 
     border-top:
         1px solid
         #eef2f7;
+
 }
 
 
 .sidebar-secure {
+
+    width: 100%;
 
     display: flex;
 
@@ -849,6 +916,7 @@
     border-radius: 12px;
 
     background: #f8fafc;
+
 }
 
 
@@ -865,7 +933,15 @@
 
     box-shadow:
         0 0 0 4px
-        rgba(34, 197, 94, 0.10);
+        rgba(34, 197, 94, .10);
+
+}
+
+
+.sidebar-secure-content {
+
+    min-width: 0;
+
 }
 
 
@@ -880,10 +956,11 @@
     font-weight: 700;
 
     line-height: 1.2;
+
 }
 
 
-.sidebar-secure div > span {
+.sidebar-secure small {
 
     display: block;
 
@@ -894,6 +971,9 @@
     font-size: 8px;
 
     line-height: 1.2;
+
+    white-space: nowrap;
+
 }
 
 
@@ -906,7 +986,9 @@
     .dashboard-sidebar {
 
         width: 220px;
+
     }
+
 }
 
 
@@ -918,26 +1000,24 @@
 
     .dashboard-sidebar {
 
-        width: 72px;
-
-        padding:
-            16px 10px;
+        width: 280px;
 
         transform:
             translateX(-100%);
 
         transition:
-            transform 0.25s ease;
+            transform .25s ease;
 
         box-shadow:
-            10px 0 30px
-            rgba(15, 23, 42, 0.12);
+            12px 0 35px
+            rgba(15, 23, 42, .16);
+
     }
 
 
     /*
-       dashboard_base.html adds
-       .sidebar-open to .dashboard-layout
+       dashboard-layout.sidebar-open
+       is controlled by dashboard_base.html
     */
 
     .dashboard-layout.sidebar-open
@@ -945,6 +1025,7 @@
 
         transform:
             translateX(0);
+
     }
 
 
@@ -952,123 +1033,135 @@
 
         padding:
             3px
-            0
+            7px
             22px;
+
     }
 
 
-    .sidebar-brand-link {
+    .sidebar-brand-text {
 
-        justify-content: center;
+        display: flex;
+
     }
 
 
-    .sidebar-brand-mark {
+    .sidebar-label {
 
-        width: 42px;
-        height: 42px;
+        display: block;
+
     }
 
 
-    .sidebar-brand-text,
-    .sidebar-label,
     .sidebar-footer {
 
-        display: none;
-    }
+        display: block;
 
-
-    .sidebar-link {
-
-        justify-content: center;
-
-        padding: 0;
-
-        min-height: 45px;
-    }
-
-
-    .sidebar-link.active::before {
-
-        left: -10px;
-    }
-
-
-    .sidebar-icon {
-
-        width: 22px;
-        height: 22px;
-    }
-
-
-    .sidebar-icon svg {
-
-        width: 19px;
-        height: 19px;
-    }
-
-
-    .sidebar-divider {
-
-        width: 100%;
-
-        margin:
-            12px 0;
     }
 
 }
 
 
 /* =========================================================
-   EXTRA SMALL DEVICES
+   VERY SMALL MOBILE
 ========================================================= */
 
 @media (max-width: 380px) {
 
     .dashboard-sidebar {
 
-        width: 64px;
+        width: 270px;
 
-        padding:
-            14px 8px;
     }
 
-
-    .sidebar-link {
-
-        min-height: 43px;
-    }
-
-
-    .sidebar-icon {
-
-        width: 21px;
-        height: 21px;
-    }
-
-
-    .sidebar-icon svg {
-
-        width: 18px;
-        height: 18px;
-    }
 }
 
-</style><!-- =========================================================
-     SIDEBAR LOGOUT SCRIPT
-========================================================= --><script>
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .dashboard-sidebar,
+    .sidebar-link,
+    .sidebar-icon,
+    .sidebar-brand-mark {
+
+        transition: none;
+
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     SIDEBAR JAVASCRIPT
+
+     - Active menu
+     - Logout
+========================================================= -->
+
+<script>
 
 (function () {
 
     "use strict";
+
+
+    /* =====================================================
+       ACTIVE MENU
+    ====================================================== */
+
+    const currentPath =
+        window.location.pathname;
+
+
+    const sidebarLinks =
+        document.querySelectorAll(
+            ".sidebar-link[href]"
+        );
+
+
+    sidebarLinks.forEach(
+        function (link) {
+
+            const href =
+                link.getAttribute("href");
+
+
+            if (
+                href &&
+                href !== "#" &&
+                currentPath === href
+            ) {
+
+                link.classList.add(
+                    "active"
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       LOGOUT
+    ====================================================== */
 
     const logoutButton =
         document.getElementById(
             "sidebarLogoutButton"
         );
 
+
     if (!logoutButton) {
+
         return;
+
     }
 
 
@@ -1113,4 +1206,4 @@
 
 })();
 
-</script>
+     </script>
