@@ -6,144 +6,436 @@ Create Account | S. F Works Marketplace
 
 {% block content %}
 
-<div class="auth-page">
+<div class="auth-page"><div class="auth-card">
 
-    <div class="auth-card">
+    <div class="auth-header">
 
-        <div class="auth-header">
+        <span class="auth-badge">
+            S. F Works
+        </span>
 
-            <span class="auth-badge">
-                S. F Works
-            </span>
+        <h1>
+            Create Your Account
+        </h1>
 
-            <h1>
-                Create Your Account
-            </h1>
+        <p>
+            Join the S. F Works Marketplace.
+        </p>
 
-            <p>
-                Join the S. F Works Marketplace.
-            </p>
+    </div>
+
+
+    <form
+        method="POST"
+        id="registerForm"
+    >
+
+        <div class="form-group">
+
+            <label for="full_name">
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                placeholder="Your full name"
+                required
+            >
 
         </div>
 
 
-        <form
-            method="POST"
-            action="{{ url_for('auth.register') }}"
+        <div class="form-group">
+
+            <label for="email">
+                Email Address
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@example.com"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="phone">
+                Phone Number
+            </label>
+
+            <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Your phone number"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="role">
+                Account Type
+            </label>
+
+            <select
+                id="role"
+                name="role"
+                required
+            >
+
+                <option value="customer">
+                    Customer — Post Jobs
+                </option>
+
+                <option value="worker">
+                    Worker — Find Jobs
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            class="form-group"
+            id="professionGroup"
+            style="display: none;"
         >
 
-            <div class="form-group">
+            <label for="profession">
+                Profession
+            </label>
 
-                <label>
-                    Full Name
-                </label>
-
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Your full name"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Email Address
-                </label>
-
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="you@example.com"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Phone Number
-                </label>
-
-                <input
-                    type="tel"
-                    name="phone"
-                    placeholder="Your phone number"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Account Type
-                </label>
-
-                <select
-                    name="role"
-                    required
-                >
-
-                    <option value="customer">
-                        Customer — Post Jobs
-                    </option>
-
-                    <option value="worker">
-                        Worker — Find Jobs
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Password
-                </label>
-
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Create a password"
-                    minlength="8"
-                    required
-                >
-
-            </div>
-
-
-            <button
-                type="submit"
-                class="btn btn-primary auth-submit"
+            <input
+                type="text"
+                id="profession"
+                name="profession"
+                placeholder="Example: Electrician, Plumber, Designer"
             >
-                Create Account
-            </button>
-
-        </form>
-
-
-        <div class="auth-footer">
-
-            Already have an account?
-
-            <a
-                href="{{ url_for('auth.login') }}"
-            >
-                Login
-            </a>
 
         </div>
+
+
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Create a password"
+                minlength="8"
+                required
+            >
+
+        </div>
+
+
+        <div
+            id="registerMessage"
+            style="display: none;"
+        ></div>
+
+
+        <button
+            type="submit"
+            class="btn btn-primary auth-submit"
+            id="registerButton"
+        >
+            Create Account
+        </button>
+
+    </form>
+
+
+    <div class="auth-footer">
+
+        Already have an account?
+
+        <a
+            href="{{ url_for('auth_pages.login_page') }}"
+        >
+            Login
+        </a>
 
     </div>
 
 </div>
 
-{% endblock %}
+</div><script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const form =
+            document.getElementById(
+                "registerForm"
+            );
+
+        const role =
+            document.getElementById(
+                "role"
+            );
+
+        const professionGroup =
+            document.getElementById(
+                "professionGroup"
+            );
+
+        const profession =
+            document.getElementById(
+                "profession"
+            );
+
+        const message =
+            document.getElementById(
+                "registerMessage"
+            );
+
+        const button =
+            document.getElementById(
+                "registerButton"
+            );
+
+
+        function updateProfessionField() {
+
+            if (
+                role.value === "worker"
+            ) {
+
+                professionGroup.style.display =
+                    "block";
+
+                profession.required = true;
+
+            } else {
+
+                professionGroup.style.display =
+                    "none";
+
+                profession.required = false;
+
+                profession.value = "";
+
+            }
+        }
+
+
+        role.addEventListener(
+            "change",
+            updateProfessionField
+        );
+
+
+        updateProfessionField();
+
+
+        form.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                message.style.display =
+                    "none";
+
+                message.textContent = "";
+
+
+                const selectedRole =
+                    role.value;
+
+
+                let endpoint;
+
+
+                if (
+                    selectedRole === "worker"
+                ) {
+
+                    endpoint =
+                        "/api/auth/register/worker";
+
+                } else {
+
+                    endpoint =
+                        "/api/auth/register/customer";
+
+                }
+
+
+                const data = {
+
+                    full_name:
+                        document
+                        .getElementById(
+                            "full_name"
+                        )
+                        .value
+                        .trim(),
+
+                    email:
+                        document
+                        .getElementById(
+                            "email"
+                        )
+                        .value
+                        .trim(),
+
+                    phone:
+                        document
+                        .getElementById(
+                            "phone"
+                        )
+                        .value
+                        .trim(),
+
+                    password:
+                        document
+                        .getElementById(
+                            "password"
+                        )
+                        .value
+                };
+
+
+                if (
+                    selectedRole === "worker"
+                ) {
+
+                    data.profession =
+                        profession.value
+                        .trim();
+
+                }
+
+
+                button.disabled = true;
+
+                button.textContent =
+                    "Creating Account...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            endpoint,
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        data
+                                    )
+                            }
+                        );
+
+
+                    const result =
+                        await response.json();
+
+
+                    if (
+                        response.ok
+                    ) {
+
+                        message.style.display =
+                            "block";
+
+                        message.textContent =
+                            result.message ||
+                            "Registration successful.";
+
+                        message.style.padding =
+                            "12px";
+
+                        message.style.marginBottom =
+                            "15px";
+
+
+                        form.reset();
+
+                        updateProfessionField();
+
+
+                        setTimeout(
+                            function () {
+
+                                window.location.href =
+                                    "{{ url_for('auth_pages.login_page') }}";
+
+                            },
+                            1200
+                        );
+
+
+                    } else {
+
+                        message.style.display =
+                            "block";
+
+                        message.textContent =
+                            result.message ||
+                            "Registration failed.";
+
+                        message.style.padding =
+                            "12px";
+
+                        message.style.marginBottom =
+                            "15px";
+
+                    }
+
+
+                } catch (error) {
+
+                    message.style.display =
+                        "block";
+
+                    message.textContent =
+                        "Unable to connect to the server. Please try again.";
+
+                    message.style.padding =
+                        "12px";
+
+                    message.style.marginBottom =
+                        "15px";
+
+                } finally {
+
+                    button.disabled = false;
+
+                    button.textContent =
+                        "Create Account";
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>{% endblock %}
