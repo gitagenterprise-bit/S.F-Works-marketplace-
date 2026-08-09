@@ -1,8 +1,7 @@
 from flask import (
     Blueprint,
     request,
-    jsonify,
-    render_template
+    jsonify
 )
 
 from flask_jwt_extended import (
@@ -14,22 +13,12 @@ from sqlalchemy import or_
 from extensions import db
 
 from models.job import Job
-
 from models.category import Category
-
-from models.job_application import (
-    JobApplication
-)
-
+from models.job_application import JobApplication
 from models import WorkerProfile
 
-from models.worker_skill import (
-    WorkerSkill
-)
-
-from models.worker_portfolio import (
-    WorkerPortfolio
-)
+from models.worker_skill import WorkerSkill
+from models.worker_portfolio import WorkerPortfolio
 
 from utils.decorators import role_required
 
@@ -38,10 +27,6 @@ worker_bp = Blueprint(
     "worker",
     __name__
 )
-
-@worker_bp.route("/worker/dashboard")
-def worker_dashboard():
-    return render_template("worker/dashboard.html")
 
 
 @worker_bp.route(
