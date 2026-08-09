@@ -20,6 +20,18 @@ from models.job_application import (
     JobApplication
 )
 
+from models.worker_profile import (
+    WorkerProfile
+)
+
+from models.worker_skill import (
+    WorkerSkill
+)
+
+from models.worker_portfolio import (
+    WorkerPortfolio
+)
+
 from utils.decorators import role_required
 
 
@@ -746,4 +758,744 @@ def withdraw_application(
             "Application withdrawn successfully"
 
     }), 200
+
+@worker_bp.route(
+    "/profile",
+    methods=["GET"]
+)
+@role_required("worker")
+def get_my_profile():
+
+    worker_id = get_jwt_identity()
+
+    profile = WorkerProfile.query.filter_by(
+        user_id=int(worker_id)
+    ).first()
+
+    if not profile:
+
+        return jsonify({
+            "status": "success",
+            "profile": None
+        }), 200
+
+    return jsonify({
+
+        "status": "success",
+
+        "profile": {
+
+            "id": profile.id,
+
+            "profession":
+                profile.profession,
+
+            "headline":
+                profile.headline,
+
+            "about":
+                profile.about,
+
+            "experience_years":
+                profile.experience_years,
+
+            "service_radius_km":
+                profile.service_radius_km,
+
+            "service_area":
+                profile.service_area,
+
+            "hourly_rate": (
+                float(profile.hourly_rate)
+                if profile.hourly_rate is not None
+                else None
+            ),
+
+            "minimum_charge": (
+                float(profile.minimum_charge)
+                if profile.minimum_charge is not None
+                else None
+            ),
+
+            "availability":
+                profile.availability,
+
+            "profile_image":
+                profile.profile_image,
+
+            "cover_image":
+                profile.cover_image,
+
+            "rating":
+                float(profile.rating),
+
+            "total_reviews":
+                profile.total_reviews,
+
+            "completed_jobs":
+                profile.completed_jobs,
+
+            "is_verified":
+                profile.is_verified,
+
+            "verification_status":
+                profile.verification_status,
+
+            "is_available":
+                profile.is_available,
+
+            "profile_completed":
+                profile.profile_completed
+
+        }
+
+    }), 200
+
+@worker_bp.route(
+    "/profile",
+    methods=["POST"]
+)
+@role_required("worker")
+def save_profile():
+
+    worker_id = get_jwt_identity()
+
+    data = request.get_json()
+
+    if not data:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Request body is required"
+
+        }), 400
+
+    profile = WorkerProfile.query.filter_by(
+        user_id=int(worker_id)
+    ).first()
+
+    if not profile:
+
+        profile = WorkerProfile(
+            user_id=int(worker_id)
+        )
+
+        db.session.add(profile)
+
+    if "profession" in data:
+
+        profile.profession = (
+            data["profession"].strip()
+            if data["profession"]
+            else None
+        )
+
+    if "headline" in data:
+
+        profile.headline = (
+            data["headline"].strip()
+            if data["headline"]
+            else None
+        )
+
+    if "about" in data:
+
+        profile.about = (
+            data["about"].strip()
+            if data["about"]
+            else None
+        )
+
+    if "experience_years" in data:
+
+        try:
+
+            experience = int(
+                data["experience_years"]
+            )
+
+        except (
+            TypeError,
+            ValueError
+        ):
+
+            return jsonify({
+
+                "status": "error",
+
+                "message":
+                    "Invalid experience years"
+
+            }), 400
+
+        if experience < 0:
+
+            return jsonify({
+
+                "status": "error",
+
+                "message":
+                    "Experience cannot be negative"
+
+            }), 400
+
+        profile.experience_years = experience
+
+    if "service_radius_km" in data:
+
+        profile.service_radius_km = (
+            data["service_radius_km"]
+        )
+
+    if "service_area" in data:
+
+        profile.service_area = (
+            data["service_area"].strip()
+            if data["service_area"]
+            else None
+        )
+
+    if "hourly_rate" in data:
+
+        profile.hourly_rate = (
+            data["hourly_rate"]
+        )
+
+    if "minimum_charge" in data:
+
+        profile.minimum_charge = (
+            data["minimum_charge"]
+        )
+
+    if "availability" in data:
+
+        profile.availability = (
+            data["availability"].strip()
+            if data["availability"]
+            else None
+        )
+
+    if "is_available" in data:
+
+        profile.is_available = bool(
+            data["is_available"]
+        )
+
+    # Profile completion
+
+    required_fields = [
+
+        profile.profession,
+
+        profile.headline,
+
+        profile.about,
+
+        profile.service_area
+
+    ]
+
+    profile.profile_completed = all(
+        field not in (None, "")
+        for field in required_fields
+    )
+
+    db.session.commit()
+
+    return jsonify({
+
+        "status": "success",
+
+        "message":
+            "Worker profile saved successfully",
+
+        "profile_completed":
+            profile.profile_completed
+
+    }), 200
+
+@worker_bp.route(
+    "/profile/skills",
+    methods=["POST"]
+)
+@role_required("worker")
+def add_skill():
+
+    worker_id = get_jwt_identity()
+
+    profile = WorkerProfile.query.filter_by(
+        user_id=int(worker_id)
+    ).first()
+
+    if not profile:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Please create your profile first"
+
+        }), 400
+
+    data = request.get_json()
+
+    if not data:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Request body is required"
+
+        }), 400
+
+    skill_name = data.get(
+        "skill_name"
+    )
+
+    if not skill_name:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Skill name is required"
+
+        }), 400
+
+    skill_name = skill_name.strip()
+
+    existing = WorkerSkill.query.filter_by(
+        worker_id=profile.id,
+        skill_name=skill_name
+    ).first()
+
+    if existing:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Skill already exists"
+
+        }), 409
+
+    skill = WorkerSkill(
+
+        worker_id=profile.id,
+
+        skill_name=skill_name,
+
+        experience_years=
+            data.get("experience_years")
+
+    )
+
+    db.session.add(skill)
+
+    db.session.commit()
+
+    return jsonify({
+
+        "status": "success",
+
+        "message":
+            "Skill added successfully",
+
+        "skill": {
+
+            "id":
+                skill.id,
+
+            "name":
+                skill.skill_name,
+
+            "experience_years":
+                skill.experience_years
+
+        }
+
+    }), 201
+
+@worker_bp.route(
+    "/profile/skills/<int:skill_id>",
+    methods=["DELETE"]
+)
+@role_required("worker")
+def delete_skill(skill_id):
+
+    worker_id = get_jwt_identity()
+
+    profile = WorkerProfile.query.filter_by(
+        user_id=int(worker_id)
+    ).first()
+
+    if not profile:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Profile not found"
+
+        }), 404
+
+    skill = db.session.get(
+        WorkerSkill,
+        skill_id
+    )
+
+    if not skill:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Skill not found"
+
+        }), 404
+
+    if skill.worker_id != profile.id:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "You cannot delete this skill"
+
+        }), 403
+
+    db.session.delete(skill)
+
+    db.session.commit()
+
+    return jsonify({
+
+        "status": "success",
+
+        "message":
+            "Skill deleted successfully"
+
+    }), 200
+
+@worker_bp.route(
+    "/profile/portfolio",
+    methods=["POST"]
+)
+@role_required("worker")
+def add_portfolio():
+
+    worker_id = get_jwt_identity()
+
+    profile = WorkerProfile.query.filter_by(
+        user_id=int(worker_id)
+    ).first()
+
+    if not profile:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Please create your profile first"
+
+        }), 400
+
+    data = request.get_json()
+
+    if not data:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Request body is required"
+
+        }), 400
+
+    title = data.get(
+        "title"
+    )
+
+    if not title:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Portfolio title is required"
+
+        }), 400
+
+    portfolio = WorkerPortfolio(
+
+        worker_id=profile.id,
+
+        title=title.strip(),
+
+        description=(
+            data.get("description").strip()
+            if data.get("description")
+            else None
+        ),
+
+        image_path=
+            data.get("image_path")
+
+    )
+
+    db.session.add(portfolio)
+
+    db.session.commit()
+
+    return jsonify({
+
+        "status": "success",
+
+        "message":
+            "Portfolio item added",
+
+        "portfolio": {
+
+            "id":
+                portfolio.id,
+
+            "title":
+                portfolio.title,
+
+            "description":
+                portfolio.description,
+
+            "image_path":
+                portfolio.image_path
+
+        }
+
+    }), 201
+
+@worker_bp.route(
+    "/profile/portfolio/<int:portfolio_id>",
+    methods=["DELETE"]
+)
+@role_required("worker")
+def delete_portfolio(
+    portfolio_id
+):
+
+    worker_id = get_jwt_identity()
+
+    profile = WorkerProfile.query.filter_by(
+        user_id=int(worker_id)
+    ).first()
+
+    if not profile:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Profile not found"
+
+        }), 404
+
+    portfolio = db.session.get(
+        WorkerPortfolio,
+        portfolio_id
+    )
+
+    if not portfolio:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Portfolio item not found"
+
+        }), 404
+
+    if portfolio.worker_id != profile.id:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "You cannot delete this portfolio item"
+
+        }), 403
+
+    db.session.delete(
+        portfolio
+    )
+
+    db.session.commit()
+
+    return jsonify({
+
+        "status": "success",
+
+        "message":
+            "Portfolio item deleted"
+
+    }), 200
+
+@worker_bp.route(
+    "/<int:worker_id>",
+    methods=["GET"]
+)
+def public_worker_profile(worker_id):
+
+    profile = WorkerProfile.query.filter_by(
+        user_id=worker_id
+    ).first()
+
+    if not profile:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message":
+                "Worker profile not found"
+
+        }), 404
+
+    user = profile.user
+
+    skills = []
+
+    for skill in profile.skills:
+
+        skills.append({
+
+            "id":
+                skill.id,
+
+            "name":
+                skill.skill_name,
+
+            "experience_years":
+                skill.experience_years
+
+        })
+
+    portfolio = []
+
+    for item in profile.portfolio_items:
+
+        portfolio.append({
+
+            "id":
+                item.id,
+
+            "title":
+                item.title,
+
+            "description":
+                item.description,
+
+            "image":
+                item.image_path,
+
+            "project_date":
+                (
+                    item.project_date.isoformat()
+                    if item.project_date
+                    else None
+                )
+
+        })
+
+    return jsonify({
+
+        "status": "success",
+
+        "worker": {
+
+            "id":
+                user.id,
+
+            "name":
+                user.full_name,
+
+            "profile_image":
+                profile.profile_image,
+
+            "cover_image":
+                profile.cover_image,
+
+            "profession":
+                profile.profession,
+
+            "headline":
+                profile.headline,
+
+            "about":
+                profile.about,
+
+            "experience_years":
+                profile.experience_years,
+
+            "service_area":
+                profile.service_area,
+
+            "service_radius_km":
+                profile.service_radius_km,
+
+            "hourly_rate": (
+                float(profile.hourly_rate)
+                if profile.hourly_rate is not None
+                else None
+            ),
+
+            "minimum_charge": (
+                float(profile.minimum_charge)
+                if profile.minimum_charge is not None
+                else None
+            ),
+
+            "availability":
+                profile.availability,
+
+            "rating":
+                float(profile.rating),
+
+            "total_reviews":
+                profile.total_reviews,
+
+            "completed_jobs":
+                profile.completed_jobs,
+
+            "is_verified":
+                profile.is_verified,
+
+            "is_available":
+                profile.is_available,
+
+            "skills":
+                skills,
+
+            "portfolio":
+                portfolio
+
+        }
+
+    }), 200
+
+
 
