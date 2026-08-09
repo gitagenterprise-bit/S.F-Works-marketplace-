@@ -1,125 +1,149 @@
 {% extends "base.html" %}
 
+
 {% block title %}
-S. F Works Marketplace
+S. F Works — Find Trusted Workers & Local Jobs
 {% endblock %}
 
 
 {% block content %}
 
-<section class="hero">
+<main class="home-page">
 
-    <div class="container hero-grid">
+    <!-- =================================================
+         HERO
+    ================================================== -->
 
-        <div class="hero-content">
+    <section class="hero">
 
-            <span class="hero-badge">
-                Trusted Work Marketplace
-            </span>
-
-            <h1>
-
-                Find the right worker
-                for your job.
-
-            </h1>
-
-            <p>
-
-                Post your work requirement
-                and connect with skilled
-                workers around you.
-
-            </p>
+        <div class="container hero-grid">
 
 
-            <div class="hero-actions">
+            <!-- HERO CONTENT -->
 
-                <a
-                    href="/post-job"
-                    class="btn btn-primary"
+            <div class="hero-content">
+
+                <span class="hero-badge">
+                    Trusted Work Marketplace
+                </span>
+
+
+                <h1>
+                    Find the right worker
+                    for your job.
+                </h1>
+
+
+                <p>
+                    Post your work requirement and connect
+                    with skilled, trusted workers around you.
+                    Simple, local and reliable.
+                </p>
+
+
+                <div class="hero-actions">
+
+                    <a
+                        href="/post-job"
+                        class="btn btn-primary"
+                    >
+                        <span>
+                            Post a Job
+                        </span>
+
+                        <span aria-hidden="true">
+                            →
+                        </span>
+                    </a>
+
+
+                    <a
+                        href="/jobs"
+                        class="btn btn-outline"
+                    >
+                        Find Work
+                    </a>
+
+                </div>
+
+
+                <div
+                    class="hero-trust"
+                    aria-label="Marketplace benefits"
                 >
-                    Post a Job
-                </a>
+
+                    <span>
+                        ✓ Verified Workers
+                    </span>
+
+                    <span>
+                        ✓ Easy Applications
+                    </span>
+
+                    <span>
+                        ✓ Local Services
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- FEATURED JOB CARD -->
+
+            <article class="hero-card">
+
+
+                <div class="hero-card-header">
+
+                    <span>
+                        Popular Service
+                    </span>
+
+                    <span>
+                        ● Live
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Home Electrical Work
+                </h3>
+
+
+                <p>
+                    Need an experienced electrician
+                    for home wiring and electrical work.
+                </p>
+
+
+                <div class="job-meta">
+
+                    <span>
+                        Kolkata
+                    </span>
+
+                    <span>
+                        ₹1,500 – ₹3,000
+                    </span>
+
+                </div>
+
 
                 <a
                     href="/jobs"
-                    class="btn btn-outline"
+                    class="btn btn-primary"
                 >
-                    Find Work
+                    View Available Jobs
                 </a>
 
-            </div>
-
-
-            <div class="hero-trust">
-
-                <span>
-                    ✓ Verified Workers
-                </span>
-
-                <span>
-                    ✓ Easy Applications
-                </span>
-
-                <span>
-                    ✓ Local Services
-                </span>
-
-            </div>
+            </article>
 
         </div>
 
+    </section>
 
-        <div class="hero-card">
-
-            <div class="hero-card-header">
-
-                <span>
-                    Popular Service
-                </span>
-
-                <span>
-                    ● Live
-                </span>
-
-            </div>
-
-
-            <h3>
-                Home Electrical Work
-            </h3>
-
-            <p>
-                Need an experienced
-                electrician for home wiring.
-            </p>
-
-
-            <div class="job-meta">
-
-                <span>
-                    Kolkata
-                </span>
-
-                <span>
-                    ₹1,500 - ₹3,000
-                </span>
-
-            </div>
-
-
-            <a
-                href="/jobs"
-                class="btn btn-primary"
-            >
-                View Jobs
-            </a>
-
-        </div>
-
-    </div>
-
-</section>
+</main>
 
 {% endblock %}
