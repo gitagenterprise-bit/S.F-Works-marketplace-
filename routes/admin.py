@@ -14,7 +14,7 @@ from extensions import db
 
 from models.user import User
 from models.job import Job
-from models.worker_profile import WorkerProfile
+from models import WorkerProfile
 from models.job_application import JobApplication
 from models.category import Category
 
