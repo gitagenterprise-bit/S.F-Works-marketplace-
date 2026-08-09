@@ -1,0 +1,650 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}
+Admin Dashboard | S. F Works Marketplace
+{% endblock %}
+
+
+{% block page_title %}
+Admin Dashboard
+{% endblock %}
+
+
+{% block dashboard_content %}
+
+<div class="admin-dashboard">
+
+    <!-- ============================= -->
+    <!-- Welcome -->
+    <!-- ============================= -->
+
+    <div class="admin-welcome">
+
+        <div>
+
+            <span class="admin-eyebrow">
+                S. F WORKS MARKETPLACE
+            </span>
+
+            <h2>
+                Marketplace Overview
+            </h2>
+
+            <p>
+                Monitor users, jobs, applications and
+                worker verification from one place.
+            </p>
+
+        </div>
+
+
+        <div class="admin-actions">
+
+            <a
+                href="{{ url_for('admin.admin_jobs') }}"
+                class="admin-action-btn"
+            >
+                Manage Jobs
+            </a>
+
+            <a
+                href="{{ url_for('admin.admin_workers') }}"
+                class="admin-action-btn primary"
+            >
+                Manage Workers
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- User Statistics -->
+    <!-- ============================= -->
+
+    <div class="admin-section-heading">
+
+        <div>
+
+            <span>
+                USERS
+            </span>
+
+            <h3>
+                User Overview
+            </h3>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-stats-grid">
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon blue">
+                U
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Total Users
+                </span>
+
+                <strong id="total-users">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon purple">
+                C
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Customers
+                </span>
+
+                <strong id="total-customers">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon green">
+                W
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Workers
+                </span>
+
+                <strong id="total-workers">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon orange">
+                A
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Administrators
+                </span>
+
+                <strong id="total-admins">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- Jobs -->
+    <!-- ============================= -->
+
+    <div class="admin-section-heading">
+
+        <div>
+
+            <span>
+                MARKETPLACE
+            </span>
+
+            <h3>
+                Job Overview
+            </h3>
+
+        </div>
+
+
+        <a
+            href="/admin/jobs"
+            class="admin-view-link"
+        >
+            View All Jobs →
+        </a>
+
+    </div>
+
+
+    <div class="admin-stats-grid">
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon blue">
+                J
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Total Jobs
+                </span>
+
+                <strong id="total-jobs">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon green">
+                O
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Open Jobs
+                </span>
+
+                <strong id="open-jobs">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon orange">
+                A
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Assigned
+                </span>
+
+                <strong id="assigned-jobs">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon purple">
+                ✓
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Completed
+                </span>
+
+                <strong id="completed-jobs">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- Applications -->
+    <!-- ============================= -->
+
+    <div class="admin-section-heading">
+
+        <div>
+
+            <span>
+                APPLICATIONS
+            </span>
+
+            <h3>
+                Application Overview
+            </h3>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-stats-grid">
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon blue">
+                #
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Total Applications
+                </span>
+
+                <strong id="total-applications">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon orange">
+                P
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Pending
+                </span>
+
+                <strong id="pending-applications">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon green">
+                ✓
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Accepted
+                </span>
+
+                <strong id="accepted-applications">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <div class="admin-stat-icon red">
+                ×
+            </div>
+
+            <div class="admin-stat-content">
+
+                <span>
+                    Rejected
+                </span>
+
+                <strong id="rejected-applications">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- Worker Verification -->
+    <!-- ============================= -->
+
+    <div class="admin-section-heading">
+
+        <div>
+
+            <span>
+                WORKER MANAGEMENT
+            </span>
+
+            <h3>
+                Verification
+            </h3>
+
+        </div>
+
+        <a
+            href="/admin/workers/verification"
+            class="admin-view-link"
+        >
+            Verification Queue →
+        </a>
+
+    </div>
+
+
+    <div class="verification-grid">
+
+
+        <div class="verification-card">
+
+            <div class="verification-card-icon verified">
+                ✓
+            </div>
+
+            <div>
+
+                <span>
+                    Verified Workers
+                </span>
+
+                <strong id="verified-workers">
+                    0
+                </strong>
+
+                <small>
+                    Successfully verified
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="verification-card">
+
+            <div class="verification-card-icon pending">
+                !
+            </div>
+
+            <div>
+
+                <span>
+                    Pending Verification
+                </span>
+
+                <strong id="pending-verification">
+                    0
+                </strong>
+
+                <small>
+                    Require admin review
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- Quick Actions -->
+    <!-- ============================= -->
+
+    <div class="admin-section-heading">
+
+        <div>
+
+            <span>
+                ADMIN TOOLS
+            </span>
+
+            <h3>
+                Quick Actions
+            </h3>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-tools-grid">
+
+
+        <a
+            href="/admin/customers"
+            class="admin-tool-card"
+        >
+
+            <div class="admin-tool-icon">
+                C
+            </div>
+
+            <div>
+
+                <strong>
+                    Customers
+                </strong>
+
+                <span>
+                    Manage customer accounts
+                </span>
+
+            </div>
+
+            <b>
+                →
+            </b>
+
+        </a>
+
+
+        <a
+            href="/admin/workers"
+            class="admin-tool-card"
+        >
+
+            <div class="admin-tool-icon">
+                W
+            </div>
+
+            <div>
+
+                <strong>
+                    Workers
+                </strong>
+
+                <span>
+                    Manage worker profiles
+                </span>
+
+            </div>
+
+            <b>
+                →
+            </b>
+
+        </a>
+
+
+        <a
+            href="/admin/jobs"
+            class="admin-tool-card"
+        >
+
+            <div class="admin-tool-icon">
+                J
+            </div>
+
+            <div>
+
+                <strong>
+                    Jobs
+                </strong>
+
+                <span>
+                    Review marketplace jobs
+                </span>
+
+            </div>
+
+            <b>
+                →
+            </b>
+
+        </a>
+
+
+        <a
+            href="/admin/applications"
+            class="admin-tool-card"
+        >
+
+            <div class="admin-tool-icon">
+                A
+            </div>
+
+            <div>
+
+                <strong>
+                    Applications
+                </strong>
+
+                <span>
+                    Review worker applications
+                </span>
+
+            </div>
+
+            <b>
+                →
+            </b>
+
+        </a>
+
+
+        <a
+            href="/admin/categories"
+            class="admin-tool-card"
+        >
+
+            <div class="admin-tool-icon">
+                #
+            </div>
+
+            <div>
+
+                <strong>
+                    Categories
+                </strong>
+
+                <span>
+                    Manage job categories
+                </span>
+
+            </div>
+
+            <b>
+                →
+            </b>
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
