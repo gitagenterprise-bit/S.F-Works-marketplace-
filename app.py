@@ -89,7 +89,7 @@ def create_app():
         auth_pages_bp
     )
 
-    from routes.worker import worker_bp
+    
 
     app.register_blueprint(
         auth_bp,
@@ -100,9 +100,7 @@ def create_app():
         auth_pages_bp
     )
 
-    app.register_blueprint(
-        worker_bp
-    )
+    
 
     # ------------------------------
     # Customer API
@@ -125,10 +123,7 @@ def create_app():
         worker_bp
     )
 
-    app.register_blueprint(
-        worker_bp,
-        url_prefix="/api/worker"
-    )
+    
 
     # ------------------------------
     # Jobs API
