@@ -19,7 +19,8 @@ class WorkerProfile(db.Model):
             ondelete="CASCADE"
         ),
         unique=True,
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     profession = db.Column(
@@ -114,7 +115,27 @@ class WorkerProfile(db.Model):
         onupdate=datetime.utcnow
     )
 
+    # --------------------------------
+    # Relationships
+    # --------------------------------
+
     user = db.relationship(
         "User",
         back_populates="worker_profile"
-  )
+    )
+
+    skills = db.relationship(
+        "WorkerSkill",
+        back_populates="worker",
+        cascade="all, delete-orphan"
+    )
+
+    portfolio_items = db.relationship(
+        "WorkerPortfolio",
+        back_populates="worker",
+        cascade="all, delete-orphan"
+    )
+
+    def __repr__(self):
+
+        return f"<WorkerProfile user={self.user_id}>"
