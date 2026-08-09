@@ -13,10 +13,15 @@ from extensions import db
 from models.job import Job
 
 from utils.decorators import role_required
+
 from models.job_application import (
     JobApplication
 )
 
+
+# ============================================================
+# Customer API Blueprint
+# ============================================================
 
 customer_bp = Blueprint(
     "customer",
@@ -24,15 +29,10 @@ customer_bp = Blueprint(
 )
 
 
-
-@customer_bp.route(
-    "/dashboard"
-)
-def dashboard():
-
-    return render_template(
-        "customer/dashboard.html"
-)
+# ============================================================
+# CUSTOMER JOBS
+# GET /api/customer/jobs
+# ============================================================
 
 @customer_bp.route(
     "/jobs",
@@ -55,10 +55,24 @@ def my_jobs():
         type=int
     )
 
-    query = Job.query.filter(
-        Job.customer_id == int(user_id)
-    ).order_by(
-        Job.created_at.desc()
+    # Prevent invalid pagination values
+    if page < 1:
+        page = 1
+
+    if per_page < 1:
+        per_page = 10
+
+    if per_page > 100:
+        per_page = 100
+
+    query = (
+        Job.query
+        .filter(
+            Job.customer_id == int(user_id)
+        )
+        .order_by(
+            Job.created_at.desc()
+        )
     )
 
     pagination = query.paginate(
@@ -73,21 +87,29 @@ def my_jobs():
 
         jobs.append({
 
-            "id": job.id,
+            "id":
+                job.id,
 
-            "title": job.title,
+            "title":
+                job.title,
 
-            "description": job.description,
+            "description":
+                job.description,
 
-            "status": job.status,
+            "status":
+                job.status,
 
-            "priority": job.priority,
+            "priority":
+                job.priority,
 
-            "location": job.location,
+            "location":
+                job.location,
 
-            "city": job.city,
+            "city":
+                job.city,
 
-            "state": job.state,
+            "state":
+                job.state,
 
             "budget_min": (
                 float(job.budget_min)
@@ -101,7 +123,8 @@ def my_jobs():
                 else None
             ),
 
-            "views": job.views,
+            "views":
+                job.views,
 
             "category": (
                 job.category.name
@@ -111,18 +134,24 @@ def my_jobs():
 
             "created_at": (
                 job.created_at.isoformat()
+                if job.created_at
+                else None
             )
+
         })
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
-        "jobs": jobs,
+        "jobs":
+            jobs,
 
         "pagination": {
 
-            "page": pagination.page,
+            "page":
+                pagination.page,
 
             "per_page":
                 pagination.per_page,
@@ -132,9 +161,16 @@ def my_jobs():
 
             "pages":
                 pagination.pages
+
         }
 
     }), 200
+
+
+# ============================================================
+# JOB APPLICATIONS
+# GET /api/customer/jobs/<job_id>/applications
+# ============================================================
 
 @customer_bp.route(
     "/jobs/<int:job_id>/applications",
@@ -154,12 +190,18 @@ def job_applications(job_id):
 
         return jsonify({
 
-            "status": "error",
+            "status":
+                "error",
 
             "message":
                 "Job not found"
 
         }), 404
+
+    # --------------------------------------------------------
+    # Security:
+    # Customer can only see applications for own job
+    # --------------------------------------------------------
 
     if job.customer_id != int(
         customer_id
@@ -167,7 +209,8 @@ def job_applications(job_id):
 
         return jsonify({
 
-            "status": "error",
+            "status":
+                "error",
 
             "message":
                 "You can only view applications for your own jobs"
@@ -205,10 +248,14 @@ def job_applications(job_id):
             "status":
                 application.status,
 
-            "proposed_amount":
+            "proposed_amount": (
                 float(
                     application.proposed_amount
-                ),
+                )
+                if application.proposed_amount
+                is not None
+                else None
+            ),
 
             "message":
                 application.message,
@@ -216,34 +263,47 @@ def job_applications(job_id):
             "availability":
                 application.availability,
 
-            "created_at":
-                application.created_at.isoformat(),
+            "created_at": (
+                application.created_at.isoformat()
+                if application.created_at
+                else None
+            ),
 
             "worker": {
 
                 "id":
-                    worker.id,
+                    worker.id
+                    if worker
+                    else None,
 
                 "full_name":
-                    worker.full_name,
+                    worker.full_name
+                    if worker
+                    else None,
 
                 "profile_image":
-                    worker.profile_image,
+                    worker.profile_image
+                    if worker
+                    else None,
 
                 "is_verified":
-                    worker.is_verified,
+                    worker.is_verified
+                    if worker
+                    else False,
 
-                "profession":
+                "profession": (
                     worker_profile.profession
                     if worker_profile
-                    else None,
+                    else None
+                ),
 
-                "experience_years":
+                "experience_years": (
                     worker_profile.experience_years
                     if worker_profile
-                    else None,
+                    else None
+                ),
 
-                "rating":
+                "rating": (
                     float(
                         worker_profile.rating
                     )
@@ -252,19 +312,23 @@ def job_applications(job_id):
                         and worker_profile.rating
                         is not None
                     )
-                    else 0,
+                    else 0
+                ),
 
-                "total_reviews":
+                "total_reviews": (
                     worker_profile.total_reviews
                     if worker_profile
                     else 0
+                )
+
             }
 
         })
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "job": {
 
@@ -276,6 +340,7 @@ def job_applications(job_id):
 
             "status":
                 job.status
+
         },
 
         "applications":
@@ -285,6 +350,3 @@ def job_applications(job_id):
             len(data)
 
     }), 200
-
-
-
