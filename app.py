@@ -123,6 +123,10 @@ def create_app():
         worker_bp
     )
 
+    app.register_blueprint(
+        worker_bp
+    )
+
     
 
     # ------------------------------
