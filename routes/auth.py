@@ -20,9 +20,16 @@ auth_bp = Blueprint(
     __name__
 )
 
-@auth_bp.route("/register", methods=["GET"])
+
+@app.route("/login")
+def login_page():
+    return render_template("auth/login.html")
+
+
+@app.route("/register")
 def register_page():
-    return render_template("register.html")
+    return render_template("auth/register.html")
+
 
 @auth_bp.route(
     "/register/customer",
