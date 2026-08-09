@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 from config import Config
 from extensions import db, migrate, jwt
@@ -87,13 +87,7 @@ def create_app():
 
     @app.route("/")
     def home():
-
-        return jsonify({
-            "name": "S. F Works Marketplace",
-            "message": "API is running successfully",
-            "status": "online",
-            "version": "1.0.0"
-        })
+        return render_template("index.html")
 
     # --------------------------------
     # Health Check
