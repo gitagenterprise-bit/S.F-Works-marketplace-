@@ -115,6 +115,8 @@ def create_app():
         url_prefix="/api/customer"
     )
 
+    
+
     # ------------------------------
     # Worker API
     # ------------------------------
@@ -124,9 +126,22 @@ def create_app():
     )
 
     app.register_blueprint(
-        worker_bp
+        worker_bp,
+        url_prefix="/api/worker"
     )
 
+
+    # ------------------------------
+    # Worker Pages
+    # ------------------------------
+
+    from routes.worker_pages import (
+        worker_pages_bp
+    )
+
+    app.register_blueprint(
+        worker_pages_bp
+    )
     
 
     # ------------------------------
