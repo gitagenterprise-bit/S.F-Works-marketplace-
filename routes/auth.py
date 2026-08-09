@@ -21,15 +21,14 @@ auth_bp = Blueprint(
 )
 
 
-@app.route("/login")
+@auth_bp.route("/login")
 def login_page():
     return render_template("auth/login.html")
 
 
-@app.route("/register")
+@auth_bp.route("/register")
 def register_page():
     return render_template("auth/register.html")
-
 
 @auth_bp.route(
     "/register/customer",
