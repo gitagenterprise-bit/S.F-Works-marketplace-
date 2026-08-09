@@ -1,0 +1,95 @@
+from datetime import datetime
+
+from extensions import db
+
+
+class JobApplication(db.Model):
+
+    __tablename__ = "job_applications"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    job_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            "jobs.id",
+            ondelete="CASCADE"
+        ),
+        nullable=False,
+        index=True
+    )
+
+    worker_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            "users.id",
+            ondelete="CASCADE"
+        ),
+        nullable=False,
+        index=True
+    )
+
+    proposed_amount = db.Column(
+        db.Numeric(12, 2),
+        nullable=False
+    )
+
+    message = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    availability = db.Column(
+        db.String(100),
+        nullable=True
+    )
+
+    status = db.Column(
+        db.String(30),
+        nullable=False,
+        default="pending",
+        index=True
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        nullable=False
+    )
+
+    updated_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False
+    )
+
+    job = db.relationship(
+        "Job",
+        back_populates="applications"
+    )
+
+    worker = db.relationship(
+        "User",
+        back_populates="job_applications"
+    )
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            "job_id",
+            "worker_id",
+            name="uq_job_worker_application"
+        ),
+    )
+
+    def __repr__(self):
+
+        return (
+            f"<JobApplication "
+            f"{self.id} "
+            f"Job={self.job_id} "
+            f"Worker={self.worker_id}>"
+  )
