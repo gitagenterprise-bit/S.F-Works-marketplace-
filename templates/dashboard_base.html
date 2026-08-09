@@ -7,7 +7,17 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#0f172a"
+    >
+
+    <meta
+        name="description"
+        content="S. F Works Marketplace Dashboard"
     >
 
     <title>
@@ -15,6 +25,11 @@
         Dashboard
         {% endblock %}
     </title>
+
+
+    <!-- ==================================================
+         GLOBAL CSS
+    ================================================== -->
 
     <link
         rel="stylesheet"
@@ -24,6 +39,11 @@
         ) }}"
     >
 
+
+    <!-- ==================================================
+         DASHBOARD CSS
+    ================================================== -->
+
     <link
         rel="stylesheet"
         href="{{ url_for(
@@ -32,72 +52,921 @@
         ) }}"
     >
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for(
-            'static',
-            filename='css/admin.css'
-    ) }}"
->
 
-    
+    <!-- ==================================================
+         PAGE-SPECIFIC CSS
+         
+         Individual dashboard pages can use:
+         
+         {% block page_css %}
+         {% endblock %}
+    ================================================== -->
+
+    {% block page_css %}
+    {% endblock %}
+
+
+    <!-- ==================================================
+         EXTRA HEAD
+    ================================================== -->
+
+    {% block extra_head %}
+    {% endblock %}
 
 </head>
 
-<body>
 
-<div class="dashboard-layout">
+<body class="dashboard-body">
 
-    {% include
-        "components/sidebar.html"
-    %}
 
-    <main class="dashboard-main">
+<!-- ======================================================
+     APPLICATION SHELL
+====================================================== -->
 
-        <header class="dashboard-header">
+<div
+    class="dashboard-layout"
+    id="dashboardLayout"
+>
 
-            <div>
 
-                <h1>
-                    {% block page_title %}
-                    Dashboard
-                    {% endblock %}
-                </h1>
+    <!-- ==================================================
+         SIDEBAR
+    ================================================== -->
 
-                <p>
-                    Welcome back.
-                </p>
+    <aside
+        class="dashboard-sidebar"
+        id="dashboardSidebar"
+    >
+
+        {% include "components/sidebar.html" %}
+
+    </aside>
+
+
+    <!-- ==================================================
+         MOBILE OVERLAY
+    ================================================== -->
+
+    <div
+        class="dashboard-overlay"
+        id="dashboardOverlay"
+        aria-hidden="true"
+    ></div>
+
+
+    <!-- ==================================================
+         MAIN AREA
+    ================================================== -->
+
+    <main
+        class="dashboard-main"
+        id="dashboardMain"
+    >
+
+
+        <!-- ==================================================
+             TOP HEADER
+        ================================================== -->
+
+        <header
+            class="dashboard-header"
+        >
+
+
+            <!-- LEFT SIDE -->
+
+            <div class="dashboard-header-left">
+
+
+                <!-- MOBILE MENU -->
+
+                <button
+                    type="button"
+                    class="dashboard-menu-toggle"
+                    id="dashboardMenuToggle"
+                    aria-label="Open dashboard menu"
+                    aria-controls="dashboardSidebar"
+                    aria-expanded="false"
+                >
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </button>
+
+
+                <!-- PAGE TITLE -->
+
+                <div class="dashboard-heading">
+
+                    <div class="dashboard-heading-eyebrow">
+
+                        <span class="dashboard-status-dot"></span>
+
+                        S. F Works
+
+                    </div>
+
+
+                    <h1>
+
+                        {% block page_title %}
+                        Dashboard
+                        {% endblock %}
+
+                    </h1>
+
+
+                    <p>
+
+                        {% block page_subtitle %}
+                        Manage your work and marketplace activity.
+                        {% endblock %}
+
+                    </p>
+
+                </div>
 
             </div>
 
-            <div
-                class="dashboard-user"
-            >
-                SF
+
+            <!-- RIGHT SIDE -->
+
+            <div class="dashboard-header-right">
+
+
+                <!-- NOTIFICATION -->
+
+                <button
+                    type="button"
+                    class="dashboard-icon-button"
+                    id="notificationButton"
+                    aria-label="Notifications"
+                    title="Notifications"
+                >
+
+                    <span class="dashboard-icon">
+
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+
+                            <path
+                                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+                            />
+
+                            <path
+                                d="M13.73 21a2 2 0 0 1-3.46 0"
+                            />
+
+                        </svg>
+
+                    </span>
+
+
+                    <span
+                        class="notification-indicator"
+                        id="notificationIndicator"
+                        hidden
+                    ></span>
+
+                </button>
+
+
+                <!-- USER AREA -->
+
+                <div
+                    class="dashboard-user-wrapper"
+                    id="dashboardUserWrapper"
+                >
+
+                    <button
+                        type="button"
+                        class="dashboard-user-button"
+                        id="dashboardUserButton"
+                        aria-expanded="false"
+                        aria-haspopup="menu"
+                    >
+
+
+                        <!-- AVATAR -->
+
+                        <span
+                            class="dashboard-user-avatar"
+                            id="dashboardUserAvatar"
+                        >
+                            SF
+                        </span>
+
+
+                        <!-- USER INFO -->
+
+                        <span class="dashboard-user-info">
+
+                            <strong
+                                id="dashboardUserName"
+                            >
+                                Worker
+                            </strong>
+
+                            <small
+                                id="dashboardUserRole"
+                            >
+                                Worker Account
+                            </small>
+
+                        </span>
+
+
+                        <!-- ARROW -->
+
+                        <svg
+                            class="dashboard-user-arrow"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+
+                            <path d="m6 9 6 6 6-6"/>
+
+                        </svg>
+
+                    </button>
+
+
+                    <!-- USER DROPDOWN -->
+
+                    <div
+                        class="dashboard-user-menu"
+                        id="dashboardUserMenu"
+                        role="menu"
+                        aria-hidden="true"
+                    >
+
+                        <div class="dashboard-user-menu-header">
+
+                            <span
+                                class="dashboard-user-avatar dashboard-user-avatar-large"
+                            >
+                                SF
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Worker Account
+                                </strong>
+
+                                <small>
+                                    S. F Works Marketplace
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-user-menu-divider"></div>
+
+
+                        <a
+                            href="/worker/profile"
+                            class="dashboard-user-menu-item"
+                            role="menuitem"
+                        >
+
+                            <span>
+
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+
+                                    <circle
+                                        cx="12"
+                                        cy="8"
+                                        r="4"
+                                    />
+
+                                    <path
+                                        d="M4 21a8 8 0 0 1 16 0"
+                                    />
+
+                                </svg>
+
+                            </span>
+
+                            My Profile
+
+                        </a>
+
+
+                        <a
+                            href="/worker/settings"
+                            class="dashboard-user-menu-item"
+                            role="menuitem"
+                        >
+
+                            <span>
+
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+
+                                    <path
+                                        d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+                                    />
+
+                                    <path
+                                        d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.55V20h-2.4v-.21a1.7 1.7 0 0 0-1.03-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.55-1.03H6v-2.4h.85A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.55 1.03H22v2.4h-.21A1.7 1.7 0 0 0 19.4 15Z"
+                                    />
+
+                                </svg>
+
+                            </span>
+
+                            Settings
+
+                        </a>
+
+
+                        <div class="dashboard-user-menu-divider"></div>
+
+
+                        <button
+                            type="button"
+                            class="dashboard-user-menu-item dashboard-logout-button"
+                            id="logoutButton"
+                            role="menuitem"
+                        >
+
+                            <span>
+
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+
+                                    <path
+                                        d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
+                                    />
+
+                                    <path
+                                        d="M16 17l5-5-5-5"
+                                    />
+
+                                    <path
+                                        d="M21 12H9"
+                                    />
+
+                                </svg>
+
+                            </span>
+
+                            Sign Out
+
+                        </button>
+
+                    </div>
+
+                </div>
+
             </div>
-            <script
-                src="{{ url_for(
-                    'static',
-                    filename='js/admin.js'
-                ) }}"
-         ></script>
 
         </header>
 
 
+        <!-- ==================================================
+             PAGE CONTENT
+        ================================================== -->
+
         <section
             class="dashboard-content"
+            id="dashboardContent"
         >
 
             {% block dashboard_content %}
+
             {% endblock %}
 
         </section>
+
+
+        <!-- ==================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="dashboard-footer">
+
+            <div>
+
+                ©
+                <span id="dashboardYear"></span>
+                S. F Works
+
+            </div>
+
+            <div>
+
+                Trusted Work Marketplace
+
+            </div>
+
+        </footer>
 
     </main>
 
 </div>
 
+
+<!-- ======================================================
+     GLOBAL DASHBOARD JAVASCRIPT
+====================================================== -->
+
+<script>
+
+(function () {
+
+    "use strict";
+
+
+    /* ==================================================
+       ELEMENTS
+    ================================================== */
+
+    const layout =
+        document.getElementById(
+            "dashboardLayout"
+        );
+
+    const sidebar =
+        document.getElementById(
+            "dashboardSidebar"
+        );
+
+    const overlay =
+        document.getElementById(
+            "dashboardOverlay"
+        );
+
+    const menuToggle =
+        document.getElementById(
+            "dashboardMenuToggle"
+        );
+
+    const userButton =
+        document.getElementById(
+            "dashboardUserButton"
+        );
+
+    const userMenu =
+        document.getElementById(
+            "dashboardUserMenu"
+        );
+
+    const logoutButton =
+        document.getElementById(
+            "logoutButton"
+        );
+
+
+    /* ==================================================
+       CURRENT YEAR
+    ================================================== */
+
+    const year =
+        document.getElementById(
+            "dashboardYear"
+        );
+
+    if (year) {
+
+        year.textContent =
+            new Date().getFullYear();
+
+    }
+
+
+    /* ==================================================
+       MOBILE SIDEBAR
+    ================================================== */
+
+    function openSidebar() {
+
+        if (!layout) {
+            return;
+        }
+
+        layout.classList.add(
+            "sidebar-open"
+        );
+
+        if (menuToggle) {
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+
+        }
+
+        if (overlay) {
+
+            overlay.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+        }
+
+    }
+
+
+    function closeSidebar() {
+
+        if (!layout) {
+            return;
+        }
+
+        layout.classList.remove(
+            "sidebar-open"
+        );
+
+        if (menuToggle) {
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        }
+
+        if (overlay) {
+
+            overlay.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+        }
+
+    }
+
+
+    if (menuToggle) {
+
+        menuToggle.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    layout.classList.contains(
+                        "sidebar-open"
+                    )
+                ) {
+
+                    closeSidebar();
+
+                }
+                else {
+
+                    openSidebar();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    if (overlay) {
+
+        overlay.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+    }
+
+
+    /* ==================================================
+       CLOSE SIDEBAR AFTER MOBILE NAVIGATION
+    ================================================== */
+
+    if (sidebar) {
+
+        sidebar.addEventListener(
+            "click",
+            function (event) {
+
+                const link =
+                    event.target.closest(
+                        "a"
+                    );
+
+                if (!link) {
+                    return;
+                }
+
+                if (
+                    window.innerWidth <= 900
+                ) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* ==================================================
+       USER DROPDOWN
+    ================================================== */
+
+    function openUserMenu() {
+
+        if (!userMenu) {
+            return;
+        }
+
+        userMenu.classList.add(
+            "is-open"
+        );
+
+        userMenu.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        if (userButton) {
+
+            userButton.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+
+        }
+
+    }
+
+
+    function closeUserMenu() {
+
+        if (!userMenu) {
+            return;
+        }
+
+        userMenu.classList.remove(
+            "is-open"
+        );
+
+        userMenu.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        if (userButton) {
+
+            userButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        }
+
+    }
+
+
+    if (userButton) {
+
+        userButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                if (
+                    userMenu.classList.contains(
+                        "is-open"
+                    )
+                ) {
+
+                    closeUserMenu();
+
+                }
+                else {
+
+                    openUserMenu();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                userMenu &&
+                !userMenu.contains(
+                    event.target
+                ) &&
+                userButton &&
+                !userButton.contains(
+                    event.target
+                )
+            ) {
+
+                closeUserMenu();
+
+            }
+
+        }
+    );
+
+
+    /* ==================================================
+       ESC KEY
+    ================================================== */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeUserMenu();
+                closeSidebar();
+
+            }
+
+        }
+    );
+
+
+    /* ==================================================
+       LOGOUT
+       
+       IMPORTANT:
+       This clears JWT from localStorage.
+    ================================================== */
+
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            "click",
+            function () {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                localStorage.removeItem(
+                    "refresh_token"
+                );
+
+                sessionStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "/login";
+
+            }
+        );
+
+    }
+
+
+    /* ==================================================
+       ACTIVE SIDEBAR LINK
+    ================================================== */
+
+    const currentPath =
+        window.location.pathname;
+
+
+    const sidebarLinks =
+        document.querySelectorAll(
+            ".dashboard-sidebar a"
+        );
+
+
+    sidebarLinks.forEach(
+        function (link) {
+
+            const href =
+                link.getAttribute(
+                    "href"
+                );
+
+            if (!href) {
+                return;
+            }
+
+            try {
+
+                const url =
+                    new URL(
+                        href,
+                        window.location.origin
+                    );
+
+                if (
+                    url.pathname ===
+                    currentPath
+                ) {
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+            catch (error) {
+
+                // Ignore invalid links
+
+            }
+
+        }
+    );
+
+
+})();
+
+</script>
+
+
+<!-- ======================================================
+     PAGE-SPECIFIC JAVASCRIPT
+     
+     Individual pages can add:
+     
+     {% block page_js %}
+     {% endblock %}
+====================================================== -->
+
+{% block page_js %}
+{% endblock %}
+
+
+<!-- ======================================================
+     EXTRA SCRIPTS
+====================================================== -->
+
+{% block extra_scripts %}
+{% endblock %}
+
+
 </body>
 
-</html>
+                            </html>
