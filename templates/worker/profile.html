@@ -1,0 +1,982 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Worker Profile — S. F Works
+{% endblock %}
+
+
+{% block content %}
+
+<main class="worker-profile-page">
+
+    <!-- =====================================================
+         PROFILE HERO
+    ====================================================== -->
+
+    <section class="worker-profile-hero">
+
+        <div class="container">
+
+            <div class="profile-hero-card">
+
+                <!-- PROFILE IMAGE -->
+
+                <div class="profile-avatar-wrapper">
+
+                    {% if user.profile_image %}
+
+                        <img
+                            src="{{ user.profile_image }}"
+                            alt="{{ user.full_name }}"
+                            class="profile-avatar-image"
+                        >
+
+                    {% else %}
+
+                        <div
+                            class="profile-avatar-placeholder"
+                            aria-hidden="true"
+                        >
+                            {{ user.full_name[:1]|upper }}
+                        </div>
+
+                    {% endif %}
+
+                    {% if worker.is_available %}
+
+                        <span
+                            class="availability-dot online"
+                            title="Available for work"
+                        ></span>
+
+                    {% else %}
+
+                        <span
+                            class="availability-dot offline"
+                            title="Currently unavailable"
+                        ></span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- PROFILE INTRO -->
+
+                <div class="profile-hero-content">
+
+                    <div class="profile-name-row">
+
+                        <h1>
+                            {{ user.full_name }}
+                        </h1>
+
+
+                        {% if worker.is_verified %}
+
+                            <span class="verified-badge">
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M12 2l2.1 2.1 3-.3.9 2.9 2.7 1.5-1.5 2.7.3 3-2.9.9-1.5 2.7-2.7-1.5-3 .3-.9-2.9-2.7-1.5 1.5-2.7-.3-3 2.9-.9L12 2z"
+                                    />
+                                    <path
+                                        d="M9.3 12.2l1.8 1.8 3.8-4"
+                                    />
+                                </svg>
+
+                                Verified
+
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <p class="profile-profession">
+
+                        {{ worker.profession }}
+
+                    </p>
+
+
+                    <div class="profile-meta">
+
+                        {% if worker.city %}
+
+                            <span class="profile-meta-item">
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M12 21s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"
+                                    />
+
+                                    <circle
+                                        cx="12"
+                                        cy="9"
+                                        r="2.2"
+                                    />
+
+                                </svg>
+
+                                {{ worker.city }}
+
+                                {% if worker.state %}
+                                    , {{ worker.state }}
+                                {% endif %}
+
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if worker.service_area %}
+
+                            <span class="profile-meta-item">
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M4 7h16M4 12h16M4 17h10"
+                                    />
+                                </svg>
+
+                                {{ worker.service_area }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-status-row">
+
+                        {% if worker.is_available %}
+
+                            <span class="availability-badge available">
+
+                                <span></span>
+
+                                Available for work
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="availability-badge unavailable">
+
+                                <span></span>
+
+                                Currently unavailable
+
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if worker.verification_status %}
+
+                            <span class="verification-status">
+
+                                Verification:
+                                <strong>
+                                    {{ worker.verification_status|title }}
+                                </strong>
+
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- PROFILE ACTION -->
+
+                <div class="profile-hero-actions">
+
+                    <a
+                        href="#profile-details"
+                        class="profile-action-primary"
+                    >
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+
+                        View Profile
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PROFILE BODY
+    ====================================================== -->
+
+    <section
+        class="worker-profile-content"
+        id="profile-details"
+    >
+
+        <div class="container">
+
+            <div class="profile-layout">
+
+
+                <!-- =================================================
+                     MAIN COLUMN
+                ================================================== -->
+
+                <div class="profile-main">
+
+
+                    <!-- ABOUT -->
+
+                    <article class="profile-section-card">
+
+                        <div class="section-card-header">
+
+                            <div>
+
+                                <span class="section-eyebrow">
+                                    About
+                                </span>
+
+                                <h2>
+                                    About Me
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="about-content">
+
+                            {% if worker.about %}
+
+                                <p>
+                                    {{ worker.about }}
+                                </p>
+
+                            {% else %}
+
+                                <div class="empty-profile-message">
+
+                                    <span>
+                                        No description has been added yet.
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- PROFESSIONAL INFORMATION -->
+
+                    <article class="profile-section-card">
+
+                        <div class="section-card-header">
+
+                            <div>
+
+                                <span class="section-eyebrow">
+                                    Professional
+                                </span>
+
+                                <h2>
+                                    Professional Information
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="professional-grid">
+
+                            <div class="info-item">
+
+                                <span class="info-label">
+                                    Profession
+                                </span>
+
+                                <strong>
+                                    {{ worker.profession }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <span class="info-label">
+                                    Experience
+                                </span>
+
+                                <strong>
+
+                                    {{ worker.experience_years or 0 }}
+
+                                    {% if (worker.experience_years or 0) == 1 %}
+                                        year
+                                    {% else %}
+                                        years
+                                    {% endif %}
+
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <span class="info-label">
+                                    Service Area
+                                </span>
+
+                                <strong>
+                                    {{ worker.service_area or "Not specified" }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <span class="info-label">
+                                    Hourly Rate
+                                </span>
+
+                                <strong>
+
+                                    {% if worker.hourly_rate is not none %}
+
+                                        ₹{{ "%.2f"|format(worker.hourly_rate) }}
+                                        <small>/ hour</small>
+
+                                    {% else %}
+
+                                        Rate not specified
+
+                                    {% endif %}
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- SKILLS -->
+
+                    <article class="profile-section-card">
+
+                        <div class="section-card-header">
+
+                            <div>
+
+                                <span class="section-eyebrow">
+                                    Expertise
+                                </span>
+
+                                <h2>
+                                    Skills & Expertise
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        {% if worker.skills %}
+
+                            <div class="skills-list">
+
+                                {% for skill in worker.skills %}
+
+                                    <div class="skill-card">
+
+                                        <div class="skill-icon">
+
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                aria-hidden="true"
+                                            >
+                                                <path
+                                                    d="M12 3l2.5 5.1L20 9l-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5L4 9l5.5-.9L12 3z"
+                                                />
+                                            </svg>
+
+                                        </div>
+
+
+                                        <div class="skill-content">
+
+                                            <strong>
+                                                {{ skill.skill_name }}
+                                            </strong>
+
+                                            {% if skill.experience_years is not none %}
+
+                                                <span>
+
+                                                    {{ skill.experience_years }}
+
+                                                    {% if skill.experience_years == 1 %}
+                                                        year
+                                                    {% else %}
+                                                        years
+                                                    {% endif %}
+
+                                                    experience
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="empty-profile-message">
+
+                                No skills have been added yet.
+
+                            </div>
+
+                        {% endif %}
+
+                    </article>
+
+
+                    <!-- PORTFOLIO -->
+
+                    <article class="profile-section-card">
+
+                        <div class="section-card-header">
+
+                            <div>
+
+                                <span class="section-eyebrow">
+                                    Work Showcase
+                                </span>
+
+                                <h2>
+                                    Portfolio
+                                </h2>
+
+                            </div>
+
+
+                            {% if worker.portfolio_items %}
+
+                                <span class="section-count">
+
+                                    {{ worker.portfolio_items|length }}
+
+                                    {% if worker.portfolio_items|length == 1 %}
+                                        Project
+                                    {% else %}
+                                        Projects
+                                    {% endif %}
+
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        {% if worker.portfolio_items %}
+
+                            <div class="portfolio-grid">
+
+                                {% for item in worker.portfolio_items %}
+
+                                    <article class="portfolio-card">
+
+
+                                        <div class="portfolio-image">
+
+                                            {% if item.image_path %}
+
+                                                <img
+                                                    src="{{ item.image_path }}"
+                                                    alt="{{ item.title }}"
+                                                    loading="lazy"
+                                                >
+
+                                            {% else %}
+
+                                                <div class="portfolio-placeholder">
+
+                                                    <svg
+                                                        viewBox="0 0 24 24"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <rect
+                                                            x="3"
+                                                            y="4"
+                                                            width="18"
+                                                            height="16"
+                                                            rx="2"
+                                                        />
+                                                        <circle
+                                                            cx="8"
+                                                            cy="9"
+                                                            r="1.5"
+                                                        />
+                                                        <path
+                                                            d="M21 15l-5-5L7 19"
+                                                        />
+                                                    </svg>
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <div class="portfolio-content">
+
+                                            <h3>
+                                                {{ item.title }}
+                                            </h3>
+
+
+                                            {% if item.description %}
+
+                                                <p>
+                                                    {{ item.description }}
+                                                </p>
+
+                                            {% endif %}
+
+
+                                            {% if item.project_date %}
+
+                                                <span class="portfolio-date">
+
+                                                    {{ item.project_date.strftime("%d %b %Y") }}
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </article>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="empty-portfolio">
+
+                                <div class="empty-portfolio-icon">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <rect
+                                            x="3"
+                                            y="4"
+                                            width="18"
+                                            height="16"
+                                            rx="2"
+                                        />
+                                        <path
+                                            d="M7 9h10M7 13h7"
+                                        />
+                                    </svg>
+
+                                </div>
+
+                                <h3>
+                                    No portfolio projects yet
+                                </h3>
+
+                                <p>
+                                    Your completed projects will appear here.
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+                    </article>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     SIDEBAR
+                ================================================== -->
+
+                <aside class="profile-sidebar">
+
+
+                    <!-- PROFILE STATS -->
+
+                    <section class="profile-side-card">
+
+                        <div class="side-card-header">
+
+                            <span class="section-eyebrow">
+                                Performance
+                            </span>
+
+                            <h2>
+                                Profile Stats
+                            </h2>
+
+                        </div>
+
+
+                        <div class="profile-stats">
+
+
+                            <div class="profile-stat">
+
+                                <div class="stat-icon rating-icon">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3z"
+                                        />
+                                    </svg>
+
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ "%.1f"|format(worker.rating or 0) }}
+                                    </strong>
+
+                                    <span>
+                                        Rating
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="profile-stat">
+
+                                <div class="stat-icon">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            d="M4 19V5M4 19h16"
+                                        />
+                                        <path
+                                            d="M8 16v-4M12 16V8M16 16v-7"
+                                        />
+
+                                    </svg>
+
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ worker.total_jobs or 0 }}
+                                    </strong>
+
+                                    <span>
+                                        Jobs Completed
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="profile-stat">
+
+                                <div class="stat-icon">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            d="M20 12a8 8 0 11-2.3-5.7"
+                                        />
+                                        <path
+                                            d="M20 5v5h-5"
+                                        />
+
+                                    </svg>
+
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ worker.total_reviews or 0 }}
+                                    </strong>
+
+                                    <span>
+                                        Reviews
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- CONTACT / LOCATION -->
+
+                    <section class="profile-side-card">
+
+                        <div class="side-card-header">
+
+                            <span class="section-eyebrow">
+                                Location
+                            </span>
+
+                            <h2>
+                                Service Location
+                            </h2>
+
+                        </div>
+
+
+                        <div class="location-details">
+
+                            {% if worker.address %}
+
+                                <div class="location-row">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            d="M12 21s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"
+                                        />
+                                        <circle
+                                            cx="12"
+                                            cy="9"
+                                            r="2.2"
+                                        />
+                                    </svg>
+
+                                    <span>
+                                        {{ worker.address }}
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if worker.city %}
+
+                                <div class="location-row">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            d="M4 20V7l8-4 8 4v13"
+                                        />
+                                        <path
+                                            d="M9 20v-5h6v5"
+                                        />
+
+                                    </svg>
+
+                                    <span>
+
+                                        {{ worker.city }}
+
+                                        {% if worker.state %}
+                                            , {{ worker.state }}
+                                        {% endif %}
+
+                                        {% if worker.pincode %}
+                                            — {{ worker.pincode }}
+                                        {% endif %}
+
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if worker.service_area %}
+
+                                <div class="location-row">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="8"
+                                        />
+
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="2"
+                                        />
+
+                                    </svg>
+
+                                    <span>
+                                        {{ worker.service_area }}
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ACCOUNT -->
+
+                    <section class="profile-side-card">
+
+                        <div class="side-card-header">
+
+                            <span class="section-eyebrow">
+                                Account
+                            </span>
+
+                            <h2>
+                                Account Information
+                            </h2>
+
+                        </div>
+
+
+                        <div class="account-details">
+
+                            <div class="account-row">
+
+                                <span>
+                                    Email
+                                </span>
+
+                                <strong>
+                                    {{ user.email }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="account-row">
+
+                                <span>
+                                    Phone
+                                </span>
+
+                                <strong>
+                                    {{ user.phone }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="account-row">
+
+                                <span>
+                                    Member Since
+                                </span>
+
+                                <strong>
+
+                                    {% if user.created_at %}
+
+                                        {{ user.created_at.strftime("%b %Y") }}
+
+                                    {% else %}
+
+                                        —
+
+                                    {% endif %}
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                </aside>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+{% endblock %}
