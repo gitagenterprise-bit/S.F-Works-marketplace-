@@ -30,15 +30,38 @@ def worker_jobs_page():
     )
 
 
-@worker_pages_bp.route(
-    "/worker/profile"
-)
+@worker_pages_bp.route("/worker/profile")
 def worker_profile_page():
 
-    return render_template(
-        "worker/profile.html"
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return redirect(
+            url_for("auth.login")
+        )
+
+    user = db.session.get(
+        User,
+        user_id
     )
 
+    if not user:
+        return redirect(
+            url_for("auth.login")
+        )
+
+    worker = user.worker_profile
+
+    if not worker:
+        return redirect(
+            url_for("worker_pages.worker_dashboard_page")
+        )
+
+    return render_template(
+        "worker/profile.html",
+        user=user,
+        worker=worker
+    )
 
 @worker_pages_bp.route(
     "/worker/applications"
