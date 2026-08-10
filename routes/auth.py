@@ -1,10 +1,19 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import (
+    Blueprint,
+    request,
+    jsonify,
+    render_template,
+    make_response
+)
 
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     jwt_required,
-    get_jwt_identity
+    get_jwt_identity,
+    set_access_cookies,
+    set_refresh_cookies,
+    unset_jwt_cookies
 )
 
 from sqlalchemy import or_
@@ -279,6 +288,8 @@ def register_worker():
     }), 201
 
 
+
+
 # ========================================
 # LOGIN API
 # URL: /api/auth/login
@@ -290,44 +301,82 @@ def register_worker():
 )
 def login():
 
-    data = request.get_json()
+    data = request.get_json(
+        silent=True
+    )
+
 
     if not data:
+
         return jsonify({
             "status": "error",
             "message": "Request body is required"
         }), 400
 
-    email = data.get("email")
-    password = data.get("password")
+
+    email = data.get(
+        "email"
+    )
+
+    password = data.get(
+        "password"
+    )
+
 
     if not email or not password:
+
         return jsonify({
             "status": "error",
             "message": "Email and password are required"
         }), 400
 
+
+    # ----------------------------------------
+    # FIND USER
+    # ----------------------------------------
+
     user = User.query.filter_by(
         email=email.lower().strip()
     ).first()
 
+
     if not user:
+
         return jsonify({
             "status": "error",
             "message": "Invalid email or password"
         }), 401
 
-    if not user.check_password(password):
+
+    # ----------------------------------------
+    # PASSWORD
+    # ----------------------------------------
+
+    if not user.check_password(
+        password
+    ):
+
         return jsonify({
             "status": "error",
             "message": "Invalid email or password"
         }), 401
+
+
+    # ----------------------------------------
+    # ACTIVE CHECK
+    # ----------------------------------------
 
     if not user.is_active:
+
         return jsonify({
             "status": "error",
             "message": "Your account has been disabled"
         }), 403
+
+
+    # ========================================
+    # CREATE JWT
+    # ========================================
 
     access_token = create_access_token(
         identity=str(user.id),
@@ -336,27 +385,51 @@ def login():
         }
     )
 
+
     refresh_token = create_refresh_token(
         identity=str(user.id)
     )
 
-    return jsonify({
-        "status": "success",
-        "message": "Login successful",
-        "tokens": {
-            "access_token": access_token,
-            "refresh_token": refresh_token
-        },
-        "user": {
-            "id": user.id,
-            "full_name": user.full_name,
-            "email": user.email,
-            "phone": user.phone,
-            "role": user.role,
-            "is_verified": user.is_verified
-        }
-    }), 200
 
+    # ========================================
+    # RESPONSE
+    # ========================================
+
+    response = make_response(
+        jsonify({
+            "status": "success",
+            "message": "Login successful",
+
+            "user": {
+                "id": user.id,
+                "full_name": user.full_name,
+                "email": user.email,
+                "phone": user.phone,
+                "role": user.role,
+                "is_verified": user.is_verified
+            }
+        }),
+        200
+    )
+
+
+    # ========================================
+    # SET HTTPONLY COOKIES
+    # ========================================
+
+    set_access_cookies(
+        response,
+        access_token
+    )
+
+
+    set_refresh_cookies(
+        response,
+        refresh_token
+    )
+
+
+    return response
 
 # ========================================
 # CURRENT USER
@@ -444,6 +517,8 @@ def current_user():
     }), 200
 
 
+
+
 # ========================================
 # REFRESH TOKEN
 # URL: /api/auth/refresh
@@ -460,22 +535,47 @@ def refresh():
 
     user_id = get_jwt_identity()
 
+
+    try:
+
+        user_id = int(user_id)
+
+    except (
+        TypeError,
+        ValueError
+    ):
+
+        return jsonify({
+            "status": "error",
+            "message": "Invalid identity"
+        }), 401
+
+
     user = db.session.get(
         User,
-        int(user_id)
+        user_id
     )
 
+
     if not user:
+
         return jsonify({
             "status": "error",
             "message": "User not found"
         }), 404
 
+
     if not user.is_active:
+
         return jsonify({
             "status": "error",
             "message": "Account is disabled"
         }), 403
+
+
+    # ----------------------------------------
+    # NEW ACCESS TOKEN
+    # ----------------------------------------
 
     access_token = create_access_token(
         identity=str(user.id),
@@ -484,7 +584,24 @@ def refresh():
         }
     )
 
-    return jsonify({
-        "status": "success",
-        "access_token": access_token
-    }), 200
+
+    # ----------------------------------------
+    # RESPONSE
+    # ----------------------------------------
+
+    response = make_response(
+        jsonify({
+            "status": "success",
+            "message": "Access token refreshed"
+        }),
+        200
+    )
+
+
+    set_access_cookies(
+        response,
+        access_token
+    )
+
+
+    return response
