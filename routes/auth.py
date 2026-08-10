@@ -605,3 +605,30 @@ def refresh():
 
 
     return response
+
+# ========================================
+# LOGOUT API
+# URL: /api/auth/logout
+# ========================================
+
+@auth_bp.route(
+    "/logout",
+    methods=["POST"]
+)
+def logout():
+
+    response = make_response(
+        jsonify({
+            "status": "success",
+            "message": "Logout successful"
+        }),
+        200
+    )
+
+
+    unset_jwt_cookies(
+        response
+    )
+
+
+    return response
