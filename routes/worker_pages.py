@@ -14,10 +14,58 @@ from extensions import db
 from models.user import User
 
 
+# =========================================================
+# WORKER PAGES BLUEPRINT
+# =========================================================
+
 worker_pages_bp = Blueprint(
     "worker_pages",
     __name__
 )
+
+
+# =========================================================
+# CURRENT WORKER HELPER
+# =========================================================
+
+def get_current_worker():
+
+    identity = get_jwt_identity()
+
+    if identity is None:
+        return None, None
+
+
+    try:
+
+        user_id = int(identity)
+
+    except (
+        TypeError,
+        ValueError
+    ):
+
+        return None, None
+
+
+    user = db.session.get(
+        User,
+        user_id
+    )
+
+
+    if user is None:
+        return None, None
+
+
+    if user.role != "worker":
+        return None, None
+
+
+    worker = user.worker_profile
+
+
+    return user, worker
 
 
 # =========================================================
@@ -31,34 +79,19 @@ worker_pages_bp = Blueprint(
 @jwt_required()
 def worker_dashboard_page():
 
-    identity = get_jwt_identity()
+    user, worker = get_current_worker()
 
-    if not identity:
+
+    if user is None:
         return redirect(
             url_for("auth.login")
         )
 
-    user_id = int(identity)
-
-    user = db.session.get(
-        User,
-        user_id
-    )
-
-    if not user:
-        return redirect(
-            url_for("auth.login")
-        )
-
-    if user.role != "worker":
-        return redirect(
-            url_for("auth.login")
-        )
 
     return render_template(
         "worker/dashboard.html",
         user=user,
-        worker=user.worker_profile
+        worker=worker
     )
 
 
@@ -73,72 +106,16 @@ def worker_dashboard_page():
 @jwt_required()
 def worker_profile_page():
 
-    # ---------------------------------------------
-    # JWT IDENTITY
-    # ---------------------------------------------
+    user, worker = get_current_worker()
 
-    identity = get_jwt_identity()
 
-    if not identity:
+    if user is None:
         return redirect(
             url_for("auth.login")
         )
 
 
-    # ---------------------------------------------
-    # USER ID
-    # ---------------------------------------------
-
-    try:
-
-        user_id = int(identity)
-
-    except (
-        TypeError,
-        ValueError
-    ):
-
-        return redirect(
-            url_for("auth.login")
-        )
-
-
-    # ---------------------------------------------
-    # LOAD USER
-    # ---------------------------------------------
-
-    user = db.session.get(
-        User,
-        user_id
-    )
-
-
-    if not user:
-
-        return redirect(
-            url_for("auth.login")
-        )
-
-
-    # ---------------------------------------------
-    # ROLE CHECK
-    # ---------------------------------------------
-
-    if user.role != "worker":
-
-        return redirect(
-            url_for("auth.login")
-        )
-
-
-    # ---------------------------------------------
-    # WORKER PROFILE
-    # ---------------------------------------------
-
-    worker = user.worker_profile
-
-
-    if not worker:
+    if worker is None:
 
         return redirect(
             url_for(
@@ -147,10 +124,6 @@ def worker_profile_page():
         )
 
 
-    # ---------------------------------------------
-    # RENDER
-    # ---------------------------------------------
-
     return render_template(
         "worker/profile.html",
         user=user,
@@ -158,42 +131,82 @@ def worker_profile_page():
     )
 
 
-@worker_pages_bp.route(
-    "/worker/dashboard"
-)
-def worker_dashboard_page():
-
-    return render_template(
-        "worker/dashboard.html"
-    )
-
+# =========================================================
+# WORKER JOBS
+# =========================================================
 
 @worker_pages_bp.route(
-    "/worker/jobs"
+    "/worker/jobs",
+    methods=["GET"]
 )
+@jwt_required()
 def worker_jobs_page():
 
+    user, worker = get_current_worker()
+
+
+    if user is None:
+        return redirect(
+            url_for("auth.login")
+        )
+
+
     return render_template(
-        "worker/jobs.html"
+        "worker/jobs.html",
+        user=user,
+        worker=worker
     )
 
 
+# =========================================================
+# WORKER APPLICATIONS
+# =========================================================
 
 @worker_pages_bp.route(
-    "/worker/applications"
+    "/worker/applications",
+    methods=["GET"]
 )
+@jwt_required()
 def worker_applications_page():
 
+    user, worker = get_current_worker()
+
+
+    if user is None:
+        return redirect(
+            url_for("auth.login")
+        )
+
+
     return render_template(
-        "worker/applications.html"
+        "worker/applications.html",
+        user=user,
+        worker=worker
     )
 
 
+# =========================================================
+# WORKER SETTINGS
+# =========================================================
+
 @worker_pages_bp.route(
-    "/worker/settings"
+    "/worker/settings",
+    methods=["GET"]
 )
+@jwt_required()
 def worker_settings_page():
 
+    user, worker = get_current_worker()
+
+
+    if user is None:
+        return redirect(
+            url_for("auth.login")
+        )
+
+
     return render_template(
-        "worker/settings.html"
+        "worker/settings.html",
+        user=user,
+        worker=worker
     )
