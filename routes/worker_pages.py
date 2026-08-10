@@ -14,6 +14,7 @@ from extensions import db
 from models.user import User
 
 
+
 # =========================================================
 # WORKER PAGES BLUEPRINT
 # =========================================================
@@ -207,6 +208,75 @@ def worker_settings_page():
 
     return render_template(
         "worker/settings.html",
+        user=user,
+        worker=worker
+    )
+
+
+
+
+
+@worker_pages_bp.route(
+    "/worker/profile/edit",
+    methods=["GET", "POST"]
+)
+@jwt_required()
+def edit_profile():
+
+    user_id = get_jwt_identity()
+
+    user = User.query.get_or_404(user_id)
+
+    worker = WorkerProfile.query.filter_by(
+        user_id=user.id
+    ).first_or_404()
+
+    if request.method == "POST":
+
+        user.full_name = request.form.get(
+            "full_name",
+            ""
+        ).strip()
+
+        worker.profession = request.form.get(
+            "profession",
+            ""
+        ).strip()
+
+        worker.about = request.form.get(
+            "about",
+            ""
+        ).strip()
+
+        worker.city = request.form.get(
+            "city",
+            ""
+        ).strip()
+
+        worker.state = request.form.get(
+            "state",
+            ""
+        ).strip()
+
+        worker.service_area = request.form.get(
+            "service_area",
+            ""
+        ).strip()
+
+        worker.experience_years = request.form.get(
+            "experience_years"
+        )
+
+        db.session.commit()
+
+        return redirect(
+            url_for(
+                "worker_pages.worker_profile_page"
+            )
+        )
+
+    return render_template(
+        "worker/edit_profile.html",
         user=user,
         worker=worker
     )
