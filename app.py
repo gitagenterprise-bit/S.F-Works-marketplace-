@@ -196,6 +196,18 @@ def create_app():
         url_prefix="/api/admin"
     )
 
+    # ------------------------------
+    # Job Pages
+    # ------------------------------
+
+    from routes.job_pages import (
+        job_pages_bp
+    )
+
+    app.register_blueprint(
+        job_pages_bp
+    )
+
     @app.route("/")
     def home():
 
