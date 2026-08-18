@@ -119,6 +119,7 @@ def create_app():
         User,
         CustomerProfile,
         WorkerProfile,
+        WorkerPortfolio,
         Category,
         Job,
         JobImage,
