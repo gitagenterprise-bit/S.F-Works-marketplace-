@@ -4,6 +4,11 @@ from flask import (
     render_template
 )
 
+from sqlalchemy import (
+    inspect,
+    text
+)
+
 from config import Config
 
 from extensions import (
@@ -13,45 +18,102 @@ from extensions import (
 )
 
 
+def sync_worker_profiles_columns():
+
+    required_columns = {
+
+        "headline": "VARCHAR(255)",
+        "about": "TEXT",
+        "profile_image": "VARCHAR(500)",
+        "cover_image": "VARCHAR(500)",
+        "experience_years": "INTEGER DEFAULT 0",
+
+        "service_area": "VARCHAR(255)",
+        "service_radius_km": "INTEGER",
+        "address": "VARCHAR(255)",
+
+        "city": "VARCHAR(100)",
+        "state": "VARCHAR(100)",
+        "pincode": "VARCHAR(10)",
+
+        "latitude": "NUMERIC(10,7)",
+        "longitude": "NUMERIC(10,7)",
+
+        "hourly_rate": "NUMERIC(10,2)",
+        "minimum_charge": "NUMERIC(10,2)",
+
+        "availability": "VARCHAR(100)",
+        "is_available": "BOOLEAN DEFAULT TRUE",
+
+        "is_verified": "BOOLEAN DEFAULT FALSE",
+        "verification_status":
+            "VARCHAR(30) DEFAULT 'pending'",
+
+        "rating": "NUMERIC(3,2) DEFAULT 0.00",
+
+        "total_reviews": "INTEGER DEFAULT 0",
+        "total_jobs": "INTEGER DEFAULT 0",
+        "completed_jobs": "INTEGER DEFAULT 0",
+
+        "profile_completed":
+            "BOOLEAN DEFAULT FALSE",
+
+        "created_at":
+            "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+
+        "updated_at":
+            "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    inspector = inspect(db.engine)
+
+    if "worker_profiles" not in inspector.get_table_names():
+
+        return
+
+    existing_columns = {
+        column["name"]
+        for column in inspector.get_columns(
+            "worker_profiles"
+        )
+    }
+
+    for column_name, column_type in required_columns.items():
+
+        if column_name not in existing_columns:
+
+            db.session.execute(
+                text(
+                    f"""
+                    ALTER TABLE worker_profiles
+                    ADD COLUMN {column_name} {column_type}
+                    """
+                )
+            )
+
+            print(
+                f"[DB SYNC] Added column: "
+                f"worker_profiles.{column_name}"
+            )
+
+    db.session.commit()
+
+
 def create_app():
 
-    app = Flask(
-        __name__
-    )
+    app = Flask(__name__)
 
-    # ==================================================
     # Configuration
-    # ==================================================
 
-    app.config.from_object(
-        Config
-    )
+    app.config.from_object(Config)
 
-    # ==================================================
     # Extensions
-    # ==================================================
 
-    db.init_app(
-        app
-    )
+    db.init_app(app)
+    migrate.init_app(app, db)
+    jwt.init_app(app)
 
-    migrate.init_app(
-        app,
-        db
-    )
-
-    jwt.init_app(
-        app
-    )
-
-    
-
-    # ==================================================
-    # Import ALL Models
-    #
-    # IMPORTANT:
-    # Models must be imported before db.create_all()
-    # ==================================================
+    # Models
 
     from models import (
         User,
@@ -63,33 +125,22 @@ def create_app():
         JobApplication
     )
 
-    # ==================================================
-    # Automatically Create Database Tables
-    #
-    # This creates missing tables automatically on
-    # first Render startup.
-    #
-    # Existing tables are NOT deleted.
-    # ==================================================
+    # Database
 
     with app.app_context():
 
         db.create_all()
 
-    # ==================================================
-    # Register Blueprints
-    # ==================================================
+        sync_worker_profiles_columns()
 
     # ------------------------------
-    # Authentication
+    # Blueprints
     # ------------------------------
 
     from routes.auth import (
         auth_bp,
         auth_pages_bp
     )
-
-    
 
     app.register_blueprint(
         auth_bp,
@@ -100,12 +151,6 @@ def create_app():
         auth_pages_bp
     )
 
-    
-
-    # ------------------------------
-    # Customer API
-    # ------------------------------
-
     from routes.customer import (
         customer_bp
     )
@@ -114,12 +159,6 @@ def create_app():
         customer_bp,
         url_prefix="/api/customer"
     )
-
-    
-
-    # ------------------------------
-    # Worker API
-    # ------------------------------
 
     from routes.worker import (
         worker_bp
@@ -130,11 +169,6 @@ def create_app():
         url_prefix="/api/worker"
     )
 
-
-    # ------------------------------
-    # Worker Pages
-    # ------------------------------
-
     from routes.worker_pages import (
         worker_pages_bp
     )
@@ -142,11 +176,6 @@ def create_app():
     app.register_blueprint(
         worker_pages_bp
     )
-    
-
-    # ------------------------------
-    # Jobs API
-    # ------------------------------
 
     from routes.jobs import (
         jobs_bp
@@ -157,10 +186,6 @@ def create_app():
         url_prefix="/api/jobs"
     )
 
-    # ------------------------------
-    # Admin API
-    # ------------------------------
-
     from routes.admin import (
         admin_bp
     )
@@ -170,10 +195,6 @@ def create_app():
         url_prefix="/api/admin"
     )
 
-    # ==================================================
-    # Home Page
-    # ==================================================
-
     @app.route("/")
     def home():
 
@@ -181,17 +202,12 @@ def create_app():
             "public/home.html"
         )
 
-    # ==================================================
-    # Health Check
-    # ==================================================
-
     @app.route("/health")
     def health():
 
         return jsonify({
 
-            "status":
-                "success",
+            "status": "success",
 
             "message":
                 "S. F Works Marketplace API is running",
@@ -200,10 +216,6 @@ def create_app():
                 "sf-works-marketplace"
 
         })
-
-    # ==================================================
-    # API Root
-    # ==================================================
 
     @app.route("/api")
     def api_root():
@@ -220,9 +232,5 @@ def create_app():
                 "online"
 
         })
-
-    # ==================================================
-    # Return Flask Application
-    # ==================================================
 
     return app
