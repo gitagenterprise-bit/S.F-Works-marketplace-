@@ -23,32 +23,66 @@ class WorkerProfile(db.Model):
         index=True
     )
 
+    # =====================================================
+    # BASIC PROFILE
+    # =====================================================
+
     profession = db.Column(
         db.String(100),
         nullable=False,
         index=True
     )
 
+    headline = db.Column(
+        db.String(255),
+        nullable=True
+    )
+
+    about = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    # =====================================================
+    # IMAGES
+    # =====================================================
+
+    profile_image = db.Column(
+        db.String(500),
+        nullable=True
+    )
+
+    cover_image = db.Column(
+        db.String(500),
+        nullable=True
+    )
+
+    # =====================================================
+    # EXPERIENCE
+    # =====================================================
+
     experience_years = db.Column(
         db.Integer,
         default=0
     )
 
-    service_area = db.Column(
-        db.String(255)
-    )
+    # =====================================================
+    # LOCATION
+    # =====================================================
 
-    hourly_rate = db.Column(
-        db.Numeric(10, 2),
+    service_area = db.Column(
+        db.String(255),
         nullable=True
     )
 
-    about = db.Column(
-        db.Text
+    service_radius_km = db.Column(
+        db.Integer,
+        nullable=True
     )
 
     address = db.Column(
-        db.String(255)
+        db.String(255),
+        nullable=True
     )
 
     city = db.Column(
@@ -74,20 +108,53 @@ class WorkerProfile(db.Model):
         nullable=True
     )
 
+    # =====================================================
+    # PRICING
+    # =====================================================
+
+    hourly_rate = db.Column(
+        db.Numeric(10, 2),
+        nullable=True
+    )
+
+    minimum_charge = db.Column(
+        db.Numeric(10, 2),
+        nullable=True
+    )
+
+    # =====================================================
+    # AVAILABILITY
+    # =====================================================
+
+    availability = db.Column(
+        db.String(100),
+        nullable=True
+    )
+
     is_available = db.Column(
         db.Boolean,
-        default=True
+        default=True,
+        nullable=False
     )
+
+    # =====================================================
+    # VERIFICATION
+    # =====================================================
 
     is_verified = db.Column(
         db.Boolean,
-        default=False
+        default=False,
+        nullable=False
     )
 
     verification_status = db.Column(
         db.String(30),
         default="pending"
     )
+
+    # =====================================================
+    # RATINGS
+    # =====================================================
 
     rating = db.Column(
         db.Numeric(3, 2),
@@ -99,14 +166,38 @@ class WorkerProfile(db.Model):
         default=0
     )
 
+    # =====================================================
+    # JOB STATS
+    # =====================================================
+
     total_jobs = db.Column(
         db.Integer,
         default=0
     )
 
+    completed_jobs = db.Column(
+        db.Integer,
+        default=0
+    )
+
+    # =====================================================
+    # PROFILE COMPLETION
+    # =====================================================
+
+    profile_completed = db.Column(
+        db.Boolean,
+        default=False,
+        nullable=False
+    )
+
+    # =====================================================
+    # TIMESTAMPS
+    # =====================================================
+
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
+        nullable=False
     )
 
     updated_at = db.Column(
@@ -115,9 +206,9 @@ class WorkerProfile(db.Model):
         onupdate=datetime.utcnow
     )
 
-    # --------------------------------
-    # Relationships
-    # --------------------------------
+    # =====================================================
+    # RELATIONSHIPS
+    # =====================================================
 
     user = db.relationship(
         "User",
@@ -136,6 +227,12 @@ class WorkerProfile(db.Model):
         cascade="all, delete-orphan"
     )
 
+    # =====================================================
+    # REPRESENTATION
+    # =====================================================
+
     def __repr__(self):
 
-        return f"<WorkerProfile user={self.user_id}>"
+        return (
+            f"<WorkerProfile user={self.user_id}>"
+        )
