@@ -1,0 +1,775 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Worker Profile — S. F Works
+{% endblock %}
+
+{% block content %}
+
+<main class="sf-edit-profile-page">
+
+    <div class="sf-edit-container">
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <header class="sf-edit-header">
+
+            <div>
+
+                <span class="sf-edit-eyebrow">
+                    S. F WORKS
+                </span>
+
+                <h1>
+                    Edit Your Profile
+                </h1>
+
+                <p>
+                    Keep your professional profile complete and
+                    attractive to customers.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('worker_pages.worker_profile_page') }}"
+                class="sf-back-profile-btn"
+            >
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5"/>
+                    <path d="M12 19l-7-7 7-7"/>
+                </svg>
+
+                View Profile
+
+            </a>
+
+        </header>
+
+
+        <!-- =====================================================
+             PROFILE PREVIEW
+        ====================================================== -->
+
+        <section class="sf-edit-preview-card">
+
+            <div
+                class="sf-edit-cover-preview"
+                id="coverPreview"
+                {% if worker.cover_image %}
+                style="
+                    background-image:
+                    url('{{ worker.cover_image }}');
+                "
+                {% endif %}
+            >
+
+                {% if not worker.cover_image %}
+
+                    <div class="sf-preview-cover-placeholder">
+                        Professional Worker
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="sf-edit-preview-body">
+
+                <div class="sf-edit-avatar-preview">
+
+                    {% if worker.profile_image %}
+
+                        <img
+                            src="{{ worker.profile_image }}"
+                            id="profilePreview"
+                            alt="{{ user.full_name }}"
+                        >
+
+                    {% else %}
+
+                        <div
+                            class="sf-preview-avatar-placeholder"
+                            id="avatarPlaceholder"
+                        >
+                            {{ user.full_name[:1]|upper }}
+                        </div>
+
+                        <img
+                            id="profilePreview"
+                            class="sf-preview-hidden-image"
+                            alt=""
+                        >
+
+                    {% endif %}
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        {{ user.full_name }}
+                    </strong>
+
+                    <span>
+                        {{ worker.profession or "Professional Worker" }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             FORM
+        ====================================================== -->
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+            class="sf-edit-form"
+        >
+
+            <!-- =================================================
+                 MEDIA
+            ================================================== -->
+
+            <section class="sf-edit-card">
+
+                <div class="sf-edit-card-heading">
+
+                    <div>
+
+                        <span>
+                            PROFILE MEDIA
+                        </span>
+
+                        <h2>
+                            Profile & Cover Images
+                        </h2>
+
+                        <p>
+                            Use high-quality images for a professional
+                            appearance.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sf-media-grid">
+
+
+                    <!-- PROFILE IMAGE -->
+
+                    <div class="sf-upload-box">
+
+                        <div class="sf-upload-heading">
+
+                            <div class="sf-upload-icon">
+                                👤
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Profile Image
+                                </strong>
+
+                                <small>
+                                    JPG, PNG or WEBP
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <label
+                            for="profile_image"
+                            class="sf-file-picker"
+                        >
+
+                            <span>
+                                Choose Profile Image
+                            </span>
+
+                            <input
+                                type="file"
+                                id="profile_image"
+                                name="profile_image"
+                                accept="image/jpeg,image/png,image/webp"
+                            >
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- COVER IMAGE -->
+
+                    <div class="sf-upload-box">
+
+                        <div class="sf-upload-heading">
+
+                            <div class="sf-upload-icon">
+                                🖼️
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Cover Image
+                                </strong>
+
+                                <small>
+                                    JPG, PNG or WEBP
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <label
+                            for="cover_image"
+                            class="sf-file-picker"
+                        >
+
+                            <span>
+                                Choose Cover Image
+                            </span>
+
+                            <input
+                                type="file"
+                                id="cover_image"
+                                name="cover_image"
+                                accept="image/jpeg,image/png,image/webp"
+                            >
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 BASIC INFORMATION
+            ================================================== -->
+
+            <section class="sf-edit-card">
+
+                <div class="sf-edit-card-heading">
+
+                    <div>
+
+                        <span>
+                            BASIC INFORMATION
+                        </span>
+
+                        <h2>
+                            Professional Identity
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sf-form-grid">
+
+                    <div class="sf-form-group">
+
+                        <label for="full_name">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="full_name"
+                            name="full_name"
+                            value="{{ user.full_name or '' }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group">
+
+                        <label for="profession">
+                            Profession
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profession"
+                            name="profession"
+                            value="{{ worker.profession or '' }}"
+                            placeholder="e.g. Electrician"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group sf-full">
+
+                        <label for="headline">
+                            Professional Headline
+                        </label>
+
+                        <input
+                            type="text"
+                            id="headline"
+                            name="headline"
+                            value="{{ worker.headline or '' }}"
+                            placeholder="e.g. Trusted electrician with 8+ years experience"
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group sf-full">
+
+                        <label for="about">
+                            About Me
+                        </label>
+
+                        <textarea
+                            id="about"
+                            name="about"
+                            rows="6"
+                            placeholder="Tell customers about your experience, work quality and services..."
+                        >{{ worker.about or '' }}</textarea>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 EXPERIENCE
+            ================================================== -->
+
+            <section class="sf-edit-card">
+
+                <div class="sf-edit-card-heading">
+
+                    <div>
+
+                        <span>
+                            EXPERIENCE & PRICING
+                        </span>
+
+                        <h2>
+                            Professional Details
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sf-form-grid">
+
+                    <div class="sf-form-group">
+
+                        <label for="experience_years">
+                            Experience
+                        </label>
+
+                        <input
+                            type="number"
+                            id="experience_years"
+                            name="experience_years"
+                            min="0"
+                            value="{{ worker.experience_years or 0 }}"
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group">
+
+                        <label for="hourly_rate">
+                            Hourly Rate
+                        </label>
+
+                        <input
+                            type="number"
+                            id="hourly_rate"
+                            name="hourly_rate"
+                            min="0"
+                            step="0.01"
+                            value="{{ worker.hourly_rate or '' }}"
+                            placeholder="₹"
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group">
+
+                        <label for="minimum_charge">
+                            Minimum Charge
+                        </label>
+
+                        <input
+                            type="number"
+                            id="minimum_charge"
+                            name="minimum_charge"
+                            min="0"
+                            step="0.01"
+                            value="{{ worker.minimum_charge or '' }}"
+                            placeholder="₹"
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group">
+
+                        <label for="availability">
+                            Availability
+                        </label>
+
+                        <input
+                            type="text"
+                            id="availability"
+                            name="availability"
+                            value="{{ worker.availability or '' }}"
+                            placeholder="e.g. Mon-Sat, 9 AM - 7 PM"
+                        >
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 LOCATION
+            ================================================== -->
+
+            <section class="sf-edit-card">
+
+                <div class="sf-edit-card-heading">
+
+                    <div>
+
+                        <span>
+                            LOCATION
+                        </span>
+
+                        <h2>
+                            Service Area
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sf-form-grid">
+
+                    <div class="sf-form-group sf-full">
+
+                        <label for="address">
+                            Address
+                        </label>
+
+                        <input
+                            type="text"
+                            id="address"
+                            name="address"
+                            value="{{ worker.address or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group">
+
+                        <label for="city">
+                            City
+                        </label>
+
+                        <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            value="{{ worker.city or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group">
+
+                        <label for="state">
+                            State
+                        </label>
+
+                        <input
+                            type="text"
+                            id="state"
+                            name="state"
+                            value="{{ worker.state or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group">
+
+                        <label for="pincode">
+                            PIN Code
+                        </label>
+
+                        <input
+                            type="text"
+                            id="pincode"
+                            name="pincode"
+                            value="{{ worker.pincode or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="sf-form-group">
+
+                        <label for="service_area">
+                            Service Area
+                        </label>
+
+                        <input
+                            type="text"
+                            id="service_area"
+                            name="service_area"
+                            value="{{ worker.service_area or '' }}"
+                            placeholder="e.g. Kolkata & nearby areas"
+                        >
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 AVAILABILITY
+            ================================================== -->
+
+            <section class="sf-edit-card">
+
+                <label class="sf-availability-toggle">
+
+                    <input
+                        type="checkbox"
+                        name="is_available"
+                        {% if worker.is_available %}
+                            checked
+                        {% endif %}
+                    >
+
+                    <span class="sf-toggle-slider"></span>
+
+                    <span class="sf-toggle-content">
+
+                        <strong>
+                            Available for work
+                        </strong>
+
+                        <small>
+                            Customers can see that you are currently
+                            accepting work.
+                        </small>
+
+                    </span>
+
+                </label>
+
+            </section>
+
+
+            <!-- =================================================
+                 ACTIONS
+            ================================================== -->
+
+            <div class="sf-edit-actions">
+
+                <a
+                    href="{{ url_for('worker_pages.worker_profile_page') }}"
+                    class="sf-cancel-btn"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="sf-save-profile-btn"
+                >
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12l4 4L19 6"/>
+                    </svg>
+
+                    Save Profile
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     IMAGE PREVIEW JS
+========================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const profileInput =
+            document.getElementById(
+                "profile_image"
+            );
+
+        const coverInput =
+            document.getElementById(
+                "cover_image"
+            );
+
+        const profilePreview =
+            document.getElementById(
+                "profilePreview"
+            );
+
+        const avatarPlaceholder =
+            document.getElementById(
+                "avatarPlaceholder"
+            );
+
+        const coverPreview =
+            document.getElementById(
+                "coverPreview"
+            );
+
+
+        if (profileInput) {
+
+            profileInput.addEventListener(
+                "change",
+                function () {
+
+                    const file =
+                        this.files[0];
+
+                    if (!file) {
+                        return;
+                    }
+
+                    const reader =
+                        new FileReader();
+
+                    reader.onload =
+                        function (event) {
+
+                            profilePreview.src =
+                                event.target.result;
+
+                            profilePreview.classList.remove(
+                                "sf-preview-hidden-image"
+                            );
+
+                            if (
+                                avatarPlaceholder
+                            ) {
+
+                                avatarPlaceholder.style.display =
+                                    "none";
+
+                            }
+
+                        };
+
+                    reader.readAsDataURL(
+                        file
+                    );
+
+                }
+            );
+
+        }
+
+
+        if (coverInput) {
+
+            coverInput.addEventListener(
+                "change",
+                function () {
+
+                    const file =
+                        this.files[0];
+
+                    if (!file) {
+                        return;
+                    }
+
+                    const reader =
+                        new FileReader();
+
+                    reader.onload =
+                        function (event) {
+
+                            coverPreview.style.backgroundImage =
+                                "url('" +
+                                event.target.result +
+                                "')";
+
+                            coverPreview.classList.add(
+                                "has-preview"
+                            );
+
+                        };
+
+                    reader.readAsDataURL(
+                        file
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}
