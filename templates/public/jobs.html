@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}
+Find Jobs — S. F Works
+{% endblock %}
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for(
+        'static',
+        filename='css/jobs.css'
+    ) }}"
+>
+
+{% endblock %}
+
+{% block content %}
+
+<main class="jobs-page">
+
+    <section class="jobs-hero">
+
+        <div class="container">
+
+            <span class="hero-badge">
+                S. F Works Marketplace
+            </span>
+
+            <h1>
+                Find Local Jobs
+            </h1>
+
+            <p>
+                Discover work opportunities from customers
+                looking for trusted and skilled workers.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="jobs-section">
+
+        <div class="container">
+
+            <div class="jobs-toolbar">
+
+                <input
+                    type="search"
+                    id="jobSearch"
+                    placeholder="Search jobs..."
+                    autocomplete="off"
+                >
+
+                <input
+                    type="text"
+                    id="jobCity"
+                    placeholder="City"
+                    autocomplete="off"
+                >
+
+                <button
+                    type="button"
+                    id="searchJobsBtn"
+                    class="btn btn-primary"
+                >
+                    Search
+                </button>
+
+            </div>
+
+
+            <div
+                id="jobsLoading"
+                class="jobs-loading"
+            >
+                Loading jobs...
+            </div>
+
+
+            <div
+                id="jobsGrid"
+                class="jobs-grid"
+            ></div>
+
+
+            <div
+                id="jobsEmpty"
+                class="jobs-empty"
+                hidden
+            >
+                <h3>
+                    No jobs found
+                </h3>
+
+                <p>
+                    Try changing your search or city.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script
+    src="{{ url_for(
+        'static',
+        filename='js/jobs.js'
+    ) }}"
+></script>
+
+{% endblock %}
