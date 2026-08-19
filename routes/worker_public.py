@@ -10,7 +10,7 @@ from extensions import db
 
 from models.worker import WorkerProfile
 from models.worker_skill import WorkerSkill
-
+from models.worker_portfolio import WorkerPortfolio
 
 
 worker_public_bp = Blueprint(
