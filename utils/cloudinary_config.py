@@ -28,6 +28,70 @@ def init_cloudinary():
 
 
 # =========================================================
+# IMAGE VALIDATION
+# =========================================================
+
+ALLOWED_IMAGE_EXTENSIONS = {
+    "jpg",
+    "jpeg",
+    "png",
+    "webp"
+}
+
+MAX_IMAGE_SIZE = 8 * 1024 * 1024  # 8 MB
+
+
+def validate_image(file):
+
+    if not file:
+        return False
+
+    if not file.filename:
+        return False
+
+    # -----------------------------------------------------
+    # Extension
+    # -----------------------------------------------------
+
+    filename = file.filename.lower()
+
+    if "." not in filename:
+        return False
+
+    extension = filename.rsplit(
+        ".",
+        1
+    )[1]
+
+    if extension not in ALLOWED_IMAGE_EXTENSIONS:
+        return False
+
+    # -----------------------------------------------------
+    # File size
+    # -----------------------------------------------------
+
+    try:
+
+        file.seek(0, os.SEEK_END)
+
+        file_size = file.tell()
+
+        file.seek(0)
+
+    except Exception:
+
+        return False
+
+    if file_size > MAX_IMAGE_SIZE:
+        return False
+
+    if file_size <= 0:
+        return False
+
+    return True
+
+
+# =========================================================
 # UPLOAD IMAGE
 # =========================================================
 
