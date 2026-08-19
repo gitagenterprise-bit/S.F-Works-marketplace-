@@ -44,11 +44,23 @@ class WorkerPortfolio(db.Model):
 
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
-        nullable=False
+        nullable=False,
+        default=datetime.utcnow
     )
+
+    # =====================================================
+    # RELATIONSHIP
+    # =====================================================
 
     worker = db.relationship(
         "WorkerProfile",
         back_populates="portfolio_items"
-  )
+    )
+
+    def __repr__(self):
+
+        return (
+            f"<WorkerPortfolio "
+            f"id={self.id} "
+            f"worker_id={self.worker_id}>"
+        )
