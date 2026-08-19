@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+
+{% block title %}
+Find Trusted Workers — S. F Works
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for(
+        'static',
+        filename='css/workers.css'
+    ) }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<main class="workers-page">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="workers-hero">
+
+        <div class="workers-container">
+
+            <div class="workers-hero-content">
+
+                <span class="workers-eyebrow">
+                    S. F Works Marketplace
+                </span>
+
+                <h1>
+                    Find trusted workers
+                    near you.
+                </h1>
+
+                <p>
+                    Discover skilled professionals,
+                    compare profiles and connect with
+                    the right worker for your job.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SEARCH / FILTER
+    ====================================================== -->
+
+    <section class="workers-search-section">
+
+        <div class="workers-container">
+
+            <form
+                method="GET"
+                action="{{ url_for('worker_public.workers_page') }}"
+                class="workers-search-form"
+            >
+
+                <div class="search-field">
+
+                    <label for="worker-search">
+                        Search
+                    </label>
+
+                    <input
+                        id="worker-search"
+                        type="search"
+                        name="search"
+                        value="{{ search }}"
+                        placeholder="Electrician, plumber, painter..."
+                    >
+
+                </div>
+
+
+                <div class="search-field">
+
+                    <label for="worker-city">
+                        City
+                    </label>
+
+                    <input
+                        id="worker-city"
+                        type="text"
+                        name="city"
+                        value="{{ city }}"
+                        placeholder="Your city"
+                    >
+
+                </div>
+
+
+                <div class="search-field">
+
+                    <label for="worker-profession">
+                        Profession
+                    </label>
+
+                    <input
+                        id="worker-profession"
+                        type="text"
+                        name="profession"
+                        value="{{ profession }}"
+                        placeholder="Profession"
+                    >
+
+                </div>
+
+
+                <label class="verified-filter">
+
+                    <input
+                        type="checkbox"
+                        name="verified"
+                        value="1"
+                        {% if verified == "1" %}
+                        checked
+                        {% endif %}
+                    >
+
+                    <span>
+                        Verified only
+                    </span>
+
+                </label>
+
+
+                <button
+                    type="submit"
+                    class="workers-search-button"
+                >
+                    Search Workers
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         WORKERS
+    ====================================================== -->
+
+    <section class="workers-list-section">
+
+        <div class="workers-container">
+
+            <div class="workers-section-header">
+
+                <div>
+
+                    <span class="section-label">
+                        Professionals
+                    </span>
+
+                    <h2>
+                        Available workers
+                    </h2>
+
+                </div>
+
+                <span class="workers-count">
+                    {{ workers|length }} workers
+                </span>
+
+            </div>
+
+
+            {% if workers %}
+
+                <div class="workers-grid">
+
+                    {% for worker in workers %}
+
+                        <article class="worker-card">
+
+                            <!-- PROFILE IMAGE -->
+
+                            <div class="worker-card-image">
+
+                                {% if worker.profile_image %}
+
+                                    <img
+                                        src="{{ url_for(
+                                            'static',
+                                            filename=worker.profile_image
+                                        ) }}"
+                                        alt="{{ worker.profession }}"
+                                        loading="lazy"
+                                    >
+
+                                {% else %}
+
+                                    <div class="worker-avatar-placeholder">
+                                        {{ worker.profession[:1]|upper }}
+                                    </div>
+
+                                {% endif %}
+
+
+                                {% if worker.is_verified %}
+
+                                    <span class="verified-badge">
+                                        ✓ Verified
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- CONTENT -->
+
+                            <div class="worker-card-content">
+
+                                <div class="worker-profession-row">
+
+                                    <span class="worker-profession">
+                                        {{ worker.profession }}
+                                    </span>
+
+                                    {% if worker.is_available %}
+
+                                        <span class="availability-badge">
+                                            Available
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                {% if worker.headline %}
+
+                                    <h3>
+                                        {{ worker.headline }}
+                                    </h3>
+
+                                {% else %}
+
+                                    <h3>
+                                        Professional {{ worker.profession }}
+                                    </h3>
+
+                                {% endif %}
+
+
+                                {% if worker.city %}
+
+                                    <p class="worker-location">
+                                        📍 {{ worker.city }}
+                                        {% if worker.state %}
+                                            , {{ worker.state }}
+                                        {% endif %}
+                                    </p>
+
+                                {% endif %}
+
+
+                                <div class="worker-stats">
+
+                                    <div>
+                                        <strong>
+                                            {{ worker.rating or 0 }}
+                                        </strong>
+
+                                        <span>
+                                            Rating
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            {{ worker.total_reviews or 0 }}
+                                        </strong>
+
+                                        <span>
+                                            Reviews
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            {{ worker.experience_years or 0 }}
+                                        </strong>
+
+                                        <span>
+                                            Years
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="worker-card-footer">
+
+                                    {% if worker.hourly_rate %}
+
+                                        <div class="worker-rate">
+
+                                            <strong>
+                                                ₹{{ worker.hourly_rate }}
+                                            </strong>
+
+                                            <span>
+                                                / hour
+                                            </span>
+
+                                        </div>
+
+                                    {% else %}
+
+                                        <div class="worker-rate">
+
+                                            <span>
+                                                Contact for pricing
+                                            </span>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <a
+                                        href="{{ url_for(
+                                            'worker_public.worker_public_profile',
+                                            worker_id=worker.id
+                                        ) }}"
+                                        class="worker-view-button"
+                                    >
+                                        View Profile
+                                        <span>→</span>
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="workers-empty">
+
+                    <div class="empty-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        No workers found
+                    </h3>
+
+                    <p>
+                        Try another profession, city or search term.
+                    </p>
+
+                    <a
+                        href="{{ url_for(
+                            'worker_public.workers_page'
+                        ) }}"
+                        class="worker-reset-button"
+                    >
+                        View All Workers
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</main>
+
+{% endblock %}
