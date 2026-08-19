@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
+
 {% block title %}
-    {{ worker.profession or "Professional Worker" }} — S. F Works
+    {% if worker.user and worker.user.full_name %}
+        {{ worker.user.full_name }} — {{ worker.profession or "Professional Worker" }} — S. F Works
+    {% else %}
+        {{ worker.profession or "Professional Worker" }} — S. F Works
+    {% endif %}
 {% endblock %}
 
 
@@ -24,7 +29,7 @@
 
 
     <!-- =====================================================
-         PREMIUM COVER HERO
+         PREMIUM COVER
     ====================================================== -->
 
     <section
@@ -37,11 +42,14 @@
             <img
                 class="public-cover-image"
                 src="{{ worker.cover_image }}"
-                alt="{{ worker.profession or 'Worker' }} cover image"
+                alt=""
                 loading="eager"
                 decoding="async"
                 referrerpolicy="no-referrer"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                onerror="
+                    this.style.display='none';
+                    this.nextElementSibling.style.display='block';
+                "
             >
 
             <div
@@ -66,11 +74,11 @@
         ></div>
 
 
-        <!-- COVER BADGES -->
+        <!-- COVER VERIFIED -->
 
-        <div class="cover-top-content">
+        {% if worker.is_verified %}
 
-            {% if worker.is_verified %}
+            <div class="cover-top-content">
 
                 <span class="cover-verified-badge">
 
@@ -82,23 +90,23 @@
 
                 </span>
 
-            {% endif %}
+            </div>
 
-        </div>
+        {% endif %}
 
     </section>
 
 
 
     <!-- =====================================================
-         MAIN CONTAINER
+         PROFILE CONTAINER
     ====================================================== -->
 
     <div class="public-profile-container">
 
 
         <!-- =================================================
-             PREMIUM PROFILE HEADER
+             PROFILE HEADER
         ================================================== -->
 
         <section
@@ -108,7 +116,7 @@
 
 
             <!-- =============================================
-                 AVATAR
+                 PROFILE AVATAR
             ============================================== -->
 
             <div class="public-avatar">
@@ -118,11 +126,18 @@
                     <img
                         class="public-avatar-image"
                         src="{{ worker.profile_image }}"
-                        alt="{{ worker.profession or 'Worker' }}"
+                        alt="{{
+                            worker.user.full_name
+                            if worker.user and worker.user.full_name
+                            else 'Professional Worker'
+                        }}"
                         loading="eager"
                         decoding="async"
                         referrerpolicy="no-referrer"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        onerror="
+                            this.style.display='none';
+                            this.nextElementSibling.style.display='flex';
+                        "
                     >
 
                     <span
@@ -130,11 +145,13 @@
                         aria-hidden="true"
                         style="display:none;"
                     >
-                        {{ (
-                            worker.profession or
-                            worker.name or
-                            "W"
-                        )[:1]|upper }}
+                        {{
+                            (
+                                worker.user.full_name
+                                if worker.user and worker.user.full_name
+                                else "W"
+                            )[:1]|upper
+                        }}
                     </span>
 
                 {% else %}
@@ -143,11 +160,13 @@
                         class="public-avatar-placeholder"
                         aria-hidden="true"
                     >
-                        {{ (
-                            worker.profession or
-                            worker.name or
-                            "W"
-                        )[:1]|upper }}
+                        {{
+                            (
+                                worker.user.full_name
+                                if worker.user and worker.user.full_name
+                                else "W"
+                            )[:1]|upper
+                        }}
                     </span>
 
                 {% endif %}
@@ -178,8 +197,15 @@
 
                 <div class="public-profile-title">
 
+
+                    <!-- =====================================
+                         NAME / PROFESSION / HEADLINE
+                    ====================================== -->
+
                     <div class="public-profile-heading">
 
+
+                        <!-- PROFESSION -->
 
                         {% if worker.profession %}
 
@@ -192,14 +218,35 @@
                         {% endif %}
 
 
+
+                        <!-- =================================
+                             REAL USER NAME
+                        ================================== -->
+
                         <h1 class="public-worker-name">
-                            {{ worker.user.name if worker.user and worker.user.name else "Professional Worker" }}
+
+                            {% if worker.user and worker.user.full_name %}
+
+                                {{ worker.user.full_name }}
+
+                            {% else %}
+
+                                Professional Worker
+
+                            {% endif %}
+
                         </h1>
+
+
+
+                        <!-- HEADLINE -->
 
                         {% if worker.headline %}
 
                             <p class="public-worker-headline">
-                            {{ worker.headline }}
+
+                                {{ worker.headline }}
+
                             </p>
 
                         {% endif %}
@@ -208,7 +255,9 @@
 
 
 
-                    <!-- VERIFIED -->
+                    <!-- =====================================
+                         VERIFIED BADGE
+                    ====================================== -->
 
                     {% if worker.is_verified %}
 
@@ -231,11 +280,13 @@
 
 
 
-                <!-- LOCATION -->
+                <!-- =========================================
+                     LOCATION
+                ========================================== -->
 
                 {% if worker.city or worker.state %}
 
-                    <p class="public-location">
+                    <div class="public-location">
 
                         <span aria-hidden="true">
                             📍
@@ -257,7 +308,7 @@
 
                         </span>
 
-                    </p>
+                    </div>
 
                 {% endif %}
 
@@ -273,10 +324,16 @@
                 >
 
 
+                    <!-- RATING -->
+
                     <div class="profile-stat">
 
                         <strong>
-                            {{ "%.1f"|format(worker.rating or 0) }}
+
+                            {{ "%.1f"|format(
+                                worker.rating or 0
+                            ) }}
+
                         </strong>
 
                         <span>
@@ -286,10 +343,15 @@
                     </div>
 
 
+
+                    <!-- REVIEWS -->
+
                     <div class="profile-stat">
 
                         <strong>
+
                             {{ worker.total_reviews or 0 }}
+
                         </strong>
 
                         <span>
@@ -299,10 +361,15 @@
                     </div>
 
 
+
+                    <!-- COMPLETED JOBS -->
+
                     <div class="profile-stat">
 
                         <strong>
+
                             {{ worker.completed_jobs or 0 }}
+
                         </strong>
 
                         <span>
@@ -312,10 +379,15 @@
                     </div>
 
 
+
+                    <!-- EXPERIENCE -->
+
                     <div class="profile-stat">
 
                         <strong>
+
                             {{ worker.experience_years or 0 }}
+
                         </strong>
 
                         <span>
@@ -333,7 +405,7 @@
 
 
         <!-- =================================================
-             PROFILE GRID
+             MAIN GRID
         ================================================== -->
 
         <div class="public-profile-grid">
@@ -396,7 +468,9 @@
                                 <div class="skill-item">
 
                                     <span class="skill-name">
+
                                         {{ skill.skill_name }}
+
                                     </span>
 
 
@@ -455,9 +529,10 @@
 
                             {% for item in portfolio_items %}
 
-                                <article
-                                    class="portfolio-card"
-                                >
+                                <article class="portfolio-card">
+
+
+                                    <!-- PORTFOLIO IMAGE -->
 
                                     {% if item.image_path %}
 
@@ -465,7 +540,7 @@
 
                                             <img
                                                 src="{{ item.image_path }}"
-                                                alt="{{ item.title }}"
+                                                alt="{{ item.title or 'Portfolio project' }}"
                                                 loading="lazy"
                                                 decoding="async"
                                                 referrerpolicy="no-referrer"
@@ -476,11 +551,19 @@
                                     {% endif %}
 
 
+
+                                    <!-- PORTFOLIO CONTENT -->
+
                                     <div class="portfolio-content">
 
-                                        <h3>
-                                            {{ item.title }}
-                                        </h3>
+
+                                        {% if item.title %}
+
+                                            <h3>
+                                                {{ item.title }}
+                                            </h3>
+
+                                        {% endif %}
 
 
                                         {% if item.description %}
@@ -543,7 +626,7 @@
 
 
                 <!-- =============================================
-                     HIRE CARD
+                     HIRE / PROJECT CARD
                 ============================================== -->
 
                 <div class="contact-card">
@@ -556,9 +639,18 @@
                     <h2>
 
                         Need
-                        {{ worker.profession|lower
-                           if worker.profession
-                           else "professional help" }}?
+
+                        {% if worker.profession %}
+
+                            {{ worker.profession|lower }}
+
+                        {% else %}
+
+                            professional help
+
+                        {% endif %}
+
+                        ?
 
                     </h2>
 
@@ -569,6 +661,9 @@
                     </p>
 
 
+
+                    <!-- MINIMUM CHARGE -->
+
                     {% if worker.minimum_charge is not none %}
 
                         <div class="minimum-charge">
@@ -578,13 +673,18 @@
                             </span>
 
                             <strong>
-                                ₹{{ "%.0f"|format(worker.minimum_charge) }}
+                                ₹{{ "%.0f"|format(
+                                    worker.minimum_charge
+                                ) }}
                             </strong>
 
                         </div>
 
                     {% endif %}
 
+
+
+                    <!-- POST JOB -->
 
                     <a
                         href="/post-job"
@@ -601,6 +701,9 @@
 
                     </a>
 
+
+
+                    <!-- BACK -->
 
                     <a
                         href="{{ url_for(
@@ -651,7 +754,8 @@
                     {% endif %}
 
 
-                    {% if worker.service_radius_km %}
+
+                    {% if worker.service_radius_km is not none %}
 
                         <div class="info-row">
 
@@ -667,6 +771,7 @@
                         </div>
 
                     {% endif %}
+
 
 
                     {% if worker.availability %}
@@ -685,6 +790,9 @@
 
                     {% endif %}
 
+
+
+                    <!-- AVAILABLE -->
 
                     {% if worker.is_available %}
 
@@ -742,6 +850,7 @@
                         {% endif %}
 
 
+
                         {% if worker.state %}
 
                             <div class="info-row">
@@ -775,6 +884,8 @@
                     </h3>
 
 
+                    <!-- EXPERIENCE -->
+
                     <div class="info-row">
 
                         <span>
@@ -796,6 +907,9 @@
                     </div>
 
 
+
+                    <!-- COMPLETED JOBS -->
+
                     <div class="info-row">
 
                         <span>
@@ -808,6 +922,9 @@
 
                     </div>
 
+
+
+                    <!-- TOTAL JOBS -->
 
                     <div class="info-row">
 
