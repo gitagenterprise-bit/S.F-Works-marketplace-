@@ -153,6 +153,8 @@ def workers_page():
     )
 
 
+
+
 # =========================================================
 # PUBLIC WORKER PROFILE
 # GET /workers/<worker_id>
@@ -170,13 +172,11 @@ def worker_public_profile(worker_id):
     )
 
     if not worker:
-
         return render_template(
             "errors/404.html"
         ), 404
 
     if not worker.profile_completed:
-
         return render_template(
             "errors/404.html"
         ), 404
