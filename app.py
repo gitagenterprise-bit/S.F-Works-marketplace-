@@ -114,6 +114,8 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
+    init_cloudinary()
+
     # Models
 
     from models import (
