@@ -43,11 +43,13 @@ class Job(db.Model):
     )
 
     budget_min = db.Column(
-        db.Numeric(10, 2)
+        db.Numeric(10, 2),
+        nullable=True
     )
 
     budget_max = db.Column(
-        db.Numeric(10, 2)
+        db.Numeric(10, 2),
+        nullable=True
     )
 
     location = db.Column(
@@ -57,15 +59,18 @@ class Job(db.Model):
 
     city = db.Column(
         db.String(100),
+        nullable=True,
         index=True
     )
 
     state = db.Column(
-        db.String(100)
+        db.String(100),
+        nullable=True
     )
 
     pincode = db.Column(
-        db.String(10)
+        db.String(10),
+        nullable=True
     )
 
     latitude = db.Column(
@@ -80,37 +85,46 @@ class Job(db.Model):
 
     status = db.Column(
         db.String(30),
-        default="open",
         nullable=False,
+        default="open",
         index=True
     )
 
     priority = db.Column(
         db.String(20),
+        nullable=False,
         default="normal"
     )
 
     is_featured = db.Column(
         db.Boolean,
-        default=False
+        nullable=False,
+        default=False,
+        index=True
     )
 
     views = db.Column(
         db.Integer,
+        nullable=False,
         default=0
     )
 
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
-        nullable=False
+        nullable=False,
+        default=datetime.utcnow
     )
 
     updated_at = db.Column(
         db.DateTime,
+        nullable=False,
         default=datetime.utcnow,
         onupdate=datetime.utcnow
     )
+
+    # =====================================================
+    # RELATIONSHIPS
+    # =====================================================
 
     customer = db.relationship(
         "User",
@@ -126,20 +140,20 @@ class Job(db.Model):
     images = db.relationship(
         "JobImage",
         back_populates="job",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        passive_deletes=True
     )
 
     applications = db.relationship(
         "JobApplication",
         back_populates="job",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        passive_deletes=True
     )
 
     def __repr__(self):
 
-        return (
-            f"<Job {self.title}>"
-        )
+        return f"<Job id={self.id} title={self.title}>"
 
 
 class JobImage(db.Model):
@@ -157,20 +171,30 @@ class JobImage(db.Model):
             "jobs.id",
             ondelete="CASCADE"
         ),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     image_path = db.Column(
-        db.String(255),
+        db.String(500),
         nullable=False
     )
 
     created_at = db.Column(
         db.DateTime,
+        nullable=False,
         default=datetime.utcnow
     )
 
     job = db.relationship(
         "Job",
         back_populates="images"
-  )
+    )
+
+    def __repr__(self):
+
+        return (
+            f"<JobImage "
+            f"id={self.id} "
+            f"job_id={self.job_id}>"
+        )
