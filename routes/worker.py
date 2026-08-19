@@ -1353,3 +1353,703 @@ def save_profile():
             profile_to_dict(profile)
 
     }), 200
+
+# =========================================================
+# ADD SKILL
+# POST /worker/profile/skills
+# =========================================================
+
+@worker_bp.route(
+    "/profile/skills",
+    methods=["POST"]
+)
+@role_required("worker")
+def add_skill():
+
+    profile = get_worker_profile()
+
+    if not profile:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Please create your profile first"
+        }), 400
+
+    data = request.get_json(
+        silent=True
+    )
+
+    if not data:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Request body is required"
+        }), 400
+
+    skill_name = data.get(
+        "skill_name"
+    )
+
+    if not skill_name:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Skill name is required"
+        }), 400
+
+    skill_name = str(
+        skill_name
+    ).strip()
+
+    if not skill_name:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Skill name is required"
+        }), 400
+
+    if len(skill_name) > 100:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Skill name is too long"
+        }), 400
+
+    experience = data.get(
+        "experience_years"
+    )
+
+    if experience is not None:
+
+        try:
+
+            experience = int(
+                experience
+            )
+
+            if experience < 0:
+                raise ValueError
+
+        except (
+            TypeError,
+            ValueError
+        ):
+
+            return jsonify({
+                "status": "error",
+                "message":
+                    "Invalid skill experience"
+            }), 400
+
+    # Case-insensitive duplicate protection
+    existing = (
+        WorkerSkill.query
+        .filter(
+            WorkerSkill.worker_id == profile.id,
+            db.func.lower(
+                WorkerSkill.skill_name
+            ) == skill_name.lower()
+        )
+        .first()
+    )
+
+    if existing:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Skill already exists"
+        }), 409
+
+    skill = WorkerSkill(
+
+        worker_id=profile.id,
+
+        skill_name=skill_name,
+
+        experience_years=experience
+    )
+
+    db.session.add(
+        skill
+    )
+
+    try:
+
+        db.session.commit()
+
+    except Exception:
+
+        db.session.rollback()
+
+        current_app.logger.exception(
+            "Worker skill creation failed"
+        )
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Unable to add skill"
+        }), 500
+
+    return jsonify({
+
+        "status": "success",
+
+        "message":
+            "Skill added successfully",
+
+        "skill": {
+
+            "id":
+                skill.id,
+
+            "name":
+                skill.skill_name,
+
+            "experience_years":
+                skill.experience_years
+
+        }
+
+    }), 201
+
+
+# =========================================================
+# DELETE SKILL
+# DELETE /worker/profile/skills/<id>
+# =========================================================
+
+@worker_bp.route(
+    "/profile/skills/<int:skill_id>",
+    methods=["DELETE"]
+)
+@role_required("worker")
+def delete_skill(skill_id):
+
+    profile = get_worker_profile()
+
+    if not profile:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Profile not found"
+        }), 404
+
+    skill = db.session.get(
+        WorkerSkill,
+        skill_id
+    )
+
+    if not skill:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Skill not found"
+        }), 404
+
+    if skill.worker_id != profile.id:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "You cannot delete this skill"
+        }), 403
+
+    db.session.delete(
+        skill
+    )
+
+    try:
+
+        db.session.commit()
+
+    except Exception:
+
+        db.session.rollback()
+
+        current_app.logger.exception(
+            "Worker skill deletion failed"
+        )
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Unable to delete skill"
+        }), 500
+
+    return jsonify({
+        "status": "success",
+        "message":
+            "Skill deleted successfully"
+    }), 200
+
+# =========================================================
+# ADD PORTFOLIO
+# POST /worker/profile/portfolio
+# =========================================================
+
+@worker_bp.route(
+    "/profile/portfolio",
+    methods=["POST"]
+)
+@role_required("worker")
+def add_portfolio():
+
+    profile = get_worker_profile()
+
+    if not profile:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Please create your profile first"
+        }), 400
+
+    title = request.form.get(
+        "title",
+        ""
+    ).strip()
+
+    description = request.form.get(
+        "description",
+        ""
+    ).strip()
+
+    project_date_value = request.form.get(
+        "project_date",
+        ""
+    ).strip()
+
+    if not title:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Portfolio title is required"
+        }), 400
+
+    if len(title) > 200:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Portfolio title is too long"
+        }), 400
+
+    project_date = None
+
+    if project_date_value:
+
+        try:
+
+            project_date = datetime.strptime(
+                project_date_value,
+                "%Y-%m-%d"
+            ).date()
+
+        except ValueError:
+
+            return jsonify({
+                "status": "error",
+                "message":
+                    "Invalid project date"
+            }), 400
+
+    image_url = None
+    image_file = request.files.get(
+        "image"
+    )
+
+    # =====================================================
+    # IMAGE
+    # =====================================================
+
+    if (
+        image_file
+        and image_file.filename
+    ):
+
+        if not validate_image(
+            image_file
+        ):
+
+            return jsonify({
+                "status": "error",
+                "message":
+                    "Invalid image. "
+                    "Use JPG, JPEG, PNG or WEBP "
+                    "under 8MB."
+            }), 400
+
+        try:
+
+            result = upload_image(
+                image_file,
+                "sfworks/workers/portfolio"
+            )
+
+            if not result:
+
+                return jsonify({
+                    "status": "error",
+                    "message":
+                        "Image upload failed"
+                }), 500
+
+            image_url = result.get(
+                "secure_url"
+            )
+
+        except Exception:
+
+            current_app.logger.exception(
+                "Portfolio Cloudinary upload failed"
+            )
+
+            return jsonify({
+                "status": "error",
+                "message":
+                    "Portfolio image upload failed"
+            }), 500
+
+    # =====================================================
+    # DATABASE
+    # =====================================================
+
+    portfolio = WorkerPortfolio(
+
+        worker_id=profile.id,
+
+        title=title,
+
+        description=(
+            description
+            if description
+            else None
+        ),
+
+        image_path=image_url,
+
+        project_date=project_date
+    )
+
+    db.session.add(
+        portfolio
+    )
+
+    try:
+
+        db.session.commit()
+
+    except Exception:
+
+        db.session.rollback()
+
+        current_app.logger.exception(
+            "Portfolio database save failed"
+        )
+
+        # Cloudinary cleanup
+        if image_url:
+
+            try:
+                delete_image(
+                    image_url
+                )
+            except Exception:
+                current_app.logger.exception(
+                    "Portfolio image cleanup failed"
+                )
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Unable to save portfolio"
+        }), 500
+
+    return jsonify({
+
+        "status": "success",
+
+        "message":
+            "Portfolio item added successfully",
+
+        "portfolio": {
+
+            "id":
+                portfolio.id,
+
+            "title":
+                portfolio.title,
+
+            "description":
+                portfolio.description,
+
+            "image":
+                portfolio.image_path,
+
+            "project_date": (
+                portfolio.project_date.isoformat()
+                if portfolio.project_date
+                else None
+            )
+        }
+
+    }), 201
+
+
+# =========================================================
+# DELETE PORTFOLIO
+# DELETE /worker/profile/portfolio/<id>
+# =========================================================
+
+@worker_bp.route(
+    "/profile/portfolio/<int:portfolio_id>",
+    methods=["DELETE"]
+)
+@role_required("worker")
+def delete_portfolio(portfolio_id):
+
+    profile = get_worker_profile()
+
+    if not profile:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Profile not found"
+        }), 404
+
+    portfolio = db.session.get(
+        WorkerPortfolio,
+        portfolio_id
+    )
+
+    if not portfolio:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Portfolio item not found"
+        }), 404
+
+    if portfolio.worker_id != profile.id:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "You cannot delete this portfolio item"
+        }), 403
+
+    image_url = portfolio.image_path
+
+    db.session.delete(
+        portfolio
+    )
+
+    try:
+
+        db.session.commit()
+
+    except Exception:
+
+        db.session.rollback()
+
+        current_app.logger.exception(
+            "Portfolio deletion failed"
+        )
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Unable to delete portfolio item"
+        }), 500
+
+    # Cloudinary cleanup after DB success
+    if image_url:
+
+        try:
+
+            delete_image(
+                image_url
+            )
+
+        except Exception:
+
+            current_app.logger.exception(
+                "Portfolio Cloudinary deletion failed"
+            )
+
+    return jsonify({
+        "status": "success",
+        "message":
+            "Portfolio item deleted successfully"
+    }), 200
+
+# =========================================================
+# PUBLIC WORKER PROFILE
+# GET /worker/<user_id>
+# =========================================================
+
+@worker_bp.route(
+    "/<int:user_id>",
+    methods=["GET"]
+)
+def public_worker_profile(user_id):
+
+    profile = WorkerProfile.query.filter_by(
+        user_id=user_id
+    ).first()
+
+    if not profile:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Worker profile not found"
+        }), 404
+
+    if not profile.profile_completed:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Worker profile is not publicly available"
+        }), 404
+
+    user = profile.user
+
+    return jsonify({
+
+        "status": "success",
+
+        "worker": {
+
+            "id":
+                user.id,
+
+            "name":
+                user.full_name,
+
+            "profile_image":
+                profile.profile_image,
+
+            "cover_image":
+                profile.cover_image,
+
+            "profession":
+                profile.profession,
+
+            "headline":
+                profile.headline,
+
+            "about":
+                profile.about,
+
+            "experience_years":
+                profile.experience_years,
+
+            "service_area":
+                profile.service_area,
+
+            "service_radius_km":
+                profile.service_radius_km,
+
+            "city":
+                profile.city,
+
+            "state":
+                profile.state,
+
+            "hourly_rate": (
+                float(profile.hourly_rate)
+                if profile.hourly_rate is not None
+                else None
+            ),
+
+            "minimum_charge": (
+                float(profile.minimum_charge)
+                if profile.minimum_charge is not None
+                else None
+            ),
+
+            "availability":
+                profile.availability,
+
+            "rating": (
+                float(profile.rating)
+                if profile.rating is not None
+                else 0.0
+            ),
+
+            "total_reviews":
+                profile.total_reviews,
+
+            "total_jobs":
+                profile.total_jobs,
+
+            "completed_jobs":
+                profile.completed_jobs,
+
+            "is_verified":
+                profile.is_verified,
+
+            "verification_status":
+                profile.verification_status,
+
+            "is_available":
+                profile.is_available,
+
+            "skills": [
+
+                {
+                    "id":
+                        skill.id,
+
+                    "name":
+                        skill.skill_name,
+
+                    "experience_years":
+                        skill.experience_years
+                }
+
+                for skill in profile.skills
+            ],
+
+            "portfolio": [
+
+                {
+                    "id":
+                        item.id,
+
+                    "title":
+                        item.title,
+
+                    "description":
+                        item.description,
+
+                    "image":
+                        item.image_path,
+
+                    "project_date": (
+                        item.project_date.isoformat()
+                        if item.project_date
+                        else None
+                    )
+                }
+
+                for item in profile.portfolio_items
+            ]
+        }
+
+    }), 200
+
+
