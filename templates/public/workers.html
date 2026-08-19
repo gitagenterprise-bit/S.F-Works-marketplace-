@@ -4,48 +4,66 @@
 Find Trusted Workers — S. F Works
 {% endblock %}
 
-
 {% block extra_css %}
-
 <link
     rel="stylesheet"
-    href="{{ url_for(
-        'static',
-        filename='css/workers.css'
-    ) }}"
+    href="{{ url_for('static', filename='css/workers.css') }}"
 >
-
 {% endblock %}
-
 
 {% block content %}
 
 <main class="workers-page">
 
     <!-- =====================================================
-         HERO
+         PREMIUM HERO
     ====================================================== -->
 
     <section class="workers-hero">
 
         <div class="workers-container">
 
-            <div class="workers-hero-content">
+            <div class="workers-hero-inner">
 
-                <span class="workers-eyebrow">
-                    S. F Works Marketplace
-                </span>
+                <div class="workers-hero-copy">
 
-                <h1>
-                    Find trusted workers
-                    near you.
-                </h1>
+                    <span class="workers-eyebrow">
+                        <span class="eyebrow-dot"></span>
+                        S. F Works Marketplace
+                    </span>
 
-                <p>
-                    Discover skilled professionals,
-                    compare profiles and connect with
-                    the right worker for your job.
-                </p>
+                    <h1>
+                        Find trusted
+                        <span>professionals</span>
+                        near you.
+                    </h1>
+
+                    <p>
+                        Discover skilled workers, compare their
+                        experience and connect with the right
+                        professional for your next project.
+                    </p>
+
+                    <div class="hero-trust-row">
+
+                        <div class="hero-trust-item">
+                            <span class="trust-icon">✓</span>
+                            <span>Verified professionals</span>
+                        </div>
+
+                        <div class="hero-trust-item">
+                            <span class="trust-icon">★</span>
+                            <span>Real ratings & reviews</span>
+                        </div>
+
+                        <div class="hero-trust-item">
+                            <span class="trust-icon">⌖</span>
+                            <span>Local workers</span>
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -55,7 +73,7 @@ Find Trusted Workers — S. F Works
 
 
     <!-- =====================================================
-         SEARCH / FILTER
+         SEARCH
     ====================================================== -->
 
     <section class="workers-search-section">
@@ -68,19 +86,28 @@ Find Trusted Workers — S. F Works
                 class="workers-search-form"
             >
 
-                <div class="search-field">
+                <div class="search-field search-field-main">
 
                     <label for="worker-search">
-                        Search
+                        Search workers
                     </label>
 
-                    <input
-                        id="worker-search"
-                        type="search"
-                        name="search"
-                        value="{{ search }}"
-                        placeholder="Electrician, plumber, painter..."
-                    >
+                    <div class="search-input-wrap">
+
+                        <span class="search-icon" aria-hidden="true">
+                            ⌕
+                        </span>
+
+                        <input
+                            id="worker-search"
+                            type="search"
+                            name="search"
+                            value="{{ search }}"
+                            placeholder="Electrician, plumber, painter..."
+                            autocomplete="off"
+                        >
+
+                    </div>
 
                 </div>
 
@@ -91,13 +118,21 @@ Find Trusted Workers — S. F Works
                         City
                     </label>
 
-                    <input
-                        id="worker-city"
-                        type="text"
-                        name="city"
-                        value="{{ city }}"
-                        placeholder="Your city"
-                    >
+                    <div class="search-input-wrap">
+
+                        <span class="field-icon" aria-hidden="true">
+                            ⌖
+                        </span>
+
+                        <input
+                            id="worker-city"
+                            type="text"
+                            name="city"
+                            value="{{ city }}"
+                            placeholder="Your city"
+                        >
+
+                    </div>
 
                 </div>
 
@@ -108,13 +143,21 @@ Find Trusted Workers — S. F Works
                         Profession
                     </label>
 
-                    <input
-                        id="worker-profession"
-                        type="text"
-                        name="profession"
-                        value="{{ profession }}"
-                        placeholder="Profession"
-                    >
+                    <div class="search-input-wrap">
+
+                        <span class="field-icon" aria-hidden="true">
+                            ◈
+                        </span>
+
+                        <input
+                            id="worker-profession"
+                            type="text"
+                            name="profession"
+                            value="{{ profession }}"
+                            placeholder="Profession"
+                        >
+
+                    </div>
 
                 </div>
 
@@ -130,7 +173,9 @@ Find Trusted Workers — S. F Works
                         {% endif %}
                     >
 
-                    <span>
+                    <span class="custom-checkbox"></span>
+
+                    <span class="verified-filter-text">
                         Verified only
                     </span>
 
@@ -141,7 +186,8 @@ Find Trusted Workers — S. F Works
                     type="submit"
                     class="workers-search-button"
                 >
-                    Search Workers
+                    <span>Search</span>
+                    <span aria-hidden="true">→</span>
                 </button>
 
             </form>
@@ -161,7 +207,7 @@ Find Trusted Workers — S. F Works
 
             <div class="workers-section-header">
 
-                <div>
+                <div class="workers-heading">
 
                     <span class="section-label">
                         Professionals
@@ -171,11 +217,16 @@ Find Trusted Workers — S. F Works
                         Available workers
                     </h2>
 
+                    <p>
+                        Find the right professional for your work.
+                    </p>
+
                 </div>
 
-                <span class="workers-count">
-                    {{ workers|length }} workers
-                </span>
+                <div class="workers-result-count">
+                    <strong>{{ workers|length }}</strong>
+                    <span>workers found</span>
+                </div>
 
             </div>
 
@@ -188,42 +239,86 @@ Find Trusted Workers — S. F Works
 
                         <article class="worker-card">
 
-                            <!-- PROFILE IMAGE -->
+                            <!-- =================================================
+                                 VISUAL
+                            ================================================== -->
 
-                            <div class="worker-card-image">
+                            <div class="worker-card-visual">
 
-                                {% if worker.profile_image %}
+                                {% if worker.cover_image %}
 
                                     <img
-                                        src="{{ url_for(
-                                            'static',
-                                            filename=worker.profile_image
-                                        ) }}"
-                                        alt="{{ worker.profession }}"
+                                        class="worker-card-cover"
+                                        src="{{ worker.cover_image }}"
+                                        alt=""
                                         loading="lazy"
+                                        decoding="async"
                                     >
 
                                 {% else %}
 
-                                    <div class="worker-avatar-placeholder">
-                                        {{ worker.profession[:1]|upper }}
+                                    <div class="worker-card-cover-placeholder">
                                     </div>
 
                                 {% endif %}
 
 
+                                <div class="worker-card-cover-overlay"></div>
+
+
+                                <!-- VERIFIED -->
+
                                 {% if worker.is_verified %}
 
                                     <span class="verified-badge">
-                                        ✓ Verified
+                                        <span aria-hidden="true">✓</span>
+                                        Verified
                                     </span>
 
                                 {% endif %}
 
+
+                                <!-- AVAILABILITY -->
+
+                                {% if worker.is_available %}
+
+                                    <span class="availability-badge">
+                                        <span class="availability-dot"></span>
+                                        Available
+                                    </span>
+
+                                {% endif %}
+
+
+                                <!-- PROFILE IMAGE -->
+
+                                <div class="worker-card-avatar">
+
+                                    {% if worker.profile_image %}
+
+                                        <img
+                                            src="{{ worker.profile_image }}"
+                                            alt="{{ worker.profession }}"
+                                            loading="lazy"
+                                            decoding="async"
+                                        >
+
+                                    {% else %}
+
+                                        <span>
+                                            {{ (worker.profession or "W")[:1]|upper }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
                             </div>
 
 
-                            <!-- CONTENT -->
+                            <!-- =================================================
+                                 CONTENT
+                            ================================================== -->
 
                             <div class="worker-card-content">
 
@@ -233,47 +328,54 @@ Find Trusted Workers — S. F Works
                                         {{ worker.profession }}
                                     </span>
 
-                                    {% if worker.is_available %}
-
-                                        <span class="availability-badge">
-                                            Available
-                                        </span>
-
-                                    {% endif %}
-
                                 </div>
 
 
-                                {% if worker.headline %}
+                                <h3>
 
-                                    <h3>
+                                    {% if worker.headline %}
+
                                         {{ worker.headline }}
-                                    </h3>
 
-                                {% else %}
+                                    {% else %}
 
-                                    <h3>
-                                        Professional {{ worker.profession }}
-                                    </h3>
+                                        Professional
+                                        {{ worker.profession }}
 
-                                {% endif %}
+                                    {% endif %}
+
+                                </h3>
 
 
-                                {% if worker.city %}
+                                {% if worker.city or worker.state %}
 
                                     <p class="worker-location">
-                                        📍 {{ worker.city }}
-                                        {% if worker.state %}
-                                            , {{ worker.state }}
+
+                                        <span aria-hidden="true">⌖</span>
+
+                                        {% if worker.city %}
+                                            {{ worker.city }}
                                         {% endif %}
+
+                                        {% if worker.city and worker.state %}
+                                            , 
+                                        {% endif %}
+
+                                        {% if worker.state %}
+                                            {{ worker.state }}
+                                        {% endif %}
+
                                     </p>
 
                                 {% endif %}
 
 
+                                <!-- STATS -->
+
                                 <div class="worker-stats">
 
-                                    <div>
+                                    <div class="worker-stat">
+
                                         <strong>
                                             {{ worker.rating or 0 }}
                                         </strong>
@@ -281,9 +383,12 @@ Find Trusted Workers — S. F Works
                                         <span>
                                             Rating
                                         </span>
+
                                     </div>
 
-                                    <div>
+
+                                    <div class="worker-stat">
+
                                         <strong>
                                             {{ worker.total_reviews or 0 }}
                                         </strong>
@@ -291,9 +396,12 @@ Find Trusted Workers — S. F Works
                                         <span>
                                             Reviews
                                         </span>
+
                                     </div>
 
-                                    <div>
+
+                                    <div class="worker-stat">
+
                                         <strong>
                                             {{ worker.experience_years or 0 }}
                                         </strong>
@@ -301,38 +409,41 @@ Find Trusted Workers — S. F Works
                                         <span>
                                             Years
                                         </span>
+
                                     </div>
 
                                 </div>
 
 
+                                <!-- FOOTER -->
+
                                 <div class="worker-card-footer">
 
-                                    {% if worker.hourly_rate %}
+                                    <div class="worker-rate">
 
-                                        <div class="worker-rate">
+                                        {% if worker.hourly_rate %}
+
+                                            <span>
+                                                Starting from
+                                            </span>
 
                                             <strong>
                                                 ₹{{ worker.hourly_rate }}
                                             </strong>
 
-                                            <span>
+                                            <small>
                                                 / hour
-                                            </span>
+                                            </small>
 
-                                        </div>
+                                        {% else %}
 
-                                    {% else %}
-
-                                        <div class="worker-rate">
-
-                                            <span>
+                                            <span class="contact-pricing">
                                                 Contact for pricing
                                             </span>
 
-                                        </div>
+                                        {% endif %}
 
-                                    {% endif %}
+                                    </div>
 
 
                                     <a
@@ -342,8 +453,13 @@ Find Trusted Workers — S. F Works
                                         ) }}"
                                         class="worker-view-button"
                                     >
-                                        View Profile
-                                        <span>→</span>
+                                        <span>View Profile</span>
+                                        <span
+                                            class="view-arrow"
+                                            aria-hidden="true"
+                                        >
+                                            →
+                                        </span>
                                     </a>
 
                                 </div>
@@ -361,8 +477,12 @@ Find Trusted Workers — S. F Works
                 <div class="workers-empty">
 
                     <div class="empty-icon">
-                        🔎
+                        ⌕
                     </div>
+
+                    <span class="section-label">
+                        No results
+                    </span>
 
                     <h3>
                         No workers found
@@ -373,9 +493,7 @@ Find Trusted Workers — S. F Works
                     </p>
 
                     <a
-                        href="{{ url_for(
-                            'worker_public.workers_page'
-                        ) }}"
+                        href="{{ url_for('worker_public.workers_page') }}"
                         class="worker-reset-button"
                     >
                         View All Workers
