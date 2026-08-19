@@ -1,41 +1,84 @@
 /* =========================================================
-   S. F WORKS — PREMIUM PUBLIC WORKER PROFILE
+   S.F WORKS
+   PREMIUM PUBLIC WORKER PROFILE
+   FINAL PRODUCTION CSS
+========================================================= */
+
+
+/* =========================================================
+   ROOT PROFILE
 ========================================================= */
 
 .public-worker-profile {
+    --sf-primary: #6366f1;
+    --sf-primary-dark: #4f46e5;
+    --sf-secondary: #7c3aed;
+    --sf-cyan: #06b6d4;
+
+    --sf-dark: #0f172a;
+    --sf-dark-2: #1e293b;
+
+    --sf-text: #0f172a;
+    --sf-text-soft: #475569;
+    --sf-text-muted: #64748b;
+
+    --sf-border: #e2e8f0;
+
+    --sf-card: rgba(255, 255, 255, .97);
+
     min-height: 100vh;
+
+    color: var(--sf-text);
 
     background:
         radial-gradient(
-            circle at 10% 0%,
-            rgba(79, 70, 229, .06),
-            transparent 30%
+            circle at 8% 2%,
+            rgba(99, 102, 241, .10),
+            transparent 28%
         ),
-        #f6f7fb;
-
-    color: #111827;
+        radial-gradient(
+            circle at 92% 8%,
+            rgba(6, 182, 212, .08),
+            transparent 26%
+        ),
+        linear-gradient(
+            180deg,
+            #f8fafc 0%,
+            #f1f5f9 100%
+        );
 }
 
 
 /* =========================================================
-   COVER — SMALLER
+   COVER
 ========================================================= */
 
 .public-profile-cover {
     position: relative;
 
-    height: 285px;
+    height: 310px;
 
     overflow: hidden;
 
     background:
         linear-gradient(
             135deg,
-            #111827,
-            #1f2937 45%,
-            #312e81
+            #020617 0%,
+            #0f172a 35%,
+            #312e81 70%,
+            #4f46e5 100%
         );
+
+    isolation: isolate;
+
+    box-shadow:
+        0 20px 60px rgba(15, 23, 42, .20);
 }
+
+
+/* =========================================================
+   COVER IMAGE
+========================================================= */
 
 .public-cover-image {
     position: absolute;
@@ -48,18 +91,34 @@
     display: block;
 
     object-fit: cover;
+
     object-position: center;
+
+    filter:
+        saturate(1.08)
+        contrast(1.04)
+        brightness(.92);
 
     transform: scale(1.01);
 
     transition:
-        transform .8s ease,
+        transform .7s ease,
         filter .5s ease;
 }
 
 .public-profile-cover:hover .public-cover-image {
     transform: scale(1.035);
+
+    filter:
+        saturate(1.12)
+        contrast(1.05)
+        brightness(.96);
 }
+
+
+/* =========================================================
+   COVER FALLBACK
+========================================================= */
 
 .public-cover-placeholder {
     position: absolute;
@@ -68,45 +127,135 @@
 
     background:
         radial-gradient(
-            circle at 20% 20%,
-            rgba(99,102,241,.45),
-            transparent 35%
+            circle at 18% 25%,
+            rgba(129, 140, 248, .48),
+            transparent 30%
         ),
         radial-gradient(
-            circle at 80% 70%,
-            rgba(129,140,248,.25),
-            transparent 35%
+            circle at 82% 65%,
+            rgba(6, 182, 212, .25),
+            transparent 32%
         ),
         linear-gradient(
             135deg,
-            #111827,
+            #020617,
+            #1e1b4b 48%,
             #312e81
         );
 }
+
+
+/* =========================================================
+   COVER OVERLAY
+   IMPORTANT FOR TEXT VISIBILITY
+========================================================= */
 
 .cover-overlay {
     position: absolute;
 
     inset: 0;
 
+    z-index: 2;
+
     pointer-events: none;
 
     background:
         linear-gradient(
-            to bottom,
-            rgba(15,23,42,.05) 0%,
-            rgba(15,23,42,.18) 45%,
-            rgba(15,23,42,.82) 100%
+            180deg,
+            rgba(2, 6, 23, .08) 0%,
+            rgba(2, 6, 23, .20) 35%,
+            rgba(2, 6, 23, .58) 68%,
+            rgba(2, 6, 23, .94) 100%
         );
 }
 
 
 /* =========================================================
-   CONTAINER
+   COVER TOP CONTENT
+========================================================= */
+
+.cover-top-content {
+    position: absolute;
+
+    top: 24px;
+    right: 28px;
+
+    z-index: 5;
+}
+
+
+/* =========================================================
+   COVER VERIFIED BADGE
+========================================================= */
+
+.cover-verified-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        9px
+        14px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .18);
+
+    border-radius: 999px;
+
+    background:
+        rgba(15, 23, 42, .48);
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: .02em;
+
+    backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, .18);
+}
+
+.cover-verified-badge span {
+    display: grid;
+
+    place-items: center;
+
+    width: 19px;
+    height: 19px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
 ========================================================= */
 
 .public-profile-container {
-    width: min(1180px, calc(100% - 36px));
+    position: relative;
+
+    z-index: 10;
+
+    width:
+        min(
+            1180px,
+            calc(100% - 36px)
+        );
 
     margin: 0 auto;
 }
@@ -119,68 +268,68 @@
 .public-profile-header {
     position: relative;
 
-    z-index: 10;
+    z-index: 20;
 
     display: flex;
 
     align-items: flex-end;
 
-    gap: 28px;
+    gap: 30px;
 
-    min-height: 175px;
+    min-height: 190px;
 
-    margin-top: -95px;
+    margin-top: -110px;
 
     padding:
         0
-        30px
-        32px;
+        34px
+        34px;
 
-    color: #fff;
+    color: #ffffff;
 }
 
 
 /* =========================================================
-   AVATAR — FULL IMAGE
+   AVATAR
 ========================================================= */
 
 .public-avatar {
     position: relative;
 
-    flex: 0 0 158px;
+    flex:
+        0 0
+        172px;
 
-    width: 158px;
-    height: 158px;
+    width: 172px;
+    height: 172px;
 
     overflow: hidden;
 
-    border: 6px solid #fff;
+    border:
+        7px solid
+        rgba(255, 255, 255, .98);
 
     border-radius: 50%;
 
-    background: #eef2ff;
+    background:
+        linear-gradient(
+            145deg,
+            #eef2ff,
+            #c7d2fe
+        );
 
     box-shadow:
-        0 18px 45px rgba(0,0,0,.25),
-        0 0 0 1px rgba(255,255,255,.25);
+        0 22px 55px rgba(2, 6, 23, .38),
+        0 0 0 1px rgba(255, 255, 255, .35);
 
     isolation: isolate;
 }
 
-.public-avatar::after {
-    content: "";
 
-    position: absolute;
-
-    inset: 0;
-
-    border-radius: inherit;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.35);
-
-    pointer-events: none;
-}
+/* =========================================================
+   AVATAR IMAGE
+   FIXES WHITE AREA
+========================================================= */
 
 .public-avatar-image {
     width: 100%;
@@ -188,24 +337,24 @@
 
     display: block;
 
-    /*
-       contain ব্যবহার করা হয়েছে যাতে
-       সম্পূর্ণ profile image দেখা যায়।
-    */
-
-    object-fit: contain;
+    object-fit: cover;
 
     object-position: center;
 
-    background: #eef2ff;
+    background: transparent;
 
     transition:
         transform .45s ease;
 }
 
 .public-avatar:hover .public-avatar-image {
-    transform: scale(1.03);
+    transform: scale(1.035);
 }
+
+
+/* =========================================================
+   AVATAR FALLBACK
+========================================================= */
 
 .public-avatar-placeholder {
     width: 100%;
@@ -215,18 +364,44 @@
 
     place-items: center;
 
-    color: #4f46e5;
-
-    font-size: 58px;
-
-    font-weight: 900;
-
     background:
         linear-gradient(
             145deg,
             #eef2ff,
             #c7d2fe
         );
+
+    color: #4f46e5;
+
+    font-size: 58px;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   ONLINE DOT
+========================================================= */
+
+.avatar-online {
+    position: absolute;
+
+    right: 10px;
+    bottom: 10px;
+
+    width: 21px;
+    height: 21px;
+
+    border:
+        4px solid
+        #ffffff;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+        0 5px 15px rgba(34, 197, 94, .35);
 }
 
 
@@ -235,20 +410,20 @@
 ========================================================= */
 
 .public-profile-main {
+    position: relative;
+
+    z-index: 30;
+
     flex: 1;
 
     min-width: 0;
-
-    position: relative;
-
-    z-index: 12;
 
     padding-bottom: 2px;
 }
 
 
 /* =========================================================
-   PROFILE TITLE
+   TITLE ROW
 ========================================================= */
 
 .public-profile-title {
@@ -259,65 +434,135 @@
     justify-content: space-between;
 
     gap: 20px;
+
+    width: 100%;
 }
+
+
+/* =========================================================
+   HEADING
+========================================================= */
 
 .public-profile-heading {
-    min-width: 0;
-
     position: relative;
 
-    z-index: 13;
+    z-index: 40;
+
+    min-width: 0;
 }
+
+
+/* =========================================================
+   PROFESSION
+========================================================= */
 
 .public-profession {
     display: inline-flex;
 
     align-items: center;
 
-    margin-bottom: 5px;
+    max-width: 100%;
+
+    margin-bottom: 8px;
+
+    padding:
+        6px
+        11px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .18);
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, .10);
 
     color: #c7d2fe;
 
-    font-size: 12px;
+    font-size: 10px;
 
     font-weight: 850;
 
-    letter-spacing: .12em;
+    letter-spacing: .14em;
+
+    line-height: 1.2;
 
     text-transform: uppercase;
+
+    backdrop-filter: blur(12px);
 }
 
 
 /* =========================================================
-   NAME — FORCE VISIBLE
+   WORKER NAME
+   VERY IMPORTANT
 ========================================================= */
 
+.public-worker-name,
 .public-profile-title h1 {
-    display: block;
+    position: relative;
 
-    margin: 0 0 12px;
+    z-index: 50;
+
+    display: block !important;
+
+    width: 100%;
+
+    margin:
+        0
+        0
+        9px !important;
+
+    padding: 0;
 
     color: #ffffff !important;
 
     font-size:
         clamp(
-            28px,
+            30px,
             4vw,
-            43px
-        );
+            46px
+        ) !important;
 
-    font-weight: 850;
+    font-weight: 900;
 
-    line-height: 1.08;
+    line-height: 1.05;
 
-    letter-spacing: -.035em;
+    letter-spacing: -.045em;
 
     opacity: 1 !important;
 
     visibility: visible !important;
 
     text-shadow:
-        0 2px 15px rgba(0,0,0,.35);
+        0 3px 22px rgba(0, 0, 0, .55);
+}
+
+
+/* =========================================================
+   HEADLINE
+========================================================= */
+
+.public-worker-headline {
+    max-width: 680px;
+
+    margin:
+        0
+        0
+        14px;
+
+    color:
+        rgba(255, 255, 255, .88) !important;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    line-height: 1.55;
+
+    text-shadow:
+        0 2px 10px rgba(0, 0, 0, .25);
 }
 
 
@@ -326,37 +571,45 @@
 ========================================================= */
 
 .large-verified-badge {
+    position: relative;
+
+    z-index: 50;
+
     display: inline-flex;
 
     align-items: center;
 
     gap: 7px;
 
+    flex-shrink: 0;
+
+    margin-top: 3px;
+
     padding:
-        9px
-        14px;
+        8px
+        13px;
 
     border:
         1px solid
-        rgba(255,255,255,.5);
+        rgba(134, 239, 172, .40);
 
     border-radius: 999px;
 
     background:
-        rgba(255,255,255,.94);
+        rgba(240, 253, 244, .97);
 
     color: #166534;
 
-    font-size: 12px;
+    font-size: 11px;
 
     font-weight: 850;
 
     white-space: nowrap;
 
     box-shadow:
-        0 8px 25px rgba(0,0,0,.12);
+        0 10px 28px rgba(0, 0, 0, .20);
 
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
 }
 
 .large-verified-badge span {
@@ -371,14 +624,16 @@
 
     background: #16a34a;
 
-    color: #fff;
+    color: #ffffff;
 
-    font-size: 11px;
+    font-size: 10px;
+
+    font-weight: 900;
 }
 
 
 /* =========================================================
-   LOCATION — BIGGER
+   LOCATION
 ========================================================= */
 
 .public-location {
@@ -391,20 +646,23 @@
     margin:
         0
         0
-        20px;
+        18px;
 
     color:
-        rgba(255,255,255,.92) !important;
+        rgba(255, 255, 255, .92) !important;
 
-    font-size: 16px;
+    font-size: 14px;
 
-    font-weight: 600;
+    font-weight: 650;
 
     line-height: 1.5;
+
+    text-shadow:
+        0 2px 10px rgba(0, 0, 0, .3);
 }
 
 .public-location span {
-    font-size: 16px;
+    font-size: 15px;
 }
 
 
@@ -413,23 +671,44 @@
 ========================================================= */
 
 .public-profile-stats {
-    display: flex;
+    display: inline-flex;
 
     align-items: center;
 
-    flex-wrap: wrap;
+    padding:
+        10px
+        13px;
 
-    gap: 0;
+    border:
+        1px solid
+        rgba(255, 255, 255, .14);
+
+    border-radius: 15px;
+
+    background:
+        rgba(15, 23, 42, .34);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .08),
+        0 10px 30px rgba(0, 0, 0, .12);
+
+    backdrop-filter: blur(18px);
 }
 
 .profile-stat {
     position: relative;
 
-    min-width: 90px;
+    min-width: 84px;
 
-    padding-right: 25px;
+    padding-right: 18px;
 
-    margin-right: 25px;
+    margin-right: 18px;
+}
+
+.profile-stat:last-child {
+    padding-right: 0;
+
+    margin-right: 0;
 }
 
 .profile-stat:not(:last-child)::after {
@@ -437,26 +716,26 @@
 
     position: absolute;
 
+    top: 3px;
     right: 0;
 
-    top: 5px;
-
     width: 1px;
-
     height: 30px;
 
     background:
-        rgba(255,255,255,.2);
+        rgba(255, 255, 255, .18);
 }
 
 .public-profile-stats strong {
     display: block;
 
-    color: #fff;
+    color: #ffffff;
 
-    font-size: 20px;
+    font-size: 18px;
 
     font-weight: 850;
+
+    line-height: 1.2;
 }
 
 .public-profile-stats span {
@@ -465,20 +744,20 @@
     margin-top: 3px;
 
     color:
-        rgba(255,255,255,.62);
+        rgba(255, 255, 255, .62);
 
-    font-size: 10px;
+    font-size: 9px;
 
-    font-weight: 650;
+    font-weight: 700;
+
+    letter-spacing: .07em;
 
     text-transform: uppercase;
-
-    letter-spacing: .06em;
 }
 
 
 /* =========================================================
-   MAIN GRID
+   MAIN CONTENT GRID
 ========================================================= */
 
 .public-profile-grid {
@@ -491,7 +770,7 @@
     gap: 30px;
 
     padding:
-        42px
+        45px
         0
         90px;
 }
@@ -514,18 +793,17 @@
 
     padding: 30px;
 
-    background:
-        rgba(255,255,255,.96);
-
     border:
         1px solid
-        rgba(229,231,235,.9);
+        rgba(226, 232, 240, .95);
 
-    border-radius: 22px;
+    border-radius: 21px;
+
+    background:
+        rgba(255, 255, 255, .98);
 
     box-shadow:
-        0 8px 30px
-        rgba(15,23,42,.045);
+        0 10px 35px rgba(15, 23, 42, .055);
 
     transition:
         transform .25s ease,
@@ -535,54 +813,72 @@
 
 .profile-section:hover,
 .info-card:hover {
-    border-color: #dfe3f0;
+    transform: translateY(-2px);
+
+    border-color:
+        rgba(99, 102, 241, .20);
 
     box-shadow:
-        0 15px 40px
-        rgba(15,23,42,.07);
+        0 18px 45px rgba(15, 23, 42, .09);
 }
 
 
 /* =========================================================
-   SECTION HEADINGS
+   SECTION LABEL
 ========================================================= */
 
 .profile-section-label,
 .contact-label {
     display: inline-flex;
 
-    color: #4f46e5;
+    color: #6366f1;
 
-    font-size: 11px;
+    font-size: 10px;
 
     font-weight: 850;
 
-    letter-spacing: .13em;
+    letter-spacing: .16em;
+
+    line-height: 1.2;
 
     text-transform: uppercase;
 }
 
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
 .profile-section h2 {
     margin:
-        7px
+        8px
         0
         20px;
 
-    color: #111827;
+    color: #0f172a;
 
-    font-size: 25px;
+    font-size: 24px;
 
     font-weight: 850;
+
+    line-height: 1.2;
 
     letter-spacing: -.025em;
 }
 
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
 .about-text {
     margin: 0;
 
-    color: #4b5563;
+    color: #475569;
 
     font-size: 15px;
+
+    font-weight: 450;
 
     line-height: 1.85;
 
@@ -592,7 +888,11 @@
 .muted-text {
     margin: 0;
 
-    color: #9ca3af;
+    color: #64748b;
+
+    font-size: 14px;
+
+    line-height: 1.7;
 }
 
 
@@ -621,19 +921,23 @@
 
     border:
         1px solid
-        #e5e7eb;
+        #e2e8f0;
 
     border-radius: 999px;
 
     background:
         linear-gradient(
-            145deg,
-            #fff,
+            135deg,
+            #ffffff,
             #f8fafc
         );
 
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, .035);
+
     transition:
         transform .2s ease,
+        background .2s ease,
         border-color .2s ease,
         box-shadow .2s ease;
 }
@@ -643,23 +947,26 @@
 
     border-color: #c7d2fe;
 
+    background: #eef2ff;
+
     box-shadow:
-        0 7px 18px
-        rgba(79,70,229,.08);
+        0 8px 20px rgba(79, 70, 229, .08);
 }
 
-.skill-item span {
-    color: #1f2937;
+.skill-item .skill-name {
+    color: #1e293b;
 
     font-size: 13px;
 
     font-weight: 750;
 }
 
-.skill-item small {
-    color: #6b7280;
+.skill-item .skill-experience {
+    color: #64748b;
 
     font-size: 11px;
+
+    font-weight: 600;
 }
 
 
@@ -684,11 +991,14 @@
 
     border:
         1px solid
-        #e5e7eb;
+        #e2e8f0;
 
-    border-radius: 17px;
+    border-radius: 18px;
 
-    background: #fff;
+    background: #ffffff;
+
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, .04);
 
     transition:
         transform .25s ease,
@@ -699,18 +1009,22 @@
     transform: translateY(-4px);
 
     box-shadow:
-        0 15px 35px
-        rgba(15,23,42,.09);
+        0 18px 38px rgba(15, 23, 42, .10);
 }
 
 .portfolio-image {
     position: relative;
 
-    height: 205px;
+    height: 215px;
 
     overflow: hidden;
 
-    background: #f3f4f6;
+    background:
+        linear-gradient(
+            135deg,
+            #f1f5f9,
+            #e2e8f0
+        );
 }
 
 .portfolio-image img {
@@ -740,11 +1054,13 @@
         0
         8px;
 
-    color: #111827;
+    color: #0f172a;
 
     font-size: 16px;
 
     font-weight: 800;
+
+    line-height: 1.35;
 }
 
 .portfolio-content p {
@@ -753,7 +1069,7 @@
         0
         10px;
 
-    color: #6b7280;
+    color: #64748b;
 
     font-size: 13px;
 
@@ -761,9 +1077,11 @@
 }
 
 .portfolio-content time {
-    color: #9ca3af;
+    color: #94a3b8;
 
     font-size: 11px;
+
+    font-weight: 600;
 }
 
 
@@ -773,7 +1091,14 @@
 
 .public-profile-sidebar {
     position: relative;
+
+    min-width: 0;
 }
+
+
+/* =========================================================
+   CONTACT CARD
+========================================================= */
 
 .contact-card {
     position: sticky;
@@ -781,6 +1106,12 @@
     top: 22px;
 
     overflow: hidden;
+
+    border-color:
+        rgba(99, 102, 241, .16);
+
+    box-shadow:
+        0 18px 50px rgba(79, 70, 229, .10);
 }
 
 .contact-card::before {
@@ -789,19 +1120,17 @@
     position: absolute;
 
     top: 0;
-
     left: 0;
-
     right: 0;
 
-    height: 4px;
+    height: 5px;
 
     background:
         linear-gradient(
             90deg,
             #4f46e5,
             #7c3aed,
-            #2563eb
+            #06b6d4
         );
 }
 
@@ -809,13 +1138,15 @@
     margin:
         9px
         0
-        8px;
+        9px;
 
-    color: #111827;
+    color: #0f172a;
 
     font-size: 23px;
 
     font-weight: 850;
+
+    line-height: 1.25;
 
     letter-spacing: -.025em;
 }
@@ -823,11 +1154,11 @@
 .contact-card p {
     margin: 0;
 
-    color: #6b7280;
+    color: #64748b;
 
     font-size: 14px;
 
-    line-height: 1.65;
+    line-height: 1.7;
 }
 
 
@@ -852,15 +1183,15 @@
 
     border-top:
         1px solid
-        #eef0f3;
+        #e2e8f0;
 
     border-bottom:
         1px solid
-        #eef0f3;
+        #e2e8f0;
 }
 
 .minimum-charge span {
-    color: #6b7280;
+    color: #64748b;
 
     font-size: 12px;
 
@@ -868,7 +1199,7 @@
 }
 
 .minimum-charge strong {
-    color: #111827;
+    color: #0f172a;
 
     font-size: 21px;
 
@@ -892,9 +1223,9 @@
 
     width: 100%;
 
-    min-height: 48px;
+    min-height: 49px;
 
-    border-radius: 12px;
+    border-radius: 13px;
 
     text-decoration: none;
 
@@ -909,38 +1240,42 @@
 }
 
 .hire-button {
-    color: #fff;
+    color: #ffffff;
 
     background:
         linear-gradient(
             135deg,
             #4f46e5,
-            #6366f1
+            #7c3aed
         );
 
     box-shadow:
-        0 10px 22px
-        rgba(79,70,229,.22);
+        0 12px 28px
+        rgba(79, 70, 229, .25);
 }
 
 .hire-button:hover {
     transform: translateY(-2px);
 
+    color: #ffffff;
+
     box-shadow:
-        0 14px 28px
-        rgba(79,70,229,.3);
+        0 16px 34px
+        rgba(79, 70, 229, .32);
 }
 
 .back-workers-button {
     margin-top: 10px;
 
-    color: #374151;
+    color: #334155;
 
-    background: #f3f4f6;
+    background: #f1f5f9;
 }
 
 .back-workers-button:hover {
-    background: #e5e7eb;
+    color: #0f172a;
+
+    background: #e2e8f0;
 }
 
 
@@ -954,7 +1289,7 @@
         0
         8px;
 
-    color: #111827;
+    color: #0f172a;
 
     font-size: 17px;
 
@@ -976,7 +1311,7 @@
 
     border-bottom:
         1px solid
-        #eef0f3;
+        #eef2f7;
 }
 
 .info-row:last-of-type {
@@ -984,7 +1319,7 @@
 }
 
 .info-row span {
-    color: #6b7280;
+    color: #64748b;
 
     font-size: 12px;
 
@@ -994,14 +1329,21 @@
 .info-row strong {
     max-width: 60%;
 
-    color: #1f2937;
+    color: #1e293b;
 
     font-size: 13px;
 
     font-weight: 750;
 
+    line-height: 1.45;
+
     text-align: right;
 }
+
+
+/* =========================================================
+   AVAILABLE
+========================================================= */
 
 .available-now {
     display: flex;
@@ -1022,7 +1364,12 @@
 
     border-radius: 10px;
 
-    background: #f0fdf4;
+    background:
+        linear-gradient(
+            135deg,
+            #f0fdf4,
+            #ecfdf5
+        );
 
     color: #166534;
 
@@ -1032,7 +1379,31 @@
 }
 
 .available-now span {
+    color: #16a34a;
+
     font-size: 11px;
+}
+
+.not-available {
+    margin-top: 15px;
+
+    padding:
+        10px
+        12px;
+
+    border:
+        1px solid
+        #fecaca;
+
+    border-radius: 10px;
+
+    background: #fef2f2;
+
+    color: #991b1b;
+
+    font-size: 12px;
+
+    font-weight: 700;
 }
 
 
@@ -1043,15 +1414,17 @@
 @media (max-width: 900px) {
 
     .public-profile-cover {
-        height: 260px;
+        height: 275px;
     }
 
     .public-profile-header {
-        margin-top: -85px;
+        margin-top: -95px;
     }
 
     .public-profile-grid {
         grid-template-columns: 1fr;
+
+        padding-top: 35px;
     }
 
     .contact-card {
@@ -1069,90 +1442,148 @@
 
     .public-profile-container {
         width:
-            min(
-                100% - 22px,
-                1180px
-            );
+            calc(100% - 22px);
     }
 
+
     .public-profile-cover {
-        height: 210px;
+        height: 220px;
     }
+
+
+    .cover-top-content {
+        top: 14px;
+        right: 14px;
+    }
+
+
+    .cover-verified-badge {
+        padding:
+            7px
+            10px;
+
+        font-size: 10px;
+    }
+
 
     .public-profile-header {
         flex-direction: column;
 
         align-items: flex-start;
 
-        gap: 15px;
+        gap: 16px;
 
-        margin-top: -65px;
+        margin-top: -72px;
 
         padding:
             0
             12px
-            25px;
+            28px;
     }
 
+
     .public-avatar {
-        width: 125px;
+        width: 132px;
+        height: 132px;
 
-        height: 125px;
-
-        flex-basis: 125px;
+        flex-basis: 132px;
 
         border-width: 5px;
     }
 
-    .public-profile-title {
-        flex-direction: column;
 
-        gap: 10px;
+    .avatar-online {
+        right: 6px;
+        bottom: 6px;
+    }
 
+
+    .public-profile-main {
         width: 100%;
     }
 
-    .public-profile-title h1 {
-        font-size: 29px;
+
+    .public-profile-title {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 9px;
     }
+
+
+    .public-worker-name,
+    .public-profile-title h1 {
+        font-size: 30px !important;
+
+        line-height: 1.08;
+    }
+
+
+    .public-worker-headline {
+        font-size: 13px;
+
+        line-height: 1.55;
+    }
+
 
     .large-verified-badge {
         align-self: flex-start;
     }
 
+
     .public-location {
-        font-size: 15px;
-
-        margin-bottom: 18px;
+        font-size: 14px;
     }
 
-    .public-location span {
-        font-size: 15px;
-    }
 
     .public-profile-stats {
         width: 100%;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 10px;
+
+        padding: 12px;
     }
+
 
     .profile-stat {
-        min-width: 78px;
+        min-width: 0;
 
-        padding-right: 14px;
+        padding: 0;
 
-        margin-right: 14px;
+        margin: 0;
     }
+
 
     .profile-stat:not(:last-child)::after {
         display: none;
     }
 
-    .public-profile-grid {
-        padding-top: 18px;
 
-        padding-bottom: 55px;
+    .public-profile-stats strong {
+        font-size: 18px;
+    }
+
+
+    .public-profile-stats span {
+        font-size: 9px;
+    }
+
+
+    .public-profile-grid {
+        padding:
+            20px
+            0
+            55px;
 
         gap: 18px;
     }
+
 
     .profile-section,
     .info-card,
@@ -1162,12 +1593,19 @@
         border-radius: 18px;
     }
 
+
     .profile-section h2 {
         font-size: 22px;
     }
 
+
     .portfolio-grid {
         grid-template-columns: 1fr;
+    }
+
+
+    .portfolio-image {
+        height: 205px;
     }
 
 }
@@ -1180,55 +1618,62 @@
 @media (max-width: 420px) {
 
     .public-profile-cover {
-        height: 185px;
+        height: 195px;
     }
+
+
+    .public-profile-header {
+        margin-top: -62px;
+    }
+
 
     .public-avatar {
-        width: 110px;
+        width: 112px;
+        height: 112px;
 
-        height: 110px;
-
-        flex-basis: 110px;
+        flex-basis: 112px;
     }
 
+
+    .public-worker-name,
     .public-profile-title h1 {
-        font-size: 26px;
+        font-size: 27px !important;
     }
+
+
+    .public-profession {
+        font-size: 9px;
+
+        padding:
+            5px
+            9px;
+    }
+
+
+    .public-worker-headline {
+        font-size: 12px;
+    }
+
 
     .public-location {
-        font-size: 14px;
+        font-size: 13px;
     }
 
-    .public-location span {
-        font-size: 14px;
-    }
-
-    .public-profile-stats {
-        display: grid;
-
-        grid-template-columns:
-            repeat(
-                2,
-                1fr
-            );
-
-        gap: 14px;
-    }
-
-    .profile-stat {
-        min-width: 0;
-
-        padding: 0;
-
-        margin: 0;
-    }
 
     .public-profile-stats strong {
-        font-size: 18px;
+        font-size: 17px;
     }
 
+
     .public-profile-stats span {
-        font-size: 9px;
+        font-size: 8px;
+    }
+
+
+    .profile-section,
+    .info-card,
+    .contact-card {
+        padding: 18px;
     }
 
 }
@@ -1245,80 +1690,48 @@
     *::after {
         scroll-behavior: auto !important;
 
-        transition: none !important;
-
         animation: none !important;
+
+        transition: none !important;
     }
 
-   }
+}
+
+
 /* =========================================================
-   WORKER NAME
+   IMAGE FALLBACK SAFETY
 ========================================================= */
 
+.public-cover-image[style*="display: none"] {
+    display: none !important;
+}
+
+.public-avatar-image[style*="display: none"] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   TEXT SAFETY
+========================================================= */
+
+.public-worker-name,
+.public-profile-title h1,
+.public-worker-headline,
+.public-profession,
+.public-location,
+.public-profile-stats {
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   FINAL LAYER
+   Keeps important profile text visible
+========================================================= */
+
+.public-profile-main,
+.public-profile-heading,
 .public-worker-name {
-    display: block;
-
-    margin: 0 0 8px;
-
-    color: #ffffff !important;
-
-    font-size: clamp(28px, 4vw, 43px);
-
-    font-weight: 850;
-
-    line-height: 1.08;
-
-    letter-spacing: -.035em;
-
-    opacity: 1 !important;
-
-    visibility: visible !important;
-
-    text-shadow:
-        0 2px 15px rgba(0,0,0,.35);
-}
-
-
-/* =========================================================
-   WORKER HEADLINE
-========================================================= */
-
-.public-worker-headline {
-    margin: 0 0 14px;
-
-    color: rgba(255,255,255,.82);
-
-    font-size: 14px;
-
-    font-weight: 500;
-
-    line-height: 1.5;
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 650px) {
-
-    .public-worker-name {
-        font-size: 29px;
-    }
-
-    .public-worker-headline {
-        font-size: 13px;
-
-        margin-bottom: 12px;
-    }
-
-}
-
-
-@media (max-width: 420px) {
-
-    .public-worker-name {
-        font-size: 26px;
-    }
-
-}
+    isolation: isolate;
+   }
