@@ -11,18 +11,9 @@ import cloudinary.uploader
 def init_cloudinary():
 
     cloudinary.config(
-        cloud_name=os.getenv(
-            "CLOUDINARY_CLOUD_NAME"
-        ),
-
-        api_key=os.getenv(
-            "CLOUDINARY_API_KEY"
-        ),
-
-        api_secret=os.getenv(
-            "CLOUDINARY_API_SECRET"
-        ),
-
+        cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.getenv("CLOUDINARY_API_KEY"),
+        api_secret=os.getenv("CLOUDINARY_API_SECRET"),
         secure=True
     )
 
@@ -38,7 +29,7 @@ ALLOWED_IMAGE_EXTENSIONS = {
     "webp"
 }
 
-MAX_IMAGE_SIZE = 8 * 1024 * 1024  # 8 MB
+MAX_IMAGE_SIZE = 8 * 1024 * 1024
 
 
 def validate_image(file):
@@ -58,10 +49,7 @@ def validate_image(file):
     if "." not in filename:
         return False
 
-    extension = filename.rsplit(
-        ".",
-        1
-    )[1]
+    extension = filename.rsplit(".", 1)[1]
 
     if extension not in ALLOWED_IMAGE_EXTENSIONS:
         return False
@@ -74,7 +62,7 @@ def validate_image(file):
 
         file.seek(0, os.SEEK_END)
 
-        file_size = file.tell()
+        size = file.tell()
 
         file.seek(0)
 
@@ -82,10 +70,10 @@ def validate_image(file):
 
         return False
 
-    if file_size > MAX_IMAGE_SIZE:
+    if size <= 0:
         return False
 
-    if file_size <= 0:
+    if size > MAX_IMAGE_SIZE:
         return False
 
     return True
@@ -108,15 +96,10 @@ def upload_image(
 
     result = cloudinary.uploader.upload(
         file,
-
         folder=folder,
-
         resource_type="image",
-
         overwrite=False,
-
         use_filename=False,
-
         unique_filename=True
     )
 
@@ -127,16 +110,13 @@ def upload_image(
 # DELETE IMAGE FROM CLOUDINARY
 # =========================================================
 
-def delete_image(
-    image_url
-):
+def delete_image(image_url):
 
     if not image_url:
         return
 
     try:
 
-        # Extract public_id from Cloudinary URL
         if "res.cloudinary.com" not in image_url:
             return
 
@@ -147,17 +127,19 @@ def delete_image(
 
         path = parts[1]
 
-        # Remove transformations
         path_parts = path.split("/")
 
-        if path_parts[0].startswith("v"):
+        # Remove transformations if present
+        while path_parts and (
+            path_parts[0].startswith("v")
+            and path_parts[0][1:].isdigit()
+        ):
             path_parts = path_parts[1:]
 
         public_id_with_extension = "/".join(
             path_parts
         )
 
-        # Remove extension
         public_id = public_id_with_extension.rsplit(
             ".",
             1
