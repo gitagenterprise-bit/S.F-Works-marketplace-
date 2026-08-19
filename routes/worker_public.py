@@ -19,10 +19,10 @@ worker_public_bp = Blueprint(
 )
 
 
-# ============================================================
+# =========================================================
 # PUBLIC WORKERS
 # GET /workers
-# ============================================================
+# =========================================================
 
 @worker_public_bp.route(
     "/workers",
@@ -54,16 +54,19 @@ def workers_page():
         type=str
     ).strip()
 
-    query = (
-        WorkerProfile.query
-        .filter(
-            WorkerProfile.profile_completed.is_(True)
-        )
+    available = request.args.get(
+        "available",
+        "",
+        type=str
+    ).strip()
+
+    query = WorkerProfile.query.filter(
+        WorkerProfile.profile_completed.is_(True)
     )
 
-    # --------------------------------------------------------
-    # Search
-    # --------------------------------------------------------
+    # =====================================================
+    # SEARCH
+    # =====================================================
 
     if search:
 
@@ -79,9 +82,9 @@ def workers_page():
             )
         )
 
-    # --------------------------------------------------------
-    # City
-    # --------------------------------------------------------
+    # =====================================================
+    # CITY
+    # =====================================================
 
     if city:
 
@@ -91,9 +94,9 @@ def workers_page():
             )
         )
 
-    # --------------------------------------------------------
-    # Profession
-    # --------------------------------------------------------
+    # =====================================================
+    # PROFESSION
+    # =====================================================
 
     if profession:
 
@@ -103,9 +106,9 @@ def workers_page():
             )
         )
 
-    # --------------------------------------------------------
-    # Verified
-    # --------------------------------------------------------
+    # =====================================================
+    # VERIFIED
+    # =====================================================
 
     if verified == "1":
 
@@ -113,14 +116,25 @@ def workers_page():
             WorkerProfile.is_verified.is_(True)
         )
 
-    # --------------------------------------------------------
-    # Ordering
-    # --------------------------------------------------------
+    # =====================================================
+    # AVAILABLE
+    # =====================================================
+
+    if available == "1":
+
+        query = query.filter(
+            WorkerProfile.is_available.is_(True)
+        )
+
+    # =====================================================
+    # ORDER
+    # =====================================================
 
     workers = (
         query
         .order_by(
             WorkerProfile.is_verified.desc(),
+            WorkerProfile.is_available.desc(),
             WorkerProfile.rating.desc(),
             WorkerProfile.total_reviews.desc(),
             WorkerProfile.created_at.desc()
@@ -134,14 +148,15 @@ def workers_page():
         search=search,
         city=city,
         profession=profession,
-        verified=verified
+        verified=verified,
+        available=available
     )
 
 
-# ============================================================
+# =========================================================
 # PUBLIC WORKER PROFILE
 # GET /workers/<worker_id>
-# ============================================================
+# =========================================================
 
 @worker_public_bp.route(
     "/workers/<int:worker_id>",
@@ -160,9 +175,11 @@ def worker_public_profile(worker_id):
             "errors/404.html"
         ), 404
 
-    # --------------------------------------------------------
-    # Skills
-    # --------------------------------------------------------
+    if not worker.profile_completed:
+
+        return render_template(
+            "errors/404.html"
+        ), 404
 
     skills = (
         WorkerSkill.query
@@ -170,14 +187,11 @@ def worker_public_profile(worker_id):
             worker_id=worker.id
         )
         .order_by(
-            WorkerSkill.experience_years.desc()
+            WorkerSkill.experience_years.desc(),
+            WorkerSkill.skill_name.asc()
         )
         .all()
     )
-
-    # --------------------------------------------------------
-    # Portfolio
-    # --------------------------------------------------------
 
     portfolio_items = (
         WorkerPortfolio.query
@@ -196,4 +210,4 @@ def worker_public_profile(worker_id):
         worker=worker,
         skills=skills,
         portfolio_items=portfolio_items
-  )
+    )
