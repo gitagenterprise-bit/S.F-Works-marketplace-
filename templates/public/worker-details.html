@@ -192,20 +192,19 @@
                         {% endif %}
 
 
-                        <h1>
+                        <h1 class="public-worker-name">
 
-                            {% if worker.headline %}
-
-                                {{ worker.headline }}
-
-                            {% else %}
-
-                                Professional
-                                {{ worker.profession or "Worker" }}
-
-                            {% endif %}
+                            {{ worker.name or "Professional Worker" }}
 
                         </h1>
+
+                        {% if worker.headline %}
+
+                            <p class="public-worker-headline">
+                            {{ worker.headline }}
+                            </p>
+
+                        {% endif %}
 
                     </div>
 
