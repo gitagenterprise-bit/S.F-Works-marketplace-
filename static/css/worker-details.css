@@ -1251,3 +1251,74 @@
     }
 
    }
+/* =========================================================
+   WORKER NAME
+========================================================= */
+
+.public-worker-name {
+    display: block;
+
+    margin: 0 0 8px;
+
+    color: #ffffff !important;
+
+    font-size: clamp(28px, 4vw, 43px);
+
+    font-weight: 850;
+
+    line-height: 1.08;
+
+    letter-spacing: -.035em;
+
+    opacity: 1 !important;
+
+    visibility: visible !important;
+
+    text-shadow:
+        0 2px 15px rgba(0,0,0,.35);
+}
+
+
+/* =========================================================
+   WORKER HEADLINE
+========================================================= */
+
+.public-worker-headline {
+    margin: 0 0 14px;
+
+    color: rgba(255,255,255,.82);
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .public-worker-name {
+        font-size: 29px;
+    }
+
+    .public-worker-headline {
+        font-size: 13px;
+
+        margin-bottom: 12px;
+    }
+
+}
+
+
+@media (max-width: 420px) {
+
+    .public-worker-name {
+        font-size: 26px;
+    }
+
+}
