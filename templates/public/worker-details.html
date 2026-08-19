@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{ worker.profession }} — S. F Works
+    {{ worker.profession }} — S. F Works
 {% endblock %}
 
 
@@ -23,76 +23,134 @@
 <main class="public-worker-profile">
 
     <!-- =====================================================
-         COVER
+         PROFILE COVER
     ====================================================== -->
-<section class="public-profile-cover">
 
-    {% if worker.cover_image %}
+    <section
+        class="public-profile-cover"
+        aria-label="Worker cover image"
+    >
 
-        <img
-            src="{{ worker.cover_image }}"
-            alt="{{ worker.profession }} cover"
-        >
+        {% if worker.cover_image %}
 
-    {% endif %}
+            <img
+                class="public-cover-image"
+                src="{{ worker.cover_image }}"
+                alt="{{ worker.profession }} cover"
+                loading="eager"
+                decoding="async"
+            >
 
-    <div class="cover-overlay"></div>
+        {% else %}
 
-</section>
+            <div
+                class="public-cover-placeholder"
+                aria-hidden="true"
+            ></div>
+
+        {% endif %}
+
+        <div
+            class="cover-overlay"
+            aria-hidden="true"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN PROFILE CONTAINER
+    ====================================================== -->
 
     <div class="public-profile-container">
+
 
         <!-- =================================================
              PROFILE HEADER
         ================================================== -->
 
-        <section class="public-profile-header">
+        <section
+            class="public-profile-header"
+            aria-label="Worker profile"
+        >
+
+            <!-- =============================================
+                 PROFILE AVATAR
+            ============================================== -->
 
             <div class="public-avatar">
 
-    {% if worker.profile_image %}
+                {% if worker.profile_image %}
 
-        <img
-            src="{{ worker.profile_image }}"
-            alt="{{ worker.profession }}"
-        >
+                    <img
+                        class="public-avatar-image"
+                        src="{{ worker.profile_image }}"
+                        alt="{{ worker.profession }}"
+                        loading="eager"
+                        decoding="async"
+                    >
 
-    {% else %}
+                {% else %}
 
-        <span>
-            {{ worker.profession[:1]|upper }}
-        </span>
+                    <span
+                        class="public-avatar-placeholder"
+                        aria-hidden="true"
+                    >
+                        {{ worker.profession[:1]|upper }}
+                    </span>
 
-    {% endif %}
+                {% endif %}
 
             </div>
 
+
+            <!-- =============================================
+                 PROFILE MAIN INFORMATION
+            ============================================== -->
 
             <div class="public-profile-main">
 
                 <div class="public-profile-title">
 
-                    <div>
+                    <div class="public-profile-heading">
 
-                        <span class="public-profession">
-                            {{ worker.profession }}
-                        </span>
+                        {% if worker.profession %}
+
+                            <span class="public-profession">
+                                {{ worker.profession }}
+                            </span>
+
+                        {% endif %}
+
 
                         <h1>
+
                             {% if worker.headline %}
+
                                 {{ worker.headline }}
+
                             {% else %}
-                                Professional {{ worker.profession }}
+
+                                Professional
+                                {{ worker.profession }}
+
                             {% endif %}
+
                         </h1>
 
                     </div>
 
 
+                    <!-- VERIFIED BADGE -->
+
                     {% if worker.is_verified %}
 
-                        <span class="large-verified-badge">
-                            ✓ Verified Worker
+                        <span
+                            class="large-verified-badge"
+                            aria-label="Verified worker"
+                        >
+                            <span aria-hidden="true">✓</span>
+                            Verified Worker
                         </span>
 
                     {% endif %}
@@ -100,21 +158,46 @@
                 </div>
 
 
-                {% if worker.city %}
+                <!-- LOCATION -->
+
+                {% if worker.city or worker.state %}
 
                     <p class="public-location">
-                        📍 {{ worker.city }}
-                        {% if worker.state %}
-                            , {{ worker.state }}
+
+                        <span aria-hidden="true">
+                            📍
+                        </span>
+
+                        {% if worker.city %}
+                            {{ worker.city }}
                         {% endif %}
+
+                        {% if worker.city and worker.state %}
+                            ,
+                        {% endif %}
+
+                        {% if worker.state %}
+                            {{ worker.state }}
+                        {% endif %}
+
                     </p>
 
                 {% endif %}
 
 
-                <div class="public-profile-stats">
+                <!-- =========================================
+                     PROFILE STATS
+                ========================================== -->
 
-                    <div>
+                <div
+                    class="public-profile-stats"
+                    aria-label="Worker statistics"
+                >
+
+                    <!-- Rating -->
+
+                    <div class="profile-stat">
+
                         <strong>
                             {{ worker.rating or 0 }}
                         </strong>
@@ -122,9 +205,14 @@
                         <span>
                             Rating
                         </span>
+
                     </div>
 
-                    <div>
+
+                    <!-- Reviews -->
+
+                    <div class="profile-stat">
+
                         <strong>
                             {{ worker.total_reviews or 0 }}
                         </strong>
@@ -132,9 +220,14 @@
                         <span>
                             Reviews
                         </span>
+
                     </div>
 
-                    <div>
+
+                    <!-- Completed Jobs -->
+
+                    <div class="profile-stat">
+
                         <strong>
                             {{ worker.completed_jobs or 0 }}
                         </strong>
@@ -142,9 +235,14 @@
                         <span>
                             Jobs Completed
                         </span>
+
                     </div>
 
-                    <div>
+
+                    <!-- Experience -->
+
+                    <div class="profile-stat">
+
                         <strong>
                             {{ worker.experience_years or 0 }}
                         </strong>
@@ -152,6 +250,7 @@
                         <span>
                             Years Experience
                         </span>
+
                     </div>
 
                 </div>
@@ -167,9 +266,17 @@
 
         <div class="public-profile-grid">
 
+
+            <!-- =================================================
+                 MAIN CONTENT
+            ================================================== -->
+
             <div class="public-profile-content">
 
-                <!-- ABOUT -->
+
+                <!-- =============================================
+                     ABOUT SECTION
+                ============================================== -->
 
                 {% if worker.about %}
 
@@ -192,7 +299,9 @@
                 {% endif %}
 
 
-                <!-- SKILLS -->
+                <!-- =============================================
+                     SKILLS & EXPERTISE
+                ============================================== -->
 
                 <section class="profile-section">
 
@@ -201,7 +310,7 @@
                     </span>
 
                     <h2>
-                        Skills & Expertise
+                        Skills &amp; Expertise
                     </h2>
 
 
@@ -213,15 +322,23 @@
 
                                 <div class="skill-item">
 
-                                    <span>
+                                    <span class="skill-name">
                                         {{ skill.skill_name }}
                                     </span>
 
+
                                     {% if skill.experience_years is not none %}
 
-                                        <small>
+                                        <small class="skill-experience">
+
                                             {{ skill.experience_years }}
-                                            years
+
+                                            {% if skill.experience_years == 1 %}
+                                                year
+                                            {% else %}
+                                                years
+                                            {% endif %}
+
                                         </small>
 
                                     {% endif %}
@@ -243,7 +360,9 @@
                 </section>
 
 
-                <!-- PORTFOLIO -->
+                <!-- =============================================
+                     PORTFOLIO
+                ============================================== -->
 
                 <section class="profile-section">
 
@@ -262,30 +381,37 @@
 
                             {% for item in portfolio_items %}
 
-                                <article class="portfolio-card">
+                                <article
+                                    class="portfolio-card"
+                                >
+
+
+                                    <!-- PORTFOLIO IMAGE -->
 
                                     {% if item.image_path %}
 
                                         <div class="portfolio-image">
 
                                             <img
-    src="{{ url_for(
-        'static',
-        filename=item.image_path
-    ) }}"
-    alt="{{ item.title }}"
-    loading="lazy"
->
+                                                src="{{ item.image_path }}"
+                                                alt="{{ item.title }}"
+                                                loading="lazy"
+                                                decoding="async"
+                                            >
+
                                         </div>
 
                                     {% endif %}
 
+
+                                    <!-- PORTFOLIO CONTENT -->
 
                                     <div class="portfolio-content">
 
                                         <h3>
                                             {{ item.title }}
                                         </h3>
+
 
                                         {% if item.description %}
 
@@ -295,9 +421,12 @@
 
                                         {% endif %}
 
+
                                         {% if item.project_date %}
 
-                                            <time>
+                                            <time
+                                                datetime="{{ item.project_date.strftime('%Y-%m-%d') }}"
+                                            >
                                                 {{ item.project_date.strftime(
                                                     '%d %b %Y'
                                                 ) }}
@@ -315,9 +444,13 @@
 
                     {% else %}
 
-                        <p class="muted-text">
-                            No portfolio projects available.
-                        </p>
+                        <div class="portfolio-empty">
+
+                            <p class="muted-text">
+                                No portfolio projects available.
+                            </p>
+
+                        </div>
 
                     {% endif %}
 
@@ -330,7 +463,15 @@
                  SIDEBAR
             ================================================== -->
 
-            <aside class="public-profile-sidebar">
+            <aside
+                class="public-profile-sidebar"
+                aria-label="Worker information"
+            >
+
+
+                <!-- =============================================
+                     HIRE CARD
+                ============================================== -->
 
                 <div class="contact-card">
 
@@ -338,9 +479,12 @@
                         Hire this worker
                     </span>
 
+
                     <h2>
-                        Need {{ worker.profession|lower }}?
+                        Need
+                        {{ worker.profession|lower }}?
                     </h2>
+
 
                     <p>
                         Connect with this professional
@@ -369,8 +513,17 @@
                         href="/post-job"
                         class="hire-button"
                     >
-                        Post a Job
-                        <span>→</span>
+
+                        <span>
+                            Post a Job
+                        </span>
+
+                        <span
+                            aria-hidden="true"
+                        >
+                            →
+                        </span>
+
                     </a>
 
 
@@ -380,19 +533,32 @@
                         ) }}"
                         class="back-workers-button"
                     >
-                        ← Browse Workers
+
+                        <span aria-hidden="true">
+                            ←
+                        </span>
+
+                        <span>
+                            Browse Workers
+                        </span>
+
                     </a>
 
                 </div>
 
 
-                <!-- SERVICE AREA -->
+                <!-- =============================================
+                     SERVICE INFORMATION
+                ============================================== -->
 
                 <div class="info-card">
 
                     <h3>
                         Service Information
                     </h3>
+
+
+                    <!-- SERVICE AREA -->
 
                     {% if worker.service_area %}
 
@@ -411,6 +577,8 @@
                     {% endif %}
 
 
+                    <!-- SERVICE RADIUS -->
+
                     {% if worker.service_radius_km %}
 
                         <div class="info-row">
@@ -420,13 +588,16 @@
                             </span>
 
                             <strong>
-                                {{ worker.service_radius_km }} km
+                                {{ worker.service_radius_km }}
+                                km
                             </strong>
 
                         </div>
 
                     {% endif %}
 
+
+                    <!-- AVAILABILITY -->
 
                     {% if worker.availability %}
 
@@ -445,13 +616,130 @@
                     {% endif %}
 
 
+                    <!-- CURRENT STATUS -->
+
                     {% if worker.is_available %}
 
                         <div class="available-now">
-                            ● Currently available
+
+                            <span
+                                aria-hidden="true"
+                            >
+                                ●
+                            </span>
+
+                            Currently available
+
                         </div>
 
                     {% endif %}
+
+                </div>
+
+
+                <!-- =============================================
+                     LOCATION INFORMATION
+                ============================================== -->
+
+                {% if worker.city or worker.state %}
+
+                    <div class="info-card">
+
+                        <h3>
+                            Location
+                        </h3>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                City
+                            </span>
+
+                            <strong>
+                                {{ worker.city or "—" }}
+                            </strong>
+
+                        </div>
+
+
+                        {% if worker.state %}
+
+                            <div class="info-row">
+
+                                <span>
+                                    State
+                                </span>
+
+                                <strong>
+                                    {{ worker.state }}
+                                </strong>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- =============================================
+                     EXPERIENCE
+                ============================================== -->
+
+                <div class="info-card">
+
+                    <h3>
+                        Professional Experience
+                    </h3>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Experience
+                        </span>
+
+                        <strong>
+
+                            {{ worker.experience_years or 0 }}
+
+                            {% if worker.experience_years == 1 %}
+                                year
+                            {% else %}
+                                years
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Jobs completed
+                        </span>
+
+                        <strong>
+                            {{ worker.completed_jobs or 0 }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Total jobs
+                        </span>
+
+                        <strong>
+                            {{ worker.total_jobs or 0 }}
+                        </strong>
+
+                    </div>
 
                 </div>
 
