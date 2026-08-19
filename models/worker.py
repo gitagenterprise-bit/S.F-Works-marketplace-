@@ -18,8 +18,8 @@ class WorkerProfile(db.Model):
             "users.id",
             ondelete="CASCADE"
         ),
-        unique=True,
         nullable=False,
+        unique=True,
         index=True
     )
 
@@ -30,7 +30,7 @@ class WorkerProfile(db.Model):
     profession = db.Column(
         db.String(100),
         nullable=False,
-        index=True
+        default=""
     )
 
     headline = db.Column(
@@ -63,6 +63,7 @@ class WorkerProfile(db.Model):
 
     experience_years = db.Column(
         db.Integer,
+        nullable=False,
         default=0
     )
 
@@ -87,15 +88,18 @@ class WorkerProfile(db.Model):
 
     city = db.Column(
         db.String(100),
+        nullable=True,
         index=True
     )
 
     state = db.Column(
-        db.String(100)
+        db.String(100),
+        nullable=True
     )
 
     pincode = db.Column(
-        db.String(10)
+        db.String(10),
+        nullable=True
     )
 
     latitude = db.Column(
@@ -133,8 +137,8 @@ class WorkerProfile(db.Model):
 
     is_available = db.Column(
         db.Boolean,
-        default=True,
-        nullable=False
+        nullable=False,
+        default=True
     )
 
     # =====================================================
@@ -143,13 +147,16 @@ class WorkerProfile(db.Model):
 
     is_verified = db.Column(
         db.Boolean,
+        nullable=False,
         default=False,
-        nullable=False
+        index=True
     )
 
     verification_status = db.Column(
         db.String(30),
-        default="pending"
+        nullable=False,
+        default="pending",
+        index=True
     )
 
     # =====================================================
@@ -158,11 +165,13 @@ class WorkerProfile(db.Model):
 
     rating = db.Column(
         db.Numeric(3, 2),
+        nullable=False,
         default=0.00
     )
 
     total_reviews = db.Column(
         db.Integer,
+        nullable=False,
         default=0
     )
 
@@ -172,11 +181,13 @@ class WorkerProfile(db.Model):
 
     total_jobs = db.Column(
         db.Integer,
+        nullable=False,
         default=0
     )
 
     completed_jobs = db.Column(
         db.Integer,
+        nullable=False,
         default=0
     )
 
@@ -186,8 +197,9 @@ class WorkerProfile(db.Model):
 
     profile_completed = db.Column(
         db.Boolean,
+        nullable=False,
         default=False,
-        nullable=False
+        index=True
     )
 
     # =====================================================
@@ -196,12 +208,13 @@ class WorkerProfile(db.Model):
 
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
-        nullable=False
+        nullable=False,
+        default=datetime.utcnow
     )
 
     updated_at = db.Column(
         db.DateTime,
+        nullable=False,
         default=datetime.utcnow,
         onupdate=datetime.utcnow
     )
@@ -212,20 +225,50 @@ class WorkerProfile(db.Model):
 
     user = db.relationship(
         "User",
-        back_populates="worker_profile"
+        back_populates="worker_profile",
+        uselist=False
     )
 
     skills = db.relationship(
         "WorkerSkill",
         back_populates="worker",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        lazy="selectin"
     )
 
     portfolio_items = db.relationship(
         "WorkerPortfolio",
         back_populates="worker",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        lazy="selectin"
     )
+
+    # =====================================================
+    # HELPERS
+    # =====================================================
+
+    def calculate_profile_completion(self):
+
+        required_fields = (
+            self.profession,
+            self.headline,
+            self.about,
+            self.service_area
+        )
+
+        return all(
+            value is not None
+            and str(value).strip()
+            for value in required_fields
+        )
+
+    def update_profile_completion(self):
+
+        self.profile_completed = (
+            self.calculate_profile_completion()
+        )
 
     # =====================================================
     # REPRESENTATION
@@ -234,5 +277,7 @@ class WorkerProfile(db.Model):
     def __repr__(self):
 
         return (
-            f"<WorkerProfile user={self.user_id}>"
-        )
+            f"<WorkerProfile "
+            f"id={self.id} "
+            f"user_id={self.user_id}>"
+    )
