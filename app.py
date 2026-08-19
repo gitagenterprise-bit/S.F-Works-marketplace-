@@ -207,6 +207,17 @@ def create_app():
     app.register_blueprint(
         job_pages_bp
     )
+    # ------------------------------
+    # Public Workers
+    # ------------------------------
+
+    from routes.worker_public import (
+        worker_public_bp
+    )
+
+    app.register_blueprint(
+        worker_public_bp
+    )
 
     @app.route("/")
     def home():
@@ -214,6 +225,7 @@ def create_app():
         return render_template(
             "public/home.html"
         )
+        
 
     @app.route("/health")
     def health():
