@@ -251,7 +251,6 @@ def worker_profile_page():
 # =========================================================
 # EDIT WORKER PROFILE
 # =========================================================
-
 @worker_pages_bp.route(
     "/worker/profile/edit",
     methods=["GET", "POST"]
@@ -280,11 +279,13 @@ def edit_profile():
     )
 
     if user is None:
+
         return redirect(
             url_for("auth.login")
         )
 
     if user.role != "worker":
+
         return redirect(
             url_for("auth.login")
         )
@@ -301,7 +302,9 @@ def edit_profile():
         )
 
         db.session.add(worker)
+
         db.session.commit()
+
 
     # =====================================================
     # POST
@@ -342,6 +345,7 @@ def edit_profile():
             ).strip()
             or None
         )
+
 
         # -------------------------------------------------
         # LOCATION
@@ -387,6 +391,7 @@ def edit_profile():
             or None
         )
 
+
         # -------------------------------------------------
         # EXPERIENCE
         # -------------------------------------------------
@@ -399,13 +404,21 @@ def edit_profile():
 
             try:
 
-                worker.experience_years = int(
+                experience = int(
+                    experience
+                )
+
+                if experience < 0:
+                    experience = 0
+
+                worker.experience_years = (
                     experience
                 )
 
             except ValueError:
 
                 worker.experience_years = 0
+
 
         # -------------------------------------------------
         # HOURLY RATE
@@ -427,6 +440,11 @@ def edit_profile():
 
                 worker.hourly_rate = None
 
+        else:
+
+            worker.hourly_rate = None
+
+
         # -------------------------------------------------
         # MINIMUM CHARGE
         # -------------------------------------------------
@@ -447,6 +465,11 @@ def edit_profile():
 
                 worker.minimum_charge = None
 
+        else:
+
+            worker.minimum_charge = None
+
+
         # -------------------------------------------------
         # AVAILABILITY
         # -------------------------------------------------
@@ -465,8 +488,9 @@ def edit_profile():
             ) == "on"
         )
 
+
         # =================================================
-        # PROFILE IMAGE
+        # PROFILE IMAGE — CLOUDINARY
         # =================================================
 
         profile_file = request.files.get(
@@ -478,30 +502,56 @@ def edit_profile():
             and profile_file.filename
         ):
 
-            new_profile_image = save_worker_image(
-                profile_file,
-                "profile"
-            )
+            if not validate_image(
+                profile_file
+            ):
 
-            if new_profile_image:
-
-                delete_worker_image(
-                    worker.profile_image
-                )
-
-                worker.profile_image = (
-                    new_profile_image
+                flash(
+                    "Invalid profile image. "
+                    "Use JPG, JPEG, PNG or WEBP "
+                    "under 8MB.",
+                    "error"
                 )
 
             else:
 
-                flash(
-                    "Invalid profile image format.",
-                    "error"
-                )
+                try:
+
+                    result = upload_image(
+                        profile_file,
+                        "sfworks/workers/profile"
+                    )
+
+                    if result:
+
+                        old_image = (
+                            worker.profile_image
+                        )
+
+                        worker.profile_image = (
+                            result["secure_url"]
+                        )
+
+                        if old_image:
+
+                            delete_image(
+                                old_image
+                            )
+
+                except Exception:
+
+                    current_app.logger.exception(
+                        "Profile image upload failed"
+                    )
+
+                    flash(
+                        "Profile image upload failed.",
+                        "error"
+                    )
+
 
         # =================================================
-        # COVER IMAGE
+        # COVER IMAGE — CLOUDINARY
         # =================================================
 
         cover_file = request.files.get(
@@ -513,27 +563,53 @@ def edit_profile():
             and cover_file.filename
         ):
 
-            new_cover_image = save_worker_image(
-                cover_file,
-                "cover"
-            )
+            if not validate_image(
+                cover_file
+            ):
 
-            if new_cover_image:
-
-                delete_worker_image(
-                    worker.cover_image
-                )
-
-                worker.cover_image = (
-                    new_cover_image
+                flash(
+                    "Invalid cover image. "
+                    "Use JPG, JPEG, PNG or WEBP "
+                    "under 8MB.",
+                    "error"
                 )
 
             else:
 
-                flash(
-                    "Invalid cover image format.",
-                    "error"
-                )
+                try:
+
+                    result = upload_image(
+                        cover_file,
+                        "sfworks/workers/cover"
+                    )
+
+                    if result:
+
+                        old_image = (
+                            worker.cover_image
+                        )
+
+                        worker.cover_image = (
+                            result["secure_url"]
+                        )
+
+                        if old_image:
+
+                            delete_image(
+                                old_image
+                            )
+
+                except Exception:
+
+                    current_app.logger.exception(
+                        "Cover image upload failed"
+                    )
+
+                    flash(
+                        "Cover image upload failed.",
+                        "error"
+                    )
+
 
         # =================================================
         # PROFILE COMPLETION
@@ -542,8 +618,11 @@ def edit_profile():
         required_fields = [
 
             worker.profession,
+
             worker.headline,
+
             worker.about,
+
             worker.service_area
 
         ]
@@ -553,7 +632,34 @@ def edit_profile():
             for field in required_fields
         )
 
-        db.session.commit()
+
+        # =================================================
+        # SAVE DATABASE
+        # =================================================
+
+        try:
+
+            db.session.commit()
+
+        except Exception:
+
+            db.session.rollback()
+
+            current_app.logger.exception(
+                "Worker profile database update failed"
+            )
+
+            flash(
+                "Unable to save profile.",
+                "error"
+            )
+
+            return redirect(
+                url_for(
+                    "worker_pages.edit_profile"
+                )
+            )
+
 
         flash(
             "Your profile has been updated successfully.",
@@ -566,6 +672,7 @@ def edit_profile():
             )
         )
 
+
     # =====================================================
     # GET
     # =====================================================
@@ -574,9 +681,11 @@ def edit_profile():
         "worker/edit_profile.html",
         user=user,
         worker=worker
-    )
+        )
 
-
+            
+         
+            
 # =========================================================
 # WORKER JOBS
 # =========================================================
