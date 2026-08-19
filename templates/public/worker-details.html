@@ -25,25 +25,20 @@
     <!-- =====================================================
          COVER
     ====================================================== -->
+<section class="public-profile-cover">
 
-    <section class="public-profile-cover">
+    {% if worker.cover_image %}
 
-        {% if worker.cover_image %}
+        <img
+            src="{{ worker.cover_image }}"
+            alt="{{ worker.profession }} cover"
+        >
 
-            <img
-                src="{{ url_for(
-                    'static',
-                    filename=worker.cover_image
-                ) }}"
-                alt=""
-            >
+    {% endif %}
 
-        {% endif %}
+    <div class="cover-overlay"></div>
 
-        <div class="cover-overlay"></div>
-
-    </section>
-
+</section>
 
     <div class="public-profile-container">
 
@@ -55,23 +50,20 @@
 
             <div class="public-avatar">
 
-                {% if worker.profile_image %}
+    {% if worker.profile_image %}
 
-                    <img
-                        src="{{ url_for(
-                            'static',
-                            filename=worker.profile_image
-                        ) }}"
-                        alt="{{ worker.profession }}"
-                    >
+        <img
+            src="{{ worker.profile_image }}"
+            alt="{{ worker.profession }}"
+        >
 
-                {% else %}
+    {% else %}
 
-                    <span>
-                        {{ worker.profession[:1]|upper }}
-                    </span>
+        <span>
+            {{ worker.profession[:1]|upper }}
+        </span>
 
-                {% endif %}
+    {% endif %}
 
             </div>
 
@@ -277,14 +269,13 @@
                                         <div class="portfolio-image">
 
                                             <img
-                                                src="{{ url_for(
-                                                    'static',
-                                                    filename=item.image_path
-                                                ) }}"
-                                                alt="{{ item.title }}"
-                                                loading="lazy"
-                                            >
-
+    src="{{ url_for(
+        'static',
+        filename=item.image_path
+    ) }}"
+    alt="{{ item.title }}"
+    loading="lazy"
+>
                                         </div>
 
                                     {% endif %}
