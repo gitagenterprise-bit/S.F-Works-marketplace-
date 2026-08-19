@@ -30,10 +30,18 @@ class WorkerSkill(db.Model):
         nullable=True
     )
 
+    # =====================================================
+    # RELATIONSHIP
+    # =====================================================
+
     worker = db.relationship(
         "WorkerProfile",
         back_populates="skills"
     )
+
+    # =====================================================
+    # CONSTRAINT
+    # =====================================================
 
     __table_args__ = (
         db.UniqueConstraint(
@@ -42,3 +50,12 @@ class WorkerSkill(db.Model):
             name="uq_worker_skill"
         ),
     )
+
+    def __repr__(self):
+
+        return (
+            f"<WorkerSkill "
+            f"id={self.id} "
+            f"worker_id={self.worker_id} "
+            f"name={self.skill_name}>"
+        )
