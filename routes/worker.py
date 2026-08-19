@@ -1194,76 +1194,168 @@ def add_portfolio():
 
     worker_id = get_jwt_identity()
 
+    try:
+
+        worker_id = int(worker_id)
+
+    except (
+        TypeError,
+        ValueError
+    ):
+
+        return jsonify({
+            "status": "error",
+            "message": "Invalid worker identity"
+        }), 401
+
+
     profile = WorkerProfile.query.filter_by(
-        user_id=int(worker_id)
+        user_id=worker_id
     ).first()
 
     if not profile:
 
         return jsonify({
-
             "status": "error",
-
             "message":
                 "Please create your profile first"
-
         }), 400
 
-    data = request.get_json()
 
-    if not data:
+    # =====================================================
+    # FORM DATA
+    # =====================================================
 
-        return jsonify({
+    title = request.form.get(
+        "title",
+        ""
+    ).strip()
 
-            "status": "error",
+    description = request.form.get(
+        "description",
+        ""
+    ).strip()
 
-            "message":
-                "Request body is required"
-
-        }), 400
-
-    title = data.get(
-        "title"
-    )
 
     if not title:
 
         return jsonify({
-
             "status": "error",
-
             "message":
                 "Portfolio title is required"
-
         }), 400
+
+
+    # =====================================================
+    # IMAGE
+    # =====================================================
+
+    image_url = None
+
+    image_file = request.files.get(
+        "image"
+    )
+
+
+    if (
+        image_file
+        and image_file.filename
+    ):
+
+        if not validate_image(
+            image_file
+        ):
+
+            return jsonify({
+                "status": "error",
+                "message":
+                    "Invalid image. "
+                    "Use JPG, JPEG, PNG or WEBP "
+                    "under 8MB."
+            }), 400
+
+
+        try:
+
+            result = upload_image(
+                image_file,
+                "sfworks/workers/portfolio"
+            )
+
+            if result:
+
+                image_url = (
+                    result["secure_url"]
+                )
+
+        except Exception:
+
+            current_app.logger.exception(
+                "Portfolio Cloudinary upload failed"
+            )
+
+            return jsonify({
+                "status": "error",
+                "message":
+                    "Portfolio image upload failed"
+            }), 500
+
+
+    # =====================================================
+    # DATABASE
+    # =====================================================
 
     portfolio = WorkerPortfolio(
 
         worker_id=profile.id,
 
-        title=title.strip(),
+        title=title,
 
         description=(
-            data.get("description").strip()
-            if data.get("description")
+            description
+            if description
             else None
         ),
 
-        image_path=
-            data.get("image_path")
+        image_path=image_url
 
     )
 
-    db.session.add(portfolio)
 
-    db.session.commit()
+    db.session.add(
+        portfolio
+    )
+
+
+    try:
+
+        db.session.commit()
+
+    except Exception:
+
+        db.session.rollback()
+
+        # If DB save failed but Cloudinary succeeded,
+        # image remains in Cloudinary.
+        # We can clean it later using public_id.
+
+        current_app.logger.exception(
+            "Portfolio database save failed"
+        )
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Unable to save portfolio"
+        }), 500
+
 
     return jsonify({
 
         "status": "success",
 
         "message":
-            "Portfolio item added",
+            "Portfolio item added successfully",
 
         "portfolio": {
 
@@ -1282,7 +1374,6 @@ def add_portfolio():
         }
 
     }), 201
-
 @worker_bp.route(
     "/profile/portfolio/<int:portfolio_id>",
     methods=["DELETE"]
