@@ -11,6 +11,12 @@ from flask import (
     flash
 )
 
+from utils.cloudinary_config import (
+    upload_image,
+    delete_image,
+    validate_image
+)
+
 from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
