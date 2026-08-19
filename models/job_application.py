@@ -22,6 +22,8 @@ class JobApplication(db.Model):
         index=True
     )
 
+    # IMPORTANT:
+    # This references users.id, NOT worker_profiles.id
     worker_id = db.Column(
         db.Integer,
         db.ForeignKey(
@@ -56,16 +58,20 @@ class JobApplication(db.Model):
 
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
-        nullable=False
+        nullable=False,
+        default=datetime.utcnow
     )
 
     updated_at = db.Column(
         db.DateTime,
+        nullable=False,
         default=datetime.utcnow,
-        onupdate=datetime.utcnow,
-        nullable=False
+        onupdate=datetime.utcnow
     )
+
+    # =====================================================
+    # RELATIONSHIPS
+    # =====================================================
 
     job = db.relationship(
         "Job",
@@ -74,8 +80,13 @@ class JobApplication(db.Model):
 
     worker = db.relationship(
         "User",
-        back_populates="job_applications"
+        back_populates="job_applications",
+        foreign_keys=[worker_id]
     )
+
+    # =====================================================
+    # CONSTRAINTS
+    # =====================================================
 
     __table_args__ = (
         db.UniqueConstraint(
@@ -89,7 +100,7 @@ class JobApplication(db.Model):
 
         return (
             f"<JobApplication "
-            f"{self.id} "
-            f"Job={self.job_id} "
-            f"Worker={self.worker_id}>"
-  )
+            f"id={self.id} "
+            f"job_id={self.job_id} "
+            f"worker_id={self.worker_id}>"
+        )
