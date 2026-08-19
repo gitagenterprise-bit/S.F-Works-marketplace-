@@ -8,3 +8,4 @@ psycopg[binary]
 python-dotenv
 gunicorn
 Werkzeug
+cloudinary
