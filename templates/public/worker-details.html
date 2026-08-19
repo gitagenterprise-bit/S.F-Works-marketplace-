@@ -193,9 +193,7 @@
 
 
                         <h1 class="public-worker-name">
-
-                            {{ worker.name or "Professional Worker" }}
-
+                            {{ worker.user.name if worker.user and worker.user.name else "Professional Worker" }}
                         </h1>
 
                         {% if worker.headline %}
