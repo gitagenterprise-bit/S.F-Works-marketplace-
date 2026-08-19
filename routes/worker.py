@@ -11,8 +11,10 @@ from flask import (
 
 from utils.cloudinary_config import (
     upload_image,
-    delete_image
+    delete_image,
+    validate_image
 )
+
 from flask_jwt_extended import (
     get_jwt_identity
 )
