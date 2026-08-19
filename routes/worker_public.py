@@ -8,9 +8,9 @@ from sqlalchemy import or_
 
 from extensions import db
 
-from models.worker_profile import WorkerProfile
-from models.worker_skill import WorkerSkill
 from models.worker import WorkerProfile
+from models.worker_skill import WorkerSkill
+
 
 
 worker_public_bp = Blueprint(
