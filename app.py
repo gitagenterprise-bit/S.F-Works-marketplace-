@@ -16,6 +16,7 @@ from extensions import (
     migrate,
     jwt
 )
+from utils.cloudinary_config import init_cloudinary
 
 
 def sync_worker_profiles_columns():
