@@ -221,51 +221,52 @@ def create_app():
     app.register_blueprint(
         worker_public_bp
     )
+@app.route("/")
+def home():
 
-    @app.route("/")
-    def home():
+    # ==========================================
+    # REAL WORKER PROFILES
+    # ==========================================
 
-        # ==========================================
-        # REAL WORKER PROFILES
-        # ==========================================
-
-        featured_workers = (
-            WorkerProfile.query
-            .filter(
-                WorkerProfile.profile_completed.is_(True)
-            )
-            .order_by(
-                WorkerProfile.is_verified.desc(),
-                WorkerProfile.is_available.desc(),
-                WorkerProfile.rating.desc(),
-                WorkerProfile.total_reviews.desc(),
-                WorkerProfile.created_at.desc()
-            )
-            .limit(8)
-            .all()
+    workers = (
+        WorkerProfile.query
+        .filter(
+            WorkerProfile.profile_completed.is_(True)
         )
-
-        return render_template(
-            "public/home.html",
-            featured_workers=featured_workers
+        .order_by(
+            WorkerProfile.is_verified.desc(),
+            WorkerProfile.is_available.desc(),
+            WorkerProfile.rating.desc(),
+            WorkerProfile.total_reviews.desc(),
+            WorkerProfile.created_at.desc()
         )
+        .limit(8)
+        .all()
+    )
 
-    @app.route("/health")
-    def health():
+    return render_template(
+        "public/home.html",
+        workers=workers
+    )
 
-        return jsonify({
-            "status": "success",
-            "message": "S. F Works Marketplace API is running",
-            "service": "sf-works-marketplace"
-        })
 
-    @app.route("/api")
-    def api_root():
+@app.route("/health")
+def health():
 
-        return jsonify({
-            "name": "S. F Works Marketplace",
-            "version": "1.0.0",
-            "status": "online"
-        })
+    return jsonify({
+        "status": "success",
+        "message": "S. F Works Marketplace API is running",
+        "service": "sf-works-marketplace"
+    })
 
-    return app
+
+@app.route("/api")
+def api_root():
+
+    return jsonify({
+        "name": "S. F Works Marketplace",
+        "version": "1.0.0",
+        "status": "online"
+    })
+    
+return app
