@@ -223,7 +223,7 @@ def create_app():
     )
 
     @app.route("/")
-def home():
+    def home():
 
     # ==========================================
     # REAL WORKER PROFILES
