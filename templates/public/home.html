@@ -1,75 +1,78 @@
 {% extends "base.html" %}
 
-
 {% block title %}
 S. F Works — Find Trusted Workers & Local Jobs
 {% endblock %}
-
 
 {% block extra_css %}
 
 <link
     rel="stylesheet"
-    href="{{ url_for(
-        'static',
-        filename='css/home.css'
-    ) }}"
+    href="{{ url_for('static', filename='css/home.css') }}"
 >
 
 {% endblock %}
-
 
 {% block content %}
 
 <main class="home-page">
 
-    <!-- =================================================
-         HERO SECTION
-    ================================================== -->
+    <!-- =====================================================
+         PREMIUM HERO
+    ====================================================== -->
 
-    <section class="hero">
+    <section class="premium-hero">
 
-        <div class="container hero-grid">
+        <!-- BACKGROUND DECORATION -->
 
+        <div class="hero-orb hero-orb-one"></div>
+        <div class="hero-orb hero-orb-two"></div>
+        <div class="hero-grid-pattern"></div>
+
+
+        <div class="container premium-hero-container">
 
             <!-- =================================================
-                 HERO CONTENT
+                 LEFT CONTENT
             ================================================== -->
 
-            <div class="hero-content">
+            <div class="premium-hero-content">
 
-                <span class="hero-badge">
-                    Trusted Work Marketplace
-                </span>
+                <div class="premium-badge">
+                    <span class="badge-dot"></span>
+                    Trusted Local Work Marketplace
+                </div>
 
 
-                <h1>
-                    Find the right worker
-                    for your job.
+                <h1 class="premium-title">
+
+                    Find trusted workers
+                    <span>for every job.</span>
+
                 </h1>
 
 
-                <p>
-                    Post your work requirement and connect
-                    with skilled, trusted workers around you.
-                    Simple, local and reliable.
+                <p class="premium-description">
+
+                    Connect with skilled and verified local professionals
+                    for home services, repairs, construction, cleaning,
+                    electrical work and more.
+
                 </p>
 
 
-                <!-- HERO ACTIONS -->
+                <!-- CTA -->
 
-                <div class="hero-actions">
+                <div class="premium-actions">
 
                     <a
                         href="/post-job"
-                        class="btn btn-primary"
+                        class="premium-btn premium-btn-primary"
                     >
 
-                        <span>
-                            Post a Job
-                        </span>
+                        <span>Post a Job</span>
 
-                        <span aria-hidden="true">
+                        <span class="btn-arrow">
                             →
                         </span>
 
@@ -78,32 +81,61 @@ S. F Works — Find Trusted Workers & Local Jobs
 
                     <a
                         href="/jobs"
-                        class="btn btn-outline"
+                        class="premium-btn premium-btn-secondary"
                     >
-                        Find Work
+
+                        <span class="search-icon">
+                            ⌕
+                        </span>
+
+                        Find Workers
+
                     </a>
 
                 </div>
 
 
-                <!-- TRUST INDICATORS -->
+                <!-- TRUST -->
 
-                <div
-                    class="hero-trust"
-                    aria-label="Marketplace benefits"
-                >
+                <div class="premium-trust">
 
-                    <span>
-                        ✓ Verified Workers
-                    </span>
+                    <div class="trust-item">
 
-                    <span>
-                        ✓ Easy Applications
-                    </span>
+                        <span class="trust-icon">
+                            ✓
+                        </span>
 
-                    <span>
-                        ✓ Local Services
-                    </span>
+                        <span>
+                            Verified Workers
+                        </span>
+
+                    </div>
+
+
+                    <div class="trust-item">
+
+                        <span class="trust-icon">
+                            ✓
+                        </span>
+
+                        <span>
+                            Local Services
+                        </span>
+
+                    </div>
+
+
+                    <div class="trust-item">
+
+                        <span class="trust-icon">
+                            ✓
+                        </span>
+
+                        <span>
+                            Easy Booking
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -111,67 +143,162 @@ S. F Works — Find Trusted Workers & Local Jobs
 
 
             <!-- =================================================
-                 FEATURED JOB CARD
+                 RIGHT VISUAL
             ================================================== -->
 
-            <article class="hero-card">
+            <div class="premium-hero-visual">
 
 
-                <!-- CARD HEADER -->
+                <!-- MAIN CARD -->
 
-                <div class="hero-card-header">
+                <div class="premium-job-card">
 
-                    <span>
-                        Popular Service
-                    </span>
+                    <div class="job-card-top">
 
-                    <span>
-                        ● Live
-                    </span>
+                        <div>
+
+                            <span class="job-card-label">
+                                POPULAR SERVICE
+                            </span>
+
+                            <div class="live-status">
+                                <span></span>
+                                Available Now
+                            </div>
+
+                        </div>
+
+                        <div class="job-card-menu">
+                            •••
+                        </div>
+
+                    </div>
+
+
+                    <div class="service-icon-box">
+                        ⚡
+                    </div>
+
+
+                    <h3>
+                        Home Electrical Work
+                    </h3>
+
+
+                    <p>
+                        Experienced electrician needed for
+                        wiring, installation and home electrical repair.
+                    </p>
+
+
+                    <div class="job-location">
+
+                        <span>
+                            📍 Kolkata
+                        </span>
+
+                        <span>
+                            ●
+                        </span>
+
+                        <strong>
+                            ₹1,500 – ₹3,000
+                        </strong>
+
+                    </div>
+
+
+                    <a
+                        href="/jobs"
+                        class="job-card-button"
+                    >
+
+                        View Available Jobs
+
+                        <span>
+                            →
+                        </span>
+
+                    </a>
 
                 </div>
 
 
-                <!-- JOB TITLE -->
+                <!-- FLOATING VERIFIED CARD -->
 
-                <h3>
-                    Home Electrical Work
-                </h3>
+                <div class="floating-card verified-floating">
 
+                    <div class="floating-icon">
+                        ✓
+                    </div>
 
-                <!-- JOB DESCRIPTION -->
+                    <div>
 
-                <p>
-                    Need an experienced electrician
-                    for home wiring and electrical work.
-                </p>
+                        <strong>
+                            Verified
+                        </strong>
 
+                        <small>
+                            Trusted Professionals
+                        </small>
 
-                <!-- JOB META -->
-
-                <div class="job-meta">
-
-                    <span>
-                        Kolkata
-                    </span>
-
-                    <span>
-                        ₹1,500 – ₹3,000
-                    </span>
+                    </div>
 
                 </div>
 
 
-                <!-- CARD ACTION -->
+                <!-- FLOATING WORKER CARD -->
 
-                <a
-                    href="/jobs"
-                    class="btn btn-primary"
-                >
-                    View Available Jobs
-                </a>
+                <div class="floating-card worker-floating">
 
-            </article>
+                    <div class="mini-avatar">
+                        W
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Skilled Workers
+                        </strong>
+
+                        <small>
+                            Available near you
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GLOW -->
+
+                <div class="visual-glow"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             BOTTOM SERVICE STRIP
+        ====================================================== -->
+
+        <div class="hero-service-strip">
+
+            <div class="container service-strip-inner">
+
+                <span class="service-title">
+                    Popular Services
+                </span>
+
+                <span>Electrical</span>
+                <span>Plumbing</span>
+                <span>Cleaning</span>
+                <span>Painting</span>
+                <span>Carpentry</span>
+                <span>Construction</span>
+
+            </div>
 
         </div>
 
