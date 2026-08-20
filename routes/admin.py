@@ -1346,10 +1346,9 @@ def category_status(category_id):
             "Category status updated"
 
     }), 200
-
 @admin_bp.route(
     "/create-first-admin",
-    methods=["GET"]
+    methods=["GET", "POST"]
 )
 def create_first_admin():
 
@@ -1367,14 +1366,9 @@ def create_first_admin():
 
     if existing_admin:
         return jsonify({
-            "status": "success",
-            "message": "Admin already exists",
-            "admin": {
-                "id": existing_admin.id,
-                "email": existing_admin.email,
-                "role": existing_admin.role
-            }
-        }), 200
+            "status": "error",
+            "message": "An admin user already exists"
+        }), 409
 
     email = "admin@sfworks.com"
     password = "Admin@12345"
@@ -1394,7 +1388,8 @@ def create_first_admin():
         return jsonify({
             "status": "success",
             "message": "Existing user converted to admin",
-            "email": email
+            "email": email,
+            "role": "admin"
         }), 200
 
     admin = User(
@@ -1412,10 +1407,7 @@ def create_first_admin():
 
     return jsonify({
         "status": "success",
-        "message": "Admin created successfully",
+        "message": "First admin created successfully",
         "email": email,
         "role": "admin"
     }), 201
-
-
-
