@@ -4,6 +4,7 @@
 Post a Job — S. F Works
 {% endblock %}
 
+
 {% block extra_css %}
 
 <link
@@ -33,15 +34,18 @@ Post a Job — S. F Works
                     S. F Works Marketplace
                 </div>
 
+
                 <h1>
                     Post a Job.
                     <span>Find the Right Worker.</span>
                 </h1>
 
+
                 <p>
                     Tell us what you need and connect with
                     trusted, skilled professionals near you.
                 </p>
+
 
                 <div class="hero-features">
 
@@ -50,10 +54,12 @@ Post a Job — S. F Works
                         Trusted Workers
                     </div>
 
+
                     <div class="hero-feature">
                         <span>✓</span>
                         Local Professionals
                     </div>
+
 
                     <div class="hero-feature">
                         <span>✓</span>
@@ -70,7 +76,7 @@ Post a Job — S. F Works
 
 
     <!-- =====================================================
-         FORM SECTION
+         POST JOB SECTION
     ====================================================== -->
 
     <section class="post-job-section">
@@ -79,7 +85,11 @@ Post a Job — S. F Works
 
             <div class="post-job-layout">
 
-                <!-- LEFT INFO -->
+
+                <!-- =================================================
+                     SIDEBAR
+                ================================================== -->
+
                 <aside class="post-job-sidebar">
 
                     <div class="sidebar-card">
@@ -88,9 +98,11 @@ Post a Job — S. F Works
                             +
                         </div>
 
+
                         <h2>
                             Create your job
                         </h2>
+
 
                         <p>
                             Give workers enough information to
@@ -98,36 +110,63 @@ Post a Job — S. F Works
                             send you the right proposals.
                         </p>
 
+
                         <div class="sidebar-steps">
 
                             <div class="sidebar-step">
-                                <div class="step-number">01</div>
+
+                                <div class="step-number">
+                                    01
+                                </div>
+
                                 <div>
-                                    <strong>Describe the work</strong>
+                                    <strong>
+                                        Describe the work
+                                    </strong>
+
                                     <span>
                                         Explain what you need.
                                     </span>
                                 </div>
+
                             </div>
 
+
                             <div class="sidebar-step">
-                                <div class="step-number">02</div>
+
+                                <div class="step-number">
+                                    02
+                                </div>
+
                                 <div>
-                                    <strong>Set your budget</strong>
+                                    <strong>
+                                        Set your budget
+                                    </strong>
+
                                     <span>
                                         Add your expected budget.
                                     </span>
                                 </div>
+
                             </div>
 
+
                             <div class="sidebar-step">
-                                <div class="step-number">03</div>
+
+                                <div class="step-number">
+                                    03
+                                </div>
+
                                 <div>
-                                    <strong>Choose location</strong>
+                                    <strong>
+                                        Choose location
+                                    </strong>
+
                                     <span>
                                         Help workers find you.
                                     </span>
                                 </div>
+
                             </div>
 
                         </div>
@@ -137,55 +176,86 @@ Post a Job — S. F Works
                 </aside>
 
 
-                <!-- FORM -->
+                <!-- =================================================
+                     MAIN FORM CARD
+                ================================================== -->
+
                 <div class="post-job-card">
+
+
+                    <!-- =================================================
+                         FORM HEADER
+                    ================================================== -->
 
                     <div class="form-header">
 
                         <div>
+
                             <span class="form-eyebrow">
                                 JOB DETAILS
                             </span>
+
 
                             <h2>
                                 Tell us about your job
                             </h2>
 
+
                             <p>
                                 Fill in the details below to publish
                                 your job on S. F Works.
                             </p>
+
                         </div>
 
+
                         <div class="secure-badge">
-                            <span>🔒</span>
+
+                            <span>
+                                🔒
+                            </span>
+
                             Secure
+
                         </div>
 
                     </div>
 
 
+                    <!-- =================================================
+                         FORM
+                    ================================================== -->
+
                     <form
                         id="postJobForm"
+                        method="POST"
                         novalidate
                     >
 
-                        <!-- =================================================
+
+                        <!-- =============================================
                              JOB TITLE
-                        ================================================== -->
+                        ============================================== -->
 
                         <div class="form-group">
 
                             <label for="jobTitle">
+
                                 Job Title
-                                <span>*</span>
+
+                                <span>
+                                    *
+                                </span>
+
                             </label>
+
 
                             <div class="input-wrapper">
 
                                 <span class="input-icon">
                                     ✦
                                 </span>
+
 
                                 <input
                                     type="text"
@@ -199,6 +269,7 @@ Post a Job — S. F Works
 
                             </div>
 
+
                             <small class="field-hint">
                                 Keep it short and specific.
                             </small>
@@ -206,16 +277,22 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =================================================
+                        <!-- =============================================
                              DESCRIPTION
-                        ================================================== -->
+                        ============================================== -->
 
                         <div class="form-group">
 
                             <label for="jobDescription">
+
                                 Job Description
-                                <span>*</span>
+
+                                <span>
+                                    *
+                                </span>
+
                             </label>
+
 
                             <textarea
                                 id="jobDescription"
@@ -226,12 +303,14 @@ Post a Job — S. F Works
                                 required
                             ></textarea>
 
+
                             <div class="textarea-footer">
 
                                 <small>
                                     Give workers enough information
                                     to understand your requirements.
                                 </small>
+
 
                                 <span id="descriptionCounter">
                                     0 / 5000
@@ -242,109 +321,152 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =================================================
-     CATEGORY — SEARCH + CUSTOM OPTION
-================================================== -->
+                        <!-- =============================================
+                             CATEGORY
+                        ============================================== -->
 
-<div class="form-group">
+                        <div class="form-group">
 
-    <label for="jobCategory">
-        Category
-        <span>*</span>
-    </label>
+                            <label for="jobCategory">
 
-    <div class="category-picker" id="categoryPicker">
+                                Category
 
-        <!-- Selected / typed category -->
-        <div class="category-input-wrapper">
+                                <span>
+                                    *
+                                </span>
 
-            <span class="input-icon">
-                ◈
-            </span>
-
-            <input
-                type="text"
-                id="jobCategory"
-                name="category_name"
-                placeholder="Search or type a category..."
-                autocomplete="off"
-                maxlength="100"
-                required
-            >
-
-            <button
-                type="button"
-                class="category-dropdown-button"
-                id="categoryDropdownButton"
-                aria-label="Open categories"
-            >
-                <span>⌄</span>
-            </button>
-
-        </div>
+                            </label>
 
 
-        <!-- Category Dropdown -->
-        <div
-            class="category-dropdown"
-            id="categoryDropdown"
-        >
-
-            <div class="category-dropdown-header">
-                <span>Choose a category</span>
-
-                <span id="categoryCount">
-                    0
-                </span>
-            </div>
+                            <div
+                                class="category-picker"
+                                id="categoryPicker"
+                            >
 
 
-            <div
-                class="category-list"
-                id="categoryList"
-            >
+                                <!-- CATEGORY INPUT -->
 
-                <!-- Categories will load here -->
+                                <div class="category-input-wrapper">
 
-            </div>
-
-
-            <!-- Custom Category -->
-            <button
-                type="button"
-                class="custom-category-option"
-                id="customCategoryButton"
-            >
-
-                <span class="custom-category-icon">
-                    +
-                </span>
-
-                <span>
-                    <strong>Use your own category</strong>
-                    <small>
-                        Type a custom category
-                    </small>
-                </span>
-
-            </button>
-
-        </div>
-
-    </div>
+                                    <span class="input-icon">
+                                        ◈
+                                    </span>
 
 
-    <div
-        id="categoryStatus"
-        class="category-status"
-        aria-live="polite"
-    ></div>
+                                    <input
+                                        type="text"
+                                        id="jobCategory"
+                                        name="category_name"
+                                        placeholder="Search or type a category..."
+                                        autocomplete="off"
+                                        maxlength="100"
+                                        required
+                                    >
 
-</div>
 
-                        <!-- =================================================
-                             BUDGET
-                        ================================================== -->
+                                    <button
+                                        type="button"
+                                        class="category-dropdown-button"
+                                        id="categoryDropdownButton"
+                                        aria-label="Open categories"
+                                        aria-expanded="false"
+                                    >
+
+                                        <span>
+                                            ⌄
+                                        </span>
+
+                                    </button>
+
+                                </div>
+
+
+                                <!-- CATEGORY DROPDOWN -->
+
+                                <div
+                                    class="category-dropdown"
+                                    id="categoryDropdown"
+                                >
+
+
+                                    <div class="category-dropdown-header">
+
+                                        <span>
+                                            Choose a category
+                                        </span>
+
+
+                                        <span id="categoryCount">
+                                            0
+                                        </span>
+
+                                    </div>
+
+
+                                    <!-- CATEGORY LIST -->
+
+                                    <div
+                                        class="category-list"
+                                        id="categoryList"
+                                    >
+
+                                        <div class="category-empty">
+
+                                            <strong>
+                                                Loading categories...
+                                            </strong>
+
+                                            Please wait.
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- CUSTOM CATEGORY -->
+
+                                    <button
+                                        type="button"
+                                        class="custom-category-option"
+                                        id="customCategoryButton"
+                                    >
+
+                                        <span class="custom-category-icon">
+                                            +
+                                        </span>
+
+
+                                        <span>
+
+                                            <strong>
+                                                Use your own category
+                                            </strong>
+
+                                            <small>
+                                                Type a custom category
+                                            </small>
+
+                                        </span>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                id="categoryStatus"
+                                class="category-status"
+                                aria-live="polite"
+                            ></div>
+
+                        </div>
+
+
+                        <!-- =============================================
+                             BUDGET DIVIDER
+                        ============================================== -->
 
                         <div class="form-section-title">
 
@@ -359,7 +481,14 @@ Post a Job — S. F Works
                         </div>
 
 
+                        <!-- =============================================
+                             BUDGET
+                        ============================================== -->
+
                         <div class="form-grid">
+
+
+                            <!-- MINIMUM -->
 
                             <div class="form-group">
 
@@ -367,11 +496,15 @@ Post a Job — S. F Works
                                     Minimum Budget
                                 </label>
 
-                                <div class="input-wrapper currency-input">
+
+                                <div
+                                    class="input-wrapper currency-input"
+                                >
 
                                     <span class="currency-symbol">
                                         ₹
                                     </span>
+
 
                                     <input
                                         type="number"
@@ -388,17 +521,23 @@ Post a Job — S. F Works
                             </div>
 
 
+                            <!-- MAXIMUM -->
+
                             <div class="form-group">
 
                                 <label for="budgetMax">
                                     Maximum Budget
                                 </label>
 
-                                <div class="input-wrapper currency-input">
+
+                                <div
+                                    class="input-wrapper currency-input"
+                                >
 
                                     <span class="currency-symbol">
                                         ₹
                                     </span>
+
 
                                     <input
                                         type="number"
@@ -417,9 +556,9 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =================================================
-                             LOCATION
-                        ================================================== -->
+                        <!-- =============================================
+                             LOCATION DIVIDER
+                        ============================================== -->
 
                         <div class="form-section-title">
 
@@ -434,18 +573,29 @@ Post a Job — S. F Works
                         </div>
 
 
+                        <!-- =============================================
+                             FULL LOCATION
+                        ============================================== -->
+
                         <div class="form-group">
 
                             <label for="jobLocation">
+
                                 Full Work Location
-                                <span>*</span>
+
+                                <span>
+                                    *
+                                </span>
+
                             </label>
+
 
                             <div class="input-wrapper">
 
                                 <span class="input-icon">
                                     ⌖
                                 </span>
+
 
                                 <input
                                     type="text"
@@ -462,13 +612,21 @@ Post a Job — S. F Works
                         </div>
 
 
+                        <!-- =============================================
+                             CITY + STATE
+                        ============================================== -->
+
                         <div class="form-grid">
+
+
+                            <!-- CITY -->
 
                             <div class="form-group">
 
                                 <label for="jobCity">
                                     City
                                 </label>
+
 
                                 <input
                                     type="text"
@@ -482,11 +640,14 @@ Post a Job — S. F Works
                             </div>
 
 
+                            <!-- STATE -->
+
                             <div class="form-group">
 
                                 <label for="jobState">
                                     State
                                 </label>
+
 
                                 <input
                                     type="text"
@@ -502,13 +663,21 @@ Post a Job — S. F Works
                         </div>
 
 
+                        <!-- =============================================
+                             PINCODE + PRIORITY
+                        ============================================== -->
+
                         <div class="form-grid">
+
+
+                            <!-- PINCODE -->
 
                             <div class="form-group">
 
                                 <label for="jobPincode">
                                     Pincode
                                 </label>
+
 
                                 <input
                                     type="text"
@@ -523,11 +692,14 @@ Post a Job — S. F Works
                             </div>
 
 
+                            <!-- PRIORITY -->
+
                             <div class="form-group">
 
                                 <label for="jobPriority">
                                     Priority
                                 </label>
+
 
                                 <div class="select-wrapper">
 
@@ -540,9 +712,11 @@ Post a Job — S. F Works
                                             Normal
                                         </option>
 
+
                                         <option value="high">
                                             High
                                         </option>
+
 
                                         <option value="urgent">
                                             Urgent
@@ -550,8 +724,9 @@ Post a Job — S. F Works
 
                                     </select>
 
+
                                     <span class="select-arrow">
-                                       ⌄
+                                        ⌄
                                     </span>
 
                                 </div>
@@ -561,9 +736,9 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =================================================
-                             MESSAGE
-                        ================================================== -->
+                        <!-- =============================================
+                             FORM MESSAGE
+                        ============================================== -->
 
                         <div
                             id="formMessage"
@@ -572,11 +747,12 @@ Post a Job — S. F Works
                         ></div>
 
 
-                        <!-- =================================================
+                        <!-- =============================================
                              SUBMIT
-                        ================================================== -->
+                        ============================================== -->
 
                         <div class="form-submit-area">
+
 
                             <button
                                 type="submit"
@@ -588,15 +764,18 @@ Post a Job — S. F Works
                                     +
                                 </span>
 
+
                                 <span class="button-text">
                                     Post Job
                                 </span>
+
 
                                 <span class="button-arrow">
                                     →
                                 </span>
 
                             </button>
+
 
                             <p class="submit-note">
                                 By posting this job, you agree to
@@ -623,10 +802,7 @@ Post a Job — S. F Works
 {% block extra_js %}
 
 <script
-    src="{{ url_for(
-        'static',
-        filename='js/post-job.js'
-    ) }}"
+    src="{{ url_for('static', filename='js/post-job.js') }}"
 ></script>
 
 {% endblock %}
