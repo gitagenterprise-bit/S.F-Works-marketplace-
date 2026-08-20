@@ -2,7 +2,6 @@ from extensions import db
 from models.user import User
 from app import create_app
 
-
 app = create_app()
 
 with app.app_context():
@@ -15,7 +14,6 @@ with app.app_context():
     ).first()
 
     if existing_admin:
-
         existing_admin.role = "admin"
         existing_admin.is_active = True
         existing_admin.set_password(password)
@@ -25,7 +23,6 @@ with app.app_context():
         print("Admin user updated successfully!")
 
     else:
-
         admin = User(
             full_name="S F Works Admin",
             email=email,
@@ -40,9 +37,3 @@ with app.app_context():
         db.session.commit()
 
         print("Admin user created successfully!")
-
-    print("--------------------------------")
-    print("Email:", email)
-    print("Password:", password)
-    print("Role: admin")
-    print("--------------------------------")
