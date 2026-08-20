@@ -1,341 +1,104 @@
-/* ============================================================
+/* =========================================================
    S. F WORKS — POST JOB
-   Professional Job Posting Controller
-   ============================================================ */
+========================================================= */
 
-"use strict";
+document.addEventListener("DOMContentLoaded", () => {
 
-
-/* ============================================================
-   CONFIGURATION
-============================================================ */
-
-const POST_JOB_CONFIG = {
-
-    API_BASE: "/api/jobs",
-
-    CREATE_ENDPOINT: "/api/jobs/create",
-
-    CATEGORIES_ENDPOINT: "/api/jobs/categories",
-
-    REDIRECT_AFTER_SUCCESS: "/jobs",
-
-    MAX_TITLE_LENGTH: 200,
-
-    MAX_DESCRIPTION_LENGTH: 5000
-
-};
-
-
-/* ============================================================
-   DOM READY
-============================================================ */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        initPostJobPage();
-
-    }
-);
-
-
-/* ============================================================
-   INITIALIZE
-============================================================ */
-
-async function initPostJobPage() {
-
-    const form = document.getElementById(
-        "postJobForm"
-    );
+    const form = document.getElementById("postJobForm");
 
     if (!form) {
-
-        console.warn(
-            "S. F Works: Post job form not found."
-        );
-
         return;
     }
 
 
-    setupFormValidation(
-        form
-    );
-
-
-    setupNumberValidation();
-
-
-    await loadCategories();
-
-
-    form.addEventListener(
-        "submit",
-        handleJobSubmit
-    );
-
-}
-
-
-/* ============================================================
-   LOAD CATEGORIES
-============================================================ */
-
-async function loadCategories() {
+    /* =====================================================
+       ELEMENTS
+    ====================================================== */
 
     const categorySelect =
-        document.getElementById(
-            "jobCategory"
-        );
+        document.getElementById("jobCategory");
 
-
-    if (!categorySelect) {
-
-        return;
-    }
-
-
-    try {
-
-        setCategoryLoading(
-            categorySelect,
-            true
-        );
-
-
-        const response =
-            await fetch(
-                POST_JOB_CONFIG
-                    .CATEGORIES_ENDPOINT,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Accept":
-                            "application/json"
-                    },
-
-                    credentials: "same-origin"
-                }
-            );
-
-
-        const result =
-            await parseJSONResponse(
-                response
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load categories."
-            );
-        }
-
-
-        const categories =
-            Array.isArray(
-                result.categories
-            )
-                ? result.categories
-                : [];
-
-
-        populateCategories(
-            categorySelect,
-            categories
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Category loading error:",
-            error
-        );
-
-
-        showToast(
-            "Unable to load job categories.",
-            "error"
-        );
-
-
-    } finally {
-
-        setCategoryLoading(
-            categorySelect,
-            false
-        );
-
-    }
-
-}
-
-
-/* ============================================================
-   POPULATE CATEGORY SELECT
-============================================================ */
-
-function populateCategories(
-    select,
-    categories
-) {
-
-    select.innerHTML = "";
-
-
-    const defaultOption =
-        document.createElement(
-            "option"
-        );
-
-
-    defaultOption.value = "";
-
-    defaultOption.textContent =
-        "Select category";
-
-    defaultOption.disabled = true;
-
-    defaultOption.selected = true;
-
-
-    select.appendChild(
-        defaultOption
-    );
-
-
-    categories.forEach(
-        category => {
-
-            if (
-                !category ||
-                !category.id
-            ) {
-
-                return;
-            }
-
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value =
-                String(
-                    category.id
-                );
-
-
-            option.textContent =
-                category.name ||
-                "Unnamed category";
-
-
-            select.appendChild(
-                option
-            );
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   CATEGORY LOADING STATE
-============================================================ */
-
-function setCategoryLoading(
-    select,
-    loading
-) {
-
-    if (!select) {
-
-        return;
-    }
-
-
-    if (loading) {
-
-        select.disabled = true;
-
-        select.innerHTML = "";
-
-        const option =
-            document.createElement(
-                "option"
-            );
-
-        option.textContent =
-            "Loading categories...";
-
-        option.selected = true;
-
-        select.appendChild(
-            option
-        );
-
-    } else {
-
-        select.disabled = false;
-
-    }
-
-}
-
-
-/* ============================================================
-   FORM VALIDATION
-============================================================ */
-
-function setupFormValidation(
-    form
-) {
-
-    const title =
-        document.getElementById(
-            "jobTitle"
-        );
+    const categoryStatus =
+        document.getElementById("categoryStatus");
 
     const description =
-        document.getElementById(
-            "jobDescription"
-        );
+        document.getElementById("jobDescription");
 
-    const location =
-        document.getElementById(
-            "jobLocation"
-        );
+    const descriptionCounter =
+        document.getElementById("descriptionCounter");
+
+    const formMessage =
+        document.getElementById("formMessage");
+
+    const submitButton =
+        document.getElementById("postJobButton");
 
 
-    if (title) {
+    /* =====================================================
+       HELPERS
+    ====================================================== */
 
-        title.addEventListener(
-            "input",
-            () => {
+    function showMessage(message, type = "error") {
 
-                clearFieldError(
-                    title
-                );
+        if (!formMessage) {
+            return;
+        }
 
-                enforceMaxLength(
-                    title,
-                    POST_JOB_CONFIG
-                        .MAX_TITLE_LENGTH
-                );
+        formMessage.textContent = message;
+        formMessage.className =
+            `form-message show ${type}`;
 
-            }
-        );
+    }
+
+
+    function clearMessage() {
+
+        if (!formMessage) {
+            return;
+        }
+
+        formMessage.textContent = "";
+        formMessage.className = "form-message";
+
+    }
+
+
+    function setCategoryStatus(
+        message,
+        type = ""
+    ) {
+
+        if (!categoryStatus) {
+            return;
+        }
+
+        categoryStatus.textContent = message;
+
+        categoryStatus.className =
+            "category-status";
+
+        if (type) {
+            categoryStatus.classList.add(type);
+        }
+
+    }
+
+
+    /* =====================================================
+       DESCRIPTION COUNTER
+    ====================================================== */
+
+    function updateDescriptionCounter() {
+
+        if (!description || !descriptionCounter) {
+            return;
+        }
+
+        const length =
+            description.value.length;
+
+        descriptionCounter.textContent =
+            `${length} / 5000`;
 
     }
 
@@ -344,1210 +107,528 @@ function setupFormValidation(
 
         description.addEventListener(
             "input",
-            () => {
-
-                clearFieldError(
-                    description
-                );
-
-                enforceMaxLength(
-                    description,
-                    POST_JOB_CONFIG
-                        .MAX_DESCRIPTION_LENGTH
-                );
-
-            }
+            updateDescriptionCounter
         );
+
+        updateDescriptionCounter();
 
     }
 
 
-    if (location) {
+    /* =====================================================
+       CATEGORY LOADER
+    ====================================================== */
 
-        location.addEventListener(
-            "input",
-            () => {
+    async function loadCategories() {
 
-                clearFieldError(
-                    location
+        if (!categorySelect) {
+            return;
+        }
+
+        categorySelect.innerHTML = `
+            <option value="">
+                Loading categories...
+            </option>
+        `;
+
+        categorySelect.disabled = true;
+
+        setCategoryStatus(
+            "Loading available categories...",
+            "loading"
+        );
+
+
+        /*
+         * IMPORTANT:
+         * Your backend should expose:
+         *
+         * GET /api/categories
+         *
+         */
+
+        try {
+
+            const response = await fetch(
+                "/api/categories",
+                {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    },
+                    credentials: "same-origin"
+                }
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Category API returned ${response.status}`
                 );
 
             }
-        );
-
-    }
-
-}
 
 
-/* ============================================================
-   NUMBER VALIDATION
-============================================================ */
-
-function setupNumberValidation() {
-
-    const minimum =
-        document.getElementById(
-            "budgetMin"
-        );
-
-    const maximum =
-        document.getElementById(
-            "budgetMax"
-        );
+            const data =
+                await response.json();
 
 
-    if (
-        minimum &&
-        maximum
-    ) {
+            /*
+             * Supports both:
+             *
+             * [
+             *   {"id":1,"name":"Electrical"}
+             * ]
+             *
+             * and:
+             *
+             * {
+             *   "categories": [...]
+             * }
+             */
 
-        const validateBudget =
-            () => {
+            let categories = [];
 
-                const min =
-                    parseFloat(
-                        minimum.value
-                    );
+            if (Array.isArray(data)) {
 
-                const max =
-                    parseFloat(
-                        maximum.value
-                    );
+                categories = data;
 
+            } else if (
+                data &&
+                Array.isArray(data.categories)
+            ) {
+
+                categories = data.categories;
+
+            } else if (
+                data &&
+                Array.isArray(data.data)
+            ) {
+
+                categories = data.data;
+
+            }
+
+
+            if (!categories.length) {
+
+                categorySelect.innerHTML = `
+                    <option value="">
+                        No categories available
+                    </option>
+                `;
+
+                categorySelect.disabled = true;
+
+                setCategoryStatus(
+                    "No active categories were found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            categorySelect.innerHTML = `
+                <option value="">
+                    Select a category
+                </option>
+            `;
+
+
+            categories.forEach(category => {
 
                 if (
-                    !Number.isNaN(min) &&
-                    !Number.isNaN(max) &&
-                    min > max
+                    category.id === undefined ||
+                    category.id === null
                 ) {
-
-                    setFieldError(
-                        maximum,
-                        "Maximum budget must be greater than or equal to minimum budget."
-                    );
-
-                } else {
-
-                    clearFieldError(
-                        maximum
-                    );
-
+                    return;
                 }
 
-            };
+
+                const option =
+                    document.createElement("option");
 
 
-        minimum.addEventListener(
-            "input",
-            validateBudget
-        );
+                option.value =
+                    category.id;
 
 
-        maximum.addEventListener(
-            "input",
-            validateBudget
-        );
-
-    }
-
-}
+                option.textContent =
+                    category.name ||
+                    category.title ||
+                    category.category_name ||
+                    "Unnamed Category";
 
 
-/* ============================================================
-   SUBMIT JOB
-============================================================ */
+                categorySelect.appendChild(option);
 
-async function handleJobSubmit(
-    event
-) {
-
-    event.preventDefault();
+            });
 
 
-    const form =
-        event.currentTarget;
+            categorySelect.disabled = false;
 
 
-    if (
-        form.dataset.submitting ===
-        "true"
-    ) {
+            setCategoryStatus(
+                `${categories.length} categories available`,
+                "success"
+            );
 
-        return;
-    }
+        } catch (error) {
 
-
-    const validation =
-        validateJobForm(
-            form
-        );
+            console.error(
+                "Category loading error:",
+                error
+            );
 
 
-    if (!validation.valid) {
+            categorySelect.innerHTML = `
+                <option value="">
+                    Unable to load categories
+                </option>
+            `;
 
-        showToast(
-            validation.message,
-            "error"
-        );
-
-        if (
-            validation.field
-        ) {
-
-            validation.field.focus();
-
-        }
-
-        return;
-    }
+            categorySelect.disabled = true;
 
 
-    const payload =
-        collectJobData(
-            form
-        );
-
-
-    setSubmittingState(
-        form,
-        true
-    );
-
-
-    try {
-
-        const token =
-            getAccessToken();
-
-
-        if (!token) {
-
-            showToast(
-                "Please login as a customer before posting a job.",
+            setCategoryStatus(
+                "Unable to load categories. Please refresh the page.",
                 "error"
             );
 
+        }
 
-            setSubmittingState(
-                form,
-                false
+    }
+
+
+    loadCategories();
+
+
+    /* =====================================================
+       FORM VALIDATION
+    ====================================================== */
+
+    function validateForm() {
+
+        clearMessage();
+
+
+        const title =
+            document
+                .getElementById("jobTitle")
+                ?.value
+                .trim();
+
+
+        const jobDescription =
+            description
+                ?.value
+                .trim();
+
+
+        const category =
+            categorySelect
+                ?.value;
+
+
+        const location =
+            document
+                .getElementById("jobLocation")
+                ?.value
+                .trim();
+
+
+        const budgetMin =
+            document
+                .getElementById("budgetMin")
+                ?.value;
+
+
+        const budgetMax =
+            document
+                .getElementById("budgetMax")
+                ?.value;
+
+
+        if (!title) {
+
+            showMessage(
+                "Please enter a job title."
             );
 
+            document
+                .getElementById("jobTitle")
+                ?.focus();
 
-            setTimeout(
-                () => {
+            return false;
 
-                    window.location.href =
-                        "/login?next=/post-job";
-
-                },
-                1200
-            );
-
-
-            return;
         }
 
 
-        const response =
-            await fetch(
-                POST_JOB_CONFIG
-                    .CREATE_ENDPOINT,
-                {
+        if (title.length < 5) {
 
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Accept":
-                            "application/json",
-
-                        "Authorization":
-                            `Bearer ${token}`
-
-                    },
-
-                    credentials:
-                        "same-origin",
-
-                    body:
-                        JSON.stringify(
-                            payload
-                        )
-
-                }
+            showMessage(
+                "Job title should contain at least 5 characters."
             );
 
+            document
+                .getElementById("jobTitle")
+                ?.focus();
 
-        const result =
-            await parseJSONResponse(
-                response
+            return false;
+
+        }
+
+
+        if (!jobDescription) {
+
+            showMessage(
+                "Please describe the work you need."
             );
+
+            description?.focus();
+
+            return false;
+
+        }
+
+
+        if (jobDescription.length < 20) {
+
+            showMessage(
+                "Please provide a little more detail about the job."
+            );
+
+            description?.focus();
+
+            return false;
+
+        }
+
+
+        if (!category) {
+
+            showMessage(
+                "Please select a job category."
+            );
+
+            categorySelect?.focus();
+
+            return false;
+
+        }
+
+
+        if (!location) {
+
+            showMessage(
+                "Please enter the work location."
+            );
+
+            document
+                .getElementById("jobLocation")
+                ?.focus();
+
+            return false;
+
+        }
 
 
         if (
-            response.status === 401
+            budgetMin !== "" &&
+            budgetMax !== "" &&
+            Number(budgetMin) > Number(budgetMax)
         ) {
 
-            handleUnauthorized();
-
-            return;
-        }
-
-
-        if (
-            response.status === 403
-        ) {
-
-            showToast(
-                result.message ||
-                "Only customer accounts can post jobs.",
-                "error"
+            showMessage(
+                "Minimum budget cannot be greater than maximum budget."
             );
 
-            return;
-        }
+            document
+                .getElementById("budgetMin")
+                ?.focus();
 
-
-        if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                "Unable to post your job."
-            );
-        }
-
-
-        showToast(
-            result.message ||
-            "Job posted successfully!",
-            "success"
-        );
-
-
-        form.reset();
-
-
-        if (
-            result.job &&
-            result.job.id
-        ) {
-
-            setTimeout(
-                () => {
-
-                    window.location.href =
-                        `/jobs/${result.job.id}`;
-
-                },
-                900
-            );
-
-        } else {
-
-            setTimeout(
-                () => {
-
-                    window.location.href =
-                        POST_JOB_CONFIG
-                            .REDIRECT_AFTER_SUCCESS;
-
-                },
-                900
-            );
+            return false;
 
         }
 
 
-    } catch (error) {
-
-        console.error(
-            "Job submission error:",
-            error
-        );
-
-
-        showToast(
-            error.message ||
-            "Something went wrong. Please try again.",
-            "error"
-        );
-
-
-    } finally {
-
-        setSubmittingState(
-            form,
-            false
-        );
-
-    }
-
-}
-
-
-/* ============================================================
-   VALIDATE JOB FORM
-============================================================ */
-
-function validateJobForm(
-    form
-) {
-
-    const title =
-        document.getElementById(
-            "jobTitle"
-        );
-
-    const description =
-        document.getElementById(
-            "jobDescription"
-        );
-
-    const category =
-        document.getElementById(
-            "jobCategory"
-        );
-
-    const location =
-        document.getElementById(
-            "jobLocation"
-        );
-
-    const budgetMin =
-        document.getElementById(
-            "budgetMin"
-        );
-
-    const budgetMax =
-        document.getElementById(
-            "budgetMax"
-        );
-
-
-    clearAllFieldErrors(
-        form
-    );
-
-
-    if (
-        !title ||
-        !title.value.trim()
-    ) {
-
-        return validationError(
-            title,
-            "Job title is required."
-        );
+        return true;
 
     }
 
 
-    if (
-        title.value.trim().length < 3
-    ) {
+    /* =====================================================
+       FORM SUBMIT
+    ====================================================== */
 
-        return validationError(
-            title,
-            "Job title must contain at least 3 characters."
-        );
+    form.addEventListener(
+        "submit",
+        async (event) => {
 
-    }
-
-
-    if (
-        title.value.trim().length >
-        POST_JOB_CONFIG
-            .MAX_TITLE_LENGTH
-    ) {
-
-        return validationError(
-            title,
-            "Job title is too long."
-        );
-
-    }
+            event.preventDefault();
 
 
-    if (
-        !description ||
-        !description.value.trim()
-    ) {
-
-        return validationError(
-            description,
-            "Job description is required."
-        );
-
-    }
-
-
-    if (
-        description.value.trim().length < 10
-    ) {
-
-        return validationError(
-            description,
-            "Please provide a little more detail about the work."
-        );
-
-    }
-
-
-    if (
-        !category ||
-        !category.value
-    ) {
-
-        return validationError(
-            category,
-            "Please select a job category."
-        );
-
-    }
-
-
-    if (
-        !location ||
-        !location.value.trim()
-    ) {
-
-        return validationError(
-            location,
-            "Work location is required."
-        );
-
-    }
-
-
-    const min =
-        budgetMin &&
-        budgetMin.value !== ""
-            ? parseFloat(
-                budgetMin.value
-            )
-            : null;
-
-
-    const max =
-        budgetMax &&
-        budgetMax.value !== ""
-            ? parseFloat(
-                budgetMax.value
-            )
-            : null;
-
-
-    if (
-        min !== null &&
-        (
-            Number.isNaN(min) ||
-            min < 0
-        )
-    ) {
-
-        return validationError(
-            budgetMin,
-            "Please enter a valid minimum budget."
-        );
-
-    }
-
-
-    if (
-        max !== null &&
-        (
-            Number.isNaN(max) ||
-            max < 0
-        )
-    ) {
-
-        return validationError(
-            budgetMax,
-            "Please enter a valid maximum budget."
-        );
-
-    }
-
-
-    if (
-        min !== null &&
-        max !== null &&
-        min > max
-    ) {
-
-        return validationError(
-            budgetMax,
-            "Maximum budget cannot be lower than minimum budget."
-        );
-
-    }
-
-
-    return {
-        valid: true
-    };
-
-}
-
-
-/* ============================================================
-   COLLECT FORM DATA
-============================================================ */
-
-function collectJobData(
-    form
-) {
-
-    const getValue =
-        id => {
-
-            const element =
-                document.getElementById(
-                    id
-                );
-
-            return element
-                ? element.value.trim()
-                : "";
-
-        };
-
-
-    const getNumber =
-        id => {
-
-            const value =
-                getValue(id);
-
-
-            if (!value) {
-
-                return null;
-
+            if (!validateForm()) {
+                return;
             }
 
 
-            const number =
-                Number(value);
+            submitButton.disabled = true;
 
 
-            return Number.isFinite(
-                number
-            )
-                ? number
-                : null;
+            const originalButtonHTML =
+                submitButton.innerHTML;
 
-        };
 
+            submitButton.innerHTML = `
+                <span class="button-text">
+                    Publishing...
+                </span>
+            `;
 
-    return {
 
-        title:
-            getValue(
-                "jobTitle"
-            ),
+            try {
 
-        description:
-            getValue(
-                "jobDescription"
-            ),
+                const formData =
+                    new FormData(form);
 
-        category_id:
-            Number(
-                getValue(
-                    "jobCategory"
-                )
-            ),
 
-        budget_min:
-            getNumber(
-                "budgetMin"
-            ),
+                const payload = {
 
-        budget_max:
-            getNumber(
-                "budgetMax"
-            ),
+                    title:
+                        formData.get("title"),
 
-        location:
-            getValue(
-                "jobLocation"
-            ),
+                    description:
+                        formData.get("description"),
 
-        city:
-            getValue(
-                "jobCity"
-            ) || null,
+                    category_id:
+                        formData.get("category_id"),
 
-        state:
-            getValue(
-                "jobState"
-            ) || null,
+                    budget_min:
+                        formData.get("budget_min")
+                        || null,
 
-        pincode:
-            getValue(
-                "jobPincode"
-            ) || null,
+                    budget_max:
+                        formData.get("budget_max")
+                        || null,
 
-        priority:
-            getValue(
-                "jobPriority"
-            ) || "normal"
+                    location:
+                        formData.get("location"),
 
-    };
+                    city:
+                        formData.get("city"),
 
-}
+                    state:
+                        formData.get("state"),
 
+                    pincode:
+                        formData.get("pincode"),
 
-/* ============================================================
-   ACCESS TOKEN
-============================================================ */
+                    priority:
+                        formData.get("priority")
 
-function getAccessToken() {
+                };
 
-    const possibleKeys = [
 
-        "access_token",
+                /*
+                 * Change this URL ONLY if your backend
+                 * uses a different endpoint.
+                 */
 
-        "accessToken",
+                const response =
+                    await fetch(
+                        "/api/jobs",
+                        {
+                            method: "POST",
 
-        "jwt_token",
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
 
-        "jwtToken",
+                                "Accept":
+                                    "application/json"
+                            },
 
-        "token",
+                            credentials:
+                                "same-origin",
 
-        "authToken"
+                            body:
+                                JSON.stringify(payload)
+                        }
+                    );
 
-    ];
 
+                let result = {};
 
-    for (
-        const key of possibleKeys
-    ) {
+                try {
 
-        const token =
-            localStorage.getItem(
-                key
-            );
+                    result =
+                        await response.json();
 
+                } catch {
+                    result = {};
+                }
 
-        if (
-            token &&
-            token.trim()
-        ) {
 
-            return token.trim();
+                if (!response.ok) {
 
-        }
+                    throw new Error(
+                        result.message ||
+                        result.error ||
+                        "Unable to post your job."
+                    );
 
-    }
+                }
 
 
-    /*
-     * Support sessionStorage too.
-     */
+                showMessage(
+                    result.message ||
+                    "Your job has been posted successfully.",
+                    "success"
+                );
 
-    for (
-        const key of possibleKeys
-    ) {
 
-        const token =
-            sessionStorage.getItem(
-                key
-            );
+                form.reset();
 
+                updateDescriptionCounter();
 
-        if (
-            token &&
-            token.trim()
-        ) {
 
-            return token.trim();
+                /*
+                 * Reload categories after reset so
+                 * select remains usable.
+                 */
 
-        }
+                await loadCategories();
 
-    }
 
+            } catch (error) {
 
-    return null;
+                console.error(
+                    "Post job error:",
+                    error
+                );
 
-}
 
+                showMessage(
+                    error.message ||
+                    "Something went wrong. Please try again.",
+                    "error"
+                );
 
-/* ============================================================
-   UNAUTHORIZED
-============================================================ */
 
-function handleUnauthorized() {
+            } finally {
 
-    clearPossibleTokens();
+                submitButton.disabled = false;
 
+                submitButton.innerHTML =
+                    originalButtonHTML;
 
-    showToast(
-        "Your session has expired. Please login again.",
-        "error"
-    );
-
-
-    setTimeout(
-        () => {
-
-            window.location.href =
-                "/login?next=/post-job";
-
-        },
-        1000
-    );
-
-}
-
-
-/* ============================================================
-   CLEAR TOKENS
-============================================================ */
-
-function clearPossibleTokens() {
-
-    const keys = [
-
-        "access_token",
-        "accessToken",
-        "jwt_token",
-        "jwtToken",
-        "token",
-        "authToken"
-
-    ];
-
-
-    keys.forEach(
-        key => {
-
-            localStorage.removeItem(
-                key
-            );
-
-            sessionStorage.removeItem(
-                key
-            );
+            }
 
         }
     );
 
-}
-
-
-/* ============================================================
-   SUBMITTING STATE
-============================================================ */
-
-function setSubmittingState(
-    form,
-    submitting
-) {
-
-    form.dataset.submitting =
-        submitting
-            ? "true"
-            : "false";
-
-
-    const button =
-        form.querySelector(
-            'button[type="submit"]'
-        );
-
-
-    if (!button) {
-
-        return;
-    }
-
-
-    if (submitting) {
-
-        button.disabled = true;
-
-        button.dataset.originalText =
-            button.textContent.trim();
-
-        button.textContent =
-            "Posting Job...";
-
-        button.setAttribute(
-            "aria-busy",
-            "true"
-        );
-
-    } else {
-
-        button.disabled = false;
-
-        button.textContent =
-            button.dataset.originalText ||
-            "Post Job";
-
-        button.removeAttribute(
-            "aria-busy"
-        );
-
-    }
-
-}
-
-
-/* ============================================================
-   FIELD ERROR
-============================================================ */
-
-function setFieldError(
-    field,
-    message
-) {
-
-    if (!field) {
-
-        return;
-    }
-
-
-    field.classList.add(
-        "is-invalid"
-    );
-
-
-    field.setAttribute(
-        "aria-invalid",
-        "true"
-    );
-
-
-    let errorElement =
-        document.getElementById(
-            `${field.id}Error`
-        );
-
-
-    if (!errorElement) {
-
-        errorElement =
-            document.createElement(
-                "small"
-            );
-
-        errorElement.id =
-            `${field.id}Error`;
-
-        errorElement.className =
-            "form-error";
-
-
-        field.insertAdjacentElement(
-            "afterend",
-            errorElement
-        );
-
-    }
-
-
-    errorElement.textContent =
-        message;
-
-}
-
-
-/* ============================================================
-   CLEAR FIELD ERROR
-============================================================ */
-
-function clearFieldError(
-    field
-) {
-
-    if (!field) {
-
-        return;
-    }
-
-
-    field.classList.remove(
-        "is-invalid"
-    );
-
-
-    field.removeAttribute(
-        "aria-invalid"
-    );
-
-
-    const errorElement =
-        document.getElementById(
-            `${field.id}Error`
-        );
-
-
-    if (errorElement) {
-
-        errorElement.remove();
-
-    }
-
-}
-
-
-/* ============================================================
-   CLEAR ALL ERRORS
-============================================================ */
-
-function clearAllFieldErrors(
-    form
-) {
-
-    const invalidFields =
-        form.querySelectorAll(
-            ".is-invalid"
-        );
-
-
-    invalidFields.forEach(
-        field => {
-
-            clearFieldError(
-                field
-            );
-
-        }
-    );
-
-
-    const errors =
-        form.querySelectorAll(
-            ".form-error"
-        );
-
-
-    errors.forEach(
-        error => {
-
-            error.remove();
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   VALIDATION ERROR HELPER
-============================================================ */
-
-function validationError(
-    field,
-    message
-) {
-
-    setFieldError(
-        field,
-        message
-    );
-
-
-    return {
-
-        valid: false,
-
-        field: field,
-
-        message: message
-
-    };
-
-}
-
-
-/* ============================================================
-   MAX LENGTH
-============================================================ */
-
-function enforceMaxLength(
-    field,
-    maxLength
-) {
-
-    if (
-        field.value.length >
-        maxLength
-    ) {
-
-        field.value =
-            field.value.substring(
-                0,
-                maxLength
-            );
-
-    }
-
-}
-
-
-/* ============================================================
-   JSON RESPONSE PARSER
-============================================================ */
-
-async function parseJSONResponse(
-    response
-) {
-
-    const contentType =
-        response.headers.get(
-            "content-type"
-        ) || "";
-
-
-    if (
-        contentType.includes(
-            "application/json"
-        )
-    ) {
-
-        return await response.json();
-
-    }
-
-
-    const text =
-        await response.text();
-
-
-    return {
-
-        status:
-            "error",
-
-        message:
-            text ||
-            "Unexpected server response."
-
-    };
-
-}
-
-
-/* ============================================================
-   TOAST
-============================================================ */
-
-function showToast(
-    message,
-    type = "info"
-) {
-
-    /*
-     * Use existing S. F Works toast.js
-     * when available.
-     */
-
-    if (
-        typeof window.showToast ===
-        "function"
-    ) {
-
-        window.showToast(
-            message,
-            type
-        );
-
-        return;
-    }
-
-
-    /*
-     * Fallback toast.
-     */
-
-    const toast =
-        document.createElement(
-            "div"
-        );
-
-
-    toast.className =
-        `sf-js-toast sf-js-toast-${type}`;
-
-
-    toast.textContent =
-        message;
-
-
-    Object.assign(
-        toast.style,
-        {
-
-            position:
-                "fixed",
-
-            bottom:
-                "24px",
-
-            left:
-                "50%",
-
-            transform:
-                "translateX(-50%)",
-
-            zIndex:
-                "99999",
-
-            padding:
-                "13px 18px",
-
-            borderRadius:
-                "10px",
-
-            background:
-                "#111827",
-
-            color:
-                "#ffffff",
-
-            fontSize:
-                "14px",
-
-            fontWeight:
-                "600",
-
-            boxShadow:
-                "0 10px 30px rgba(0,0,0,.18)",
-
-            maxWidth:
-                "calc(100% - 32px)",
-
-            textAlign:
-                "center"
-
-        }
-
-    );
-
-
-    document.body.appendChild(
-        toast
-    );
-
-
-    setTimeout(
-        () => {
-
-            toast.remove();
-
-        },
-        3500
-    );
-
-}
+});
