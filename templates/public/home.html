@@ -1576,6 +1576,14 @@ S. F Works — Find Trusted Workers & Local Jobs
 
 </section>
 
-</main>  
+</main> 
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/home.js') }}"
+    defer
+></script>
+
 {% endblock %}
+
 
