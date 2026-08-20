@@ -1347,5 +1347,75 @@ def category_status(category_id):
 
     }), 200
 
+@admin_bp.route(
+    "/create-first-admin",
+    methods=["GET"]
+)
+def create_first_admin():
+
+    setup_key = request.args.get("key")
+
+    if setup_key != "CHANGE-THIS-SECRET-2026":
+        return jsonify({
+            "status": "error",
+            "message": "Invalid setup key"
+        }), 403
+
+    existing_admin = User.query.filter_by(
+        role="admin"
+    ).first()
+
+    if existing_admin:
+        return jsonify({
+            "status": "success",
+            "message": "Admin already exists",
+            "admin": {
+                "id": existing_admin.id,
+                "email": existing_admin.email,
+                "role": existing_admin.role
+            }
+        }), 200
+
+    email = "admin@sfworks.com"
+    password = "Admin@12345"
+
+    existing_user = User.query.filter_by(
+        email=email
+    ).first()
+
+    if existing_user:
+
+        existing_user.role = "admin"
+        existing_user.is_active = True
+        existing_user.set_password(password)
+
+        db.session.commit()
+
+        return jsonify({
+            "status": "success",
+            "message": "Existing user converted to admin",
+            "email": email
+        }), 200
+
+    admin = User(
+        full_name="S F Works Admin",
+        email=email,
+        phone="9999999999",
+        role="admin",
+        is_active=True
+    )
+
+    admin.set_password(password)
+
+    db.session.add(admin)
+    db.session.commit()
+
+    return jsonify({
+        "status": "success",
+        "message": "Admin created successfully",
+        "email": email,
+        "role": "admin"
+    }), 201
+
 
 
