@@ -1,1582 +1,1685 @@
 {% extends "base.html" %}
 
+
 {% block title %}
 S. F Works — Find Trusted Workers & Local Jobs
 {% endblock %}
 
+
 {% block extra_css %}
 
-<link  
-    rel="stylesheet"  
-    href="{{ url_for('static', filename='css/home.css') }}"  
->  {% endblock %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/home.css') }}"
+>
+
+{% endblock %}
+
 
 {% block content %}
 
-<main class="home-page">  <!-- =====================================================  
-     PREMIUM HERO  
-====================================================== -->  
+<main class="home-page">
 
-<section class="premium-hero">  
 
-    <!-- BACKGROUND DECORATION -->  
-
-    <div class="hero-orb hero-orb-one"></div>  
-    <div class="hero-orb hero-orb-two"></div>  
-    <div class="hero-grid-pattern"></div>  
-
-
-    <div class="container premium-hero-container">  
-
-        <!-- =================================================  
-             LEFT CONTENT  
-        ================================================== -->  
-
-        <div class="premium-hero-content">  
-
-            <div class="premium-badge">  
-                <span class="badge-dot"></span>  
-                Trusted Local Work Marketplace  
-            </div>  
-
-
-            <h1 class="premium-title">  
-
-                Find trusted workers  
-                <span>for every job.</span>  
-
-            </h1>  
-
-
-            <p class="premium-description">  
-
-                Connect with skilled and verified local professionals  
-                for home services, repairs, construction, cleaning,  
-                electrical work and more.  
-
-            </p>  
-
-
-            <!-- CTA -->  
-
-            <div class="premium-actions">  
-
-                <a  
-                    href="/post-job"  
-                    class="premium-btn premium-btn-primary"  
-                >  
-
-                    <span>Post a Job</span>  
-
-                    <span class="btn-arrow">  
-                        →  
-                    </span>  
-
-                </a>  
-
-
-                <a  
-                    href="/jobs"  
-                    class="premium-btn premium-btn-secondary"  
-                >  
-
-                    <span class="search-icon">  
-                        ⌕  
-                    </span>  
-
-                    Find Workers  
-
-                </a>  
-
-            </div>  
-
-
-            <!-- TRUST -->  
-
-            <div class="premium-trust">  
-
-                <div class="trust-item">  
-
-                    <span class="trust-icon">  
-                        ✓  
-                    </span>  
-
-                    <span>  
-                        Verified Workers  
-                    </span>  
-
-                </div>  
-
-
-                <div class="trust-item">  
-
-                    <span class="trust-icon">  
-                        ✓  
-                    </span>  
-
-                    <span>  
-                        Local Services  
-                    </span>  
-
-                </div>  
-
-
-                <div class="trust-item">  
-
-                    <span class="trust-icon">  
-                        ✓  
-                    </span>  
-
-                    <span>  
-                        Easy Booking  
-                    </span>  
-
-                </div>  
-
-            </div>  
-
-        </div>  
-
-
-        <!-- =================================================  
-             RIGHT VISUAL  
-        ================================================== -->  
-
-        <div class="premium-hero-visual">  
-
-
-            <!-- MAIN CARD -->  
-
-            <div class="premium-job-card">  
-
-                <div class="job-card-top">  
-
-                    <div>  
-
-                        <span class="job-card-label">  
-                            POPULAR SERVICE  
-                        </span>  
-
-                        <div class="live-status">  
-                            <span></span>  
-                            Available Now  
-                        </div>  
-
-                    </div>  
-
-                    <div class="job-card-menu">  
-                        •••  
-                    </div>  
-
-                </div>  
-
-
-                <div class="service-icon-box">  
-                    ⚡  
-                </div>  
-
-
-                <h3>  
-                    Home Electrical Work  
-                </h3>  
-
-
-                <p>  
-                    Experienced electrician needed for  
-                    wiring, installation and home electrical repair.  
-                </p>  
-
-
-                <div class="job-location">  
-
-                    <span>  
-                        📍 Kolkata  
-                    </span>  
-
-                    <span>  
-                        ●  
-                    </span>  
-
-                    <strong>  
-                        ₹1,500 – ₹3,000  
-                    </strong>  
-
-                </div>  
-
-
-                <a  
-                    href="/jobs"  
-                    class="job-card-button"  
-                >  
-
-                    View Available Jobs  
-
-                    <span>  
-                        →  
-                    </span>  
-
-                </a>  
-
-            </div>  
-
-
-            <!-- FLOATING VERIFIED CARD -->  
-
-            <div class="floating-card verified-floating">  
-
-                <div class="floating-icon">  
-                    ✓  
-                </div>  
-
-                <div>  
-
-                    <strong>  
-                        Verified  
-                    </strong>  
-
-                    <small>  
-                        Trusted Professionals  
-                    </small>  
-
-                </div>  
-
-            </div>  
-
-
-            <!-- FLOATING WORKER CARD -->  
-
-            <div class="floating-card worker-floating">  
-
-                <div class="mini-avatar">  
-                    W  
-                </div>  
-
-                <div>  
-
-                    <strong>  
-                        Skilled Workers  
-                    </strong>  
-
-                    <small>  
-                        Available near you  
-                    </small>  
-
-                </div>  
-
-            </div>  
-
-
-            <!-- GLOW -->  
-
-            <div class="visual-glow"></div>  
-
-        </div>  
-
-    </div>  
-
-
-    <!-- =====================================================  
-         BOTTOM SERVICE STRIP  
-    ====================================================== -->  
-
-    <div class="hero-service-strip">  
-
-        <div class="container service-strip-inner">  
-
-            <span class="service-title">  
-                Popular Services  
-            </span>  
-
-            <span>Electrical</span>  
-            <span>Plumbing</span>  
-            <span>Cleaning</span>  
-            <span>Painting</span>  
-            <span>Carpentry</span>  
-            <span>Construction</span>  
-
-        </div>  
-
-    </div>  
-
-</section>  
-<!-- =====================================================  
- HOME MARKETPLACE SECTIONS
-
+<!-- =====================================================
+     PREMIUM HERO
 ====================================================== -->
 
-<!-- =====================================================  
-     POPULAR CATEGORIES  
-====================================================== -->  <section class="home-section categories-section">  <div class="container">  
+<section class="premium-hero">
 
-    <div class="section-heading">  
+    <div class="hero-orb hero-orb-one"></div>
+    <div class="hero-orb hero-orb-two"></div>
+    <div class="hero-grid-pattern"></div>
 
-        <div>  
 
-            <span class="section-eyebrow">  
-                EXPLORE SERVICES  
-            </span>  
+    <div class="container premium-hero-container">
 
-            <h2>  
-                What service do you need?  
-            </h2>  
+        <!-- LEFT -->
 
-            <p>  
-                Find trusted professionals for everyday  
-                local services.  
-            </p>  
+        <div class="premium-hero-content">
 
-        </div>  
+            <div class="premium-badge">
+                <span class="badge-dot"></span>
+                Trusted Local Work Marketplace
+            </div>
 
-        <div class="section-heading-action">  
 
-            <a  
-                href="/categories"  
-                class="section-link"  
-            >  
-                View all categories  
-                <span>→</span>  
-            </a>  
+            <h1 class="premium-title">
 
-        </div>  
+                Find trusted workers
+                <span>for every job.</span>
 
-    </div>  
+            </h1>
 
 
-    <!-- CATEGORY SCROLLER -->  
+            <p class="premium-description">
 
-    <div class="horizontal-scroll-wrapper">  
+                Connect with skilled and verified local professionals
+                for home services, repairs, construction, cleaning,
+                electrical work and more.
 
-        <button  
-            class="scroll-control scroll-prev"  
-            type="button"  
-            aria-label="Previous categories"  
-        >  
-            ←  
-        </button>  
+            </p>
 
 
-        <div  
-            class="categories-grid horizontal-scroll"  
-            data-scroll-container  
-        >  
+            <div class="premium-actions">
 
-            <a  
-                href="/jobs?category=electrical"  
-                class="category-card"  
-            >  
+                <a
+                    href="{{ url_for('post_job') if false else '/post-job' }}"
+                    class="premium-btn premium-btn-primary"
+                >
 
-                <div class="category-card-top">  
+                    <span>
+                        Post a Job
+                    </span>
 
-                    <div class="category-icon electrical-icon">  
-                        ⚡  
-                    </div>  
+                    <span class="btn-arrow">
+                        →
+                    </span>
 
-                    <span class="category-arrow">  
-                        →  
-                    </span>  
+                </a>
 
-                </div>  
 
-                <h3>  
-                    Electrical  
-                </h3>  
+                <a
+                    href="{{ url_for('worker_public.workers_page') }}"
+                    class="premium-btn premium-btn-secondary"
+                >
 
-                <p>  
-                    Wiring, repair & installation  
-                </p>  
+                    <span class="search-icon">
+                        ⌕
+                    </span>
 
-                <span class="category-link">  
-                    Find workers →  
-                </span>  
+                    Find Workers
 
-            </a>  
+                </a>
 
+            </div>
 
-            <a  
-                href="/jobs?category=plumbing"  
-                class="category-card"  
-            >  
 
-                <div class="category-card-top">  
+            <div class="premium-trust">
 
-                    <div class="category-icon plumbing-icon">  
-                        🔧  
-                    </div>  
+                <div class="trust-item">
+                    <span class="trust-icon">✓</span>
+                    <span>Verified Workers</span>
+                </div>
 
-                    <span class="category-arrow">  
-                        →  
-                    </span>  
+                <div class="trust-item">
+                    <span class="trust-icon">✓</span>
+                    <span>Local Services</span>
+                </div>
 
-                </div>  
+                <div class="trust-item">
+                    <span class="trust-icon">✓</span>
+                    <span>Easy Booking</span>
+                </div>
 
-                <h3>  
-                    Plumbing  
-                </h3>  
+            </div>
 
-                <p>  
-                    Repair, pipes & fittings  
-                </p>  
+        </div>
 
-                <span class="category-link">  
-                    Find workers →  
-                </span>  
 
-            </a>  
+        <!-- RIGHT VISUAL -->
 
+        <div class="premium-hero-visual">
 
-            <a  
-                href="/jobs?category=cleaning"  
-                class="category-card"  
-            >  
+            <div class="premium-job-card">
 
-                <div class="category-card-top">  
+                <div class="job-card-top">
 
-                    <div class="category-icon cleaning-icon">  
-                        ✨  
-                    </div>  
+                    <div>
 
-                    <span class="category-arrow">  
-                        →  
-                    </span>  
+                        <span class="job-card-label">
+                            POPULAR SERVICE
+                        </span>
 
-                </div>  
+                        <div class="live-status">
+                            <span></span>
+                            Available Now
+                        </div>
 
-                <h3>  
-                    Cleaning  
-                </h3>  
+                    </div>
 
-                <p>  
-                    Home & office cleaning  
-                </p>  
+                    <div class="job-card-menu">
+                        •••
+                    </div>
 
-                <span class="category-link">  
-                    Find workers →  
-                </span>  
+                </div>
 
-            </a>  
 
+                <div class="service-icon-box">
+                    ⚡
+                </div>
 
-            <a  
-                href="/jobs?category=painting"  
-                class="category-card"  
-            >  
 
-                <div class="category-card-top">  
+                <h3>
+                    Home Electrical Work
+                </h3>
 
-                    <div class="category-icon painting-icon">  
-                        🎨  
-                    </div>  
 
-                    <span class="category-arrow">  
-                        →  
-                    </span>  
+                <p>
+                    Experienced electrician needed for
+                    wiring, installation and home electrical repair.
+                </p>
 
-                </div>  
 
-                <h3>  
-                    Painting  
-                </h3>  
+                <div class="job-location">
 
-                <p>  
-                    Interior & exterior painting  
-                </p>  
+                    <span>
+                        📍 Kolkata
+                    </span>
 
-                <span class="category-link">  
-                    Find workers →  
-                </span>  
+                    <span>
+                        ●
+                    </span>
 
-            </a>  
+                    <strong>
+                        ₹1,500 – ₹3,000
+                    </strong>
 
+                </div>
 
-            <a  
-                href="/jobs?category=carpentry"  
-                class="category-card"  
-            >  
 
-                <div class="category-card-top">  
+                <a
+                    href="/jobs"
+                    class="job-card-button"
+                >
+                    View Available Jobs
+                    <span>→</span>
+                </a>
 
-                    <div class="category-icon carpentry-icon">  
-                        🪚  
-                    </div>  
+            </div>
 
-                    <span class="category-arrow">  
-                        →  
-                    </span>  
 
-                </div>  
+            <div class="floating-card verified-floating">
 
-                <h3>  
-                    Carpentry  
-                </h3>  
+                <div class="floating-icon">
+                    ✓
+                </div>
 
-                <p>  
-                    Furniture & woodwork  
-                </p>  
+                <div>
 
-                <span class="category-link">  
-                    Find workers →  
-                </span>  
+                    <strong>
+                        Verified
+                    </strong>
 
-            </a>  
+                    <small>
+                        Trusted Professionals
+                    </small>
 
+                </div>
 
-            <a  
-                href="/jobs?category=construction"  
-                class="category-card"  
-            >  
+            </div>
 
-                <div class="category-card-top">  
 
-                    <div class="category-icon construction-icon">  
-                        🏗  
-                    </div>  
+            <div class="floating-card worker-floating">
 
-                    <span class="category-arrow">  
-                        →  
-                    </span>  
+                <div class="mini-avatar">
+                    W
+                </div>
 
-                </div>  
+                <div>
 
-                <h3>  
-                    Construction  
-                </h3>  
+                    <strong>
+                        Skilled Workers
+                    </strong>
 
-                <p>  
-                    Building & renovation  
-                </p>  
+                    <small>
+                        Available near you
+                    </small>
 
-                <span class="category-link">  
-                    Find workers →  
-                </span>  
+                </div>
 
-            </a>  
+            </div>
 
-        </div>  
 
+            <div class="visual-glow"></div>
 
-        <button  
-            class="scroll-control scroll-next"  
-            type="button"  
-            aria-label="Next categories"  
-        >  
-            →  
-        </button>  
+        </div>
 
-    </div>  
+    </div>
 
-</div>
 
-</section>  <!-- =====================================================  
-     HOW IT WORKS  
-====================================================== -->  <section class="home-section process-section">  <div class="container">  
+    <!-- SERVICE STRIP -->
 
-    <div class="section-heading centered">  
+    <div class="hero-service-strip">
 
-        <span class="section-eyebrow">  
-            SIMPLE PROCESS  
-        </span>  
+        <div class="container service-strip-inner">
 
-        <h2>  
-            Get your work done in 3 simple steps  
-        </h2>  
+            <span class="service-title">
+                Popular Services
+            </span>
 
-        <p>  
-            S. F Works makes it easy to find the right  
-            professional for your local job.  
-        </p>  
+            <a href="/jobs?category=electrical">
+                Electrical
+            </a>
 
-    </div>  
+            <a href="/jobs?category=plumbing">
+                Plumbing
+            </a>
 
+            <a href="/jobs?category=cleaning">
+                Cleaning
+            </a>
 
-    <div class="process-grid">  
+            <a href="/jobs?category=painting">
+                Painting
+            </a>
 
+            <a href="/jobs?category=carpentry">
+                Carpentry
+            </a>
 
-        <article class="process-card">  
+            <a href="/jobs?category=construction">
+                Construction
+            </a>
 
-            <div class="process-number">  
-                01  
-            </div>  
+        </div>
 
-            <div class="process-icon">  
-                📝  
-            </div>  
-
-            <h3>  
-                Post Your Job  
-            </h3>  
-
-            <p>  
-                Tell us what work you need,  
-                your location and your budget.  
-            </p>  
-
-        </article>  
-
-
-        <div class="process-connector"></div>  
-
-
-        <article class="process-card">  
-
-            <div class="process-number">  
-                02  
-            </div>  
-
-            <div class="process-icon">  
-                👷  
-            </div>  
-
-            <h3>  
-                Find a Worker  
-            </h3>  
-
-            <p>  
-                Compare skilled local workers  
-                and choose the right professional.  
-            </p>  
-
-        </article>  
-
-
-        <div class="process-connector"></div>  
-
-
-        <article class="process-card">  
-
-            <div class="process-number">  
-                03  
-            </div>  
-
-            <div class="process-icon">  
-                ✓  
-            </div>  
-
-            <h3>  
-                Get It Done  
-            </h3>  
-
-            <p>  
-                Connect with your worker and  
-                get your job completed.  
-            </p>  
-
-        </article>  
-
-    </div>  
-
-</div>
-
-</section>  <!-- =====================================================  
-     FEATURED WORKERS  
-====================================================== -->  <section class="home-section workers-section">  <div class="container">  
-
-    <div class="section-heading">  
-
-        <div>  
-
-            <span class="section-eyebrow">  
-                TOP PROFESSIONALS  
-            </span>  
-
-            <h2>  
-                Meet trusted local workers  
-            </h2>  
-
-            <p>  
-                Discover skilled professionals available  
-                for your next job.  
-            </p>  
-
-        </div>  
-
-
-        <a  
-            href="/workers"  
-            class="section-link"  
-        >  
-            View all workers →  
-        </a>  
-
-    </div>  
-
-
-    <!-- FACEBOOK STYLE PROFILE SCROLLER -->  
-
-    <div class="horizontal-scroll-wrapper worker-scroll-wrapper">  
-
-        <button  
-            class="scroll-control scroll-prev"  
-            type="button"  
-            aria-label="Previous workers"  
-        >  
-            ←  
-        </button>  
-
-
-        <div  
-            class="workers-grid horizontal-scroll worker-horizontal-scroll"  
-            data-scroll-container  
-        >  
-
-
-            <!-- WORKER 1 -->  
-
-            <article class="worker-card">  
-
-                <div class="worker-cover worker-cover-blue">  
-
-                    <span class="worker-cover-badge">  
-                        AVAILABLE  
-                    </span>  
-
-                </div>  
-
-
-                <div class="worker-profile-area">  
-
-                    <div class="worker-avatar">  
-                        AK  
-                    </div>  
-
-
-                    <div class="worker-info">  
-
-                        <div class="worker-name-row">  
-
-                            <h3>  
-                                Amit Kumar  
-                            </h3>  
-
-                            <span class="verified-mark">  
-                                ✓  
-                            </span>  
-
-                        </div>  
-
-                        <p>  
-                            Professional Electrician  
-                        </p>  
-
-                        <div class="worker-meta">  
-                            ⭐ 4.9  
-                            <span>•</span>  
-                            Kolkata  
-                        </div>  
-
-                    </div>  
-
-                </div>  
-
-
-                <div class="worker-tags">  
-
-                    <span>  
-                        Electrical  
-                    </span>  
-
-                    <span>  
-                        Wiring  
-                    </span>  
-
-                    <span>  
-                        Repair  
-                    </span>  
-
-                </div>  
-
-
-                <div class="worker-footer">  
-
-                    <span>  
-                        8+ years experience  
-                    </span>  
-
-                    <a  
-                        href="/workers"  
-                        class="worker-view-btn"  
-                    >  
-                        View Profile →  
-                    </a>  
-
-                </div>  
-
-            </article>  
-
-
-
-            <!-- WORKER 2 -->  
-
-            <article class="worker-card">  
-
-                <div class="worker-cover worker-cover-purple">  
-
-                    <span class="worker-cover-badge">  
-                        AVAILABLE  
-                    </span>  
-
-                </div>  
-
-
-                <div class="worker-profile-area">  
-
-                    <div class="worker-avatar">  
-                        RS  
-                    </div>  
-
-
-                    <div class="worker-info">  
-
-                        <div class="worker-name-row">  
-
-                            <h3>  
-                                Rahul Singh  
-                            </h3>  
-
-                            <span class="verified-mark">  
-                                ✓  
-                            </span>  
-
-                        </div>  
-
-                        <p>  
-                            Plumbing Specialist  
-                        </p>  
-
-                        <div class="worker-meta">  
-                            ⭐ 4.8  
-                            <span>•</span>  
-                            Kolkata  
-                        </div>  
-
-                    </div>  
-
-                </div>  
-
-
-                <div class="worker-tags">  
-
-                    <span>  
-                        Plumbing  
-                    </span>  
-
-                    <span>  
-                        Pipes  
-                    </span>  
-
-                    <span>  
-                        Repair  
-                    </span>  
-
-                </div>  
-
-
-                <div class="worker-footer">  
-
-                    <span>  
-                        6+ years experience  
-                    </span>  
-
-                    <a  
-                        href="/workers"  
-                        class="worker-view-btn"  
-                    >  
-                        View Profile →  
-                    </a>  
-
-                </div>  
-
-            </article>  
-
-
-
-            <!-- WORKER 3 -->  
-
-            <article class="worker-card">  
-
-                <div class="worker-cover worker-cover-orange">  
-
-                    <span class="worker-cover-badge">  
-                        AVAILABLE  
-                    </span>  
-
-                </div>  
-
-
-                <div class="worker-profile-area">  
-
-                    <div class="worker-avatar">  
-                        SD  
-                    </div>  
-
-
-                    <div class="worker-info">  
-
-                        <div class="worker-name-row">  
-
-                            <h3>  
-                                Suman Das  
-                            </h3>  
-
-                            <span class="verified-mark">  
-                                ✓  
-                            </span>  
-
-                        </div>  
-
-                        <p>  
-                            Interior Painter  
-                        </p>  
-
-                        <div class="worker-meta">  
-                            ⭐ 4.9  
-                            <span>•</span>  
-                            Kolkata  
-                        </div>  
-
-                    </div>  
-
-                </div>  
-
-
-                <div class="worker-tags">  
-
-                    <span>  
-                        Painting  
-                    </span>  
-
-                    <span>  
-                        Interior  
-                    </span>  
-
-                    <span>  
-                        Design  
-                    </span>  
-
-                </div>  
-
-
-                <div class="worker-footer">  
-
-                    <span>  
-                        7+ years experience  
-                    </span>  
-
-                    <a  
-                        href="/workers"  
-                        class="worker-view-btn"  
-                    >  
-                        View Profile →  
-                    </a>  
-
-                </div>  
-
-            </article>  
-
-
-
-            <!-- WORKER 4 -->  
-
-            <article class="worker-card">  
-
-                <div class="worker-cover worker-cover-green">  
-
-                    <span class="worker-cover-badge">  
-                        AVAILABLE  
-                    </span>  
-
-                </div>  
-
-
-                <div class="worker-profile-area">  
-
-                    <div class="worker-avatar">  
-                        MB  
-                    </div>  
-
-
-                    <div class="worker-info">  
-
-                        <div class="worker-name-row">  
-
-                            <h3>  
-                                Manoj Biswas  
-                            </h3>  
-
-                            <span class="verified-mark">  
-                                ✓  
-                            </span>  
-
-                        </div>  
-
-                        <p>  
-                            Carpenter & Furniture Expert  
-                        </p>  
-
-                        <div class="worker-meta">  
-                            ⭐ 4.8  
-                            <span>•</span>  
-                            Kolkata  
-                        </div>  
-
-                    </div>  
-
-                </div>  
-
-
-                <div class="worker-tags">  
-
-                    <span>  
-                        Carpentry  
-                    </span>  
-
-                    <span>  
-                        Furniture  
-                    </span>  
-
-                </div>  
-
-
-                <div class="worker-footer">  
-
-                    <span>  
-                        9+ years experience  
-                    </span>  
-
-                    <a  
-                        href="/workers"  
-                        class="worker-view-btn"  
-                    >  
-                        View Profile →  
-                    </a>  
-
-                </div>  
-
-            </article>  
-
-
-        </div>  
-
-
-        <button  
-            class="scroll-control scroll-next"  
-            type="button"  
-            aria-label="Next workers"  
-        >  
-            →  
-        </button>  
-
-    </div>  
-
-</div>
-
-</section>  <!-- =====================================================  
-     LATEST JOBS  
-====================================================== -->  <section class="home-section jobs-section">  <div class="container">  
-
-    <div class="section-heading">  
-
-        <div>  
-
-            <span class="section-eyebrow">  
-                LOCAL OPPORTUNITIES  
-            </span>  
-
-            <h2>  
-                Latest jobs near you  
-            </h2>  
-
-            <p>  
-                Browse newly posted work and apply directly.  
-            </p>  
-
-        </div>  
-
-
-        <a  
-            href="/jobs"  
-            class="section-link"  
-        >  
-            Browse all jobs →  
-        </a>  
-
-    </div>  
-
-
-    <!-- JOB HORIZONTAL FEED -->  
-
-    <div class="horizontal-scroll-wrapper jobs-scroll-wrapper">  
-
-        <button  
-            class="scroll-control scroll-prev"  
-            type="button"  
-            aria-label="Previous jobs"  
-        >  
-            ←  
-        </button>  
-
-
-        <div  
-            class="jobs-list horizontal-scroll job-horizontal-scroll"  
-            data-scroll-container  
-        >  
-
-
-            <!-- JOB 1 -->  
-
-            <article class="home-job-card">  
-
-                <div class="home-job-top">  
-
-                    <span class="job-category">  
-                        ELECTRICAL  
-                    </span>  
-
-                    <span class="job-status">  
-                        ● OPEN  
-                    </span>  
-
-                </div>  
-
-
-                <div class="home-job-main">  
-
-                    <div class="home-job-icon">  
-                        ⚡  
-                    </div>  
-
-
-                    <div class="home-job-content">  
-
-                        <h3>  
-                            Home wiring and fan installation  
-                        </h3>  
-
-                        <p>  
-                            Kolkata · Posted recently  
-                        </p>  
-
-                        <div class="job-details">  
-
-                            <span>  
-                                📍 Local  
-                            </span>  
-
-                            <span>  
-                                👥 3 Applicants  
-                            </span>  
-
-                        </div>  
-
-                    </div>  
-
-                </div>  
-
-
-                <div class="home-job-bottom">  
-
-                    <strong>  
-                        ₹2,000 – ₹3,500  
-                    </strong>  
-
-
-                    <div class="job-actions">  
-
-                        <a  
-                            href="/jobs"  
-                            class="job-view-btn"  
-                        >  
-                            View Job  
-                        </a>  
-
-                        <a  
-                            href="/jobs/1/apply"  
-                            class="job-apply-btn"  
-                        >  
-                            Apply Now  
-                            <span>→</span>  
-                        </a>  
-
-                    </div>  
-
-                </div>  
-
-            </article>  
-
-
-
-            <!-- JOB 2 -->  
-
-            <article class="home-job-card">  
-
-                <div class="home-job-top">  
-
-                    <span class="job-category">  
-                        PLUMBING  
-                    </span>  
-
-                    <span class="job-status">  
-                        ● OPEN  
-                    </span>  
-
-                </div>  
-
-
-                <div class="home-job-main">  
-
-                    <div class="home-job-icon">  
-                        🔧  
-                    </div>  
-
-
-                    <div class="home-job-content">  
-
-                        <h3>  
-                            Bathroom pipe leakage repair  
-                        </h3>  
-
-                        <p>  
-                            Kolkata · Posted recently  
-                        </p>  
-
-                        <div class="job-details">  
-
-                            <span>  
-                                📍 Local  
-                            </span>  
-
-                            <span>  
-                                👥 5 Applicants  
-                            </span>  
-
-                        </div>  
-
-                    </div>  
-
-                </div>  
-
-
-                <div class="home-job-bottom">  
-
-                    <strong>  
-                        ₹800 – ₹1,500  
-                    </strong>  
-
-
-                    <div class="job-actions">  
-
-                        <a  
-                            href="/jobs"  
-                            class="job-view-btn"  
-                        >  
-                            View Job  
-                        </a>  
-
-                        <a  
-                            href="/jobs/2/apply"  
-                            class="job-apply-btn"  
-                        >  
-                            Apply Now  
-                            <span>→</span>  
-                        </a>  
-
-                    </div>  
-
-                </div>  
-
-            </article>  
-
-
-
-            <!-- JOB 3 -->  
-
-            <article class="home-job-card">  
-
-                <div class="home-job-top">  
-
-                    <span class="job-category">  
-                        PAINTING  
-                    </span>  
-
-                    <span class="job-status">  
-                        ● OPEN  
-                    </span>  
-
-                </div>  
-
-
-                <div class="home-job-main">  
-
-                    <div class="home-job-icon">  
-                        🎨  
-                    </div>  
-
-
-                    <div class="home-job-content">  
-
-                        <h3>  
-                            2BHK interior wall painting  
-                        </h3>  
-
-                        <p>  
-                            Kolkata · Posted recently  
-                        </p>  
-
-                        <div class="job-details">  
-
-                            <span>  
-                                📍 Local  
-                            </span>  
-
-                            <span>  
-                                👥 2 Applicants  
-                            </span>  
-
-                        </div>  
-
-                    </div>  
-
-                </div>  
-
-
-                <div class="home-job-bottom">  
-
-                    <strong>  
-                        ₹8,000 – ₹12,000  
-                    </strong>  
-
-
-                    <div class="job-actions">  
-
-                        <a  
-                            href="/jobs"  
-                            class="job-view-btn"  
-                        >  
-                            View Job  
-                        </a>  
-
-                        <a  
-                            href="/jobs/3/apply"  
-                            class="job-apply-btn"  
-                        >  
-                            Apply Now  
-                            <span>→</span>  
-                        </a>  
-
-                    </div>  
-
-                </div>  
-
-            </article>  
-
-
-
-            <!-- JOB 4 -->  
-
-            <article class="home-job-card">  
-
-                <div class="home-job-top">  
-
-                    <span class="job-category">  
-                        CARPENTRY  
-                    </span>  
-
-                    <span class="job-status">  
-                        ● OPEN  
-                    </span>  
-
-                </div>  
-
-
-                <div class="home-job-main">  
-
-                    <div class="home-job-icon">  
-                        🪚  
-                    </div>  
-
-
-                    <div class="home-job-content">  
-
-                        <h3>  
-                            Custom kitchen cabinet work  
-                        </h3>  
-
-                        <p>  
-                            Kolkata · Posted today  
-                        </p>  
-
-                        <div class="job-details">  
-
-                            <span>  
-                                📍 Local  
-                            </span>  
-
-                            <span>  
-                                👥 4 Applicants  
-                            </span>  
-
-                        </div>  
-
-                    </div>  
-
-                </div>  
-
-
-                <div class="home-job-bottom">  
-
-                    <strong>  
-                        ₹12,000 – ₹20,000  
-                    </strong>  
-
-
-                    <div class="job-actions">  
-
-                        <a  
-                            href="/jobs"  
-                            class="job-view-btn"  
-                        >  
-                            View Job  
-                        </a>  
-
-                        <a  
-                            href="/jobs/4/apply"  
-                            class="job-apply-btn"  
-                        >  
-                            Apply Now  
-                            <span>→</span>  
-                        </a>  
-
-                    </div>  
-
-                </div>  
-
-            </article>  
-
-
-        </div>  
-
-
-        <button  
-            class="scroll-control scroll-next"  
-            type="button"  
-            aria-label="Next jobs"  
-        >  
-            →  
-        </button>  
-
-    </div>  
-
-</div>
-
-</section>  <!-- =====================================================  
-     TRUST STATS  
-====================================================== -->  <section class="trust-section">  <div class="container">  
-
-    <div class="trust-panel">  
-
-        <div class="trust-intro">  
-
-            <span class="section-eyebrow">  
-                BUILT FOR TRUST  
-            </span>  
-
-            <h2>  
-                Local work.  
-                <span>Better connections.</span>  
-            </h2>  
-
-            <p>  
-                We're building a trusted marketplace where  
-                customers and skilled professionals can  
-                connect with confidence.  
-            </p>  
-
-        </div>  
-
-
-        <div class="stats-grid">  
-
-            <div class="stat-item">  
-                <strong>10K+</strong>  
-                <span>Workers</span>  
-            </div>  
-
-            <div class="stat-item">  
-                <strong>25K+</strong>  
-                <span>Jobs Posted</span>  
-            </div>  
-
-            <div class="stat-item">  
-                <strong>4.9</strong>  
-                <span>Average Rating</span>  
-            </div>  
-
-            <div class="stat-item">  
-                <strong>50+</strong>  
-                <span>Service Types</span>  
-            </div>  
-
-        </div>  
-
-    </div>  
-
-</div>
-
-</section>  <!-- =====================================================  
-     FINAL CTA  
-====================================================== -->  <section class="final-cta-section">  <div class="container">  
-
-    <div class="final-cta">  
-
-        <div class="cta-decoration cta-decoration-one"></div>  
-        <div class="cta-decoration cta-decoration-two"></div>  
-
-
-        <div class="final-cta-content">  
-
-            <span class="cta-eyebrow">  
-                GET STARTED TODAY  
-            </span>  
-
-            <h2>  
-                Have a job to get done?  
-                <span>Let's find the right worker.</span>  
-            </h2>  
-
-            <p>  
-                Post your requirement and connect with  
-                skilled professionals in your area.  
-            </p>  
-
-
-            <div class="final-cta-actions">  
-
-                <a  
-                    href="/post-job"  
-                    class="final-cta-button"  
-                >  
-                    Post a Job  
-                    <span>→</span>  
-                </a>  
-
-
-                <a  
-                    href="/workers"  
-                    class="final-cta-link"  
-                >  
-                    Explore Workers  
-                </a>  
-
-            </div>  
-
-        </div>  
-
-    </div>  
-
-</div>  
+    </div>
 
 </section>
 
-</main> 
+
+
+<!-- =====================================================
+     POPULAR CATEGORIES
+====================================================== -->
+
+<section class="home-section categories-section">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    EXPLORE SERVICES
+                </span>
+
+                <h2>
+                    What service do you need?
+                </h2>
+
+                <p>
+                    Find trusted professionals for everyday
+                    local services.
+                </p>
+
+            </div>
+
+
+            <div class="section-heading-action">
+
+                <a
+                    href="/categories"
+                    class="section-link"
+                >
+                    View all categories
+                    <span>→</span>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="horizontal-scroll-wrapper">
+
+            <button
+                class="scroll-control scroll-prev"
+                type="button"
+                aria-label="Previous categories"
+            >
+                ←
+            </button>
+
+
+            <div
+                class="categories-grid horizontal-scroll"
+                data-scroll-container
+            >
+
+                <a
+                    href="/jobs?category=electrical"
+                    class="category-card"
+                >
+
+                    <div class="category-card-top">
+
+                        <div class="category-icon electrical-icon">
+                            ⚡
+                        </div>
+
+                        <span class="category-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                    <h3>Electrical</h3>
+
+                    <p>
+                        Wiring, repair & installation
+                    </p>
+
+                    <span class="category-link">
+                        Find workers →
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="/jobs?category=plumbing"
+                    class="category-card"
+                >
+
+                    <div class="category-card-top">
+
+                        <div class="category-icon plumbing-icon">
+                            🔧
+                        </div>
+
+                        <span class="category-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                    <h3>Plumbing</h3>
+
+                    <p>
+                        Repair, pipes & fittings
+                    </p>
+
+                    <span class="category-link">
+                        Find workers →
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="/jobs?category=cleaning"
+                    class="category-card"
+                >
+
+                    <div class="category-card-top">
+
+                        <div class="category-icon cleaning-icon">
+                            ✨
+                        </div>
+
+                        <span class="category-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                    <h3>Cleaning</h3>
+
+                    <p>
+                        Home & office cleaning
+                    </p>
+
+                    <span class="category-link">
+                        Find workers →
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="/jobs?category=painting"
+                    class="category-card"
+                >
+
+                    <div class="category-card-top">
+
+                        <div class="category-icon painting-icon">
+                            🎨
+                        </div>
+
+                        <span class="category-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                    <h3>Painting</h3>
+
+                    <p>
+                        Interior & exterior painting
+                    </p>
+
+                    <span class="category-link">
+                        Find workers →
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="/jobs?category=carpentry"
+                    class="category-card"
+                >
+
+                    <div class="category-card-top">
+
+                        <div class="category-icon carpentry-icon">
+                            🪚
+                        </div>
+
+                        <span class="category-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                    <h3>Carpentry</h3>
+
+                    <p>
+                        Furniture & woodwork
+                    </p>
+
+                    <span class="category-link">
+                        Find workers →
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="/jobs?category=construction"
+                    class="category-card"
+                >
+
+                    <div class="category-card-top">
+
+                        <div class="category-icon construction-icon">
+                            🏗
+                        </div>
+
+                        <span class="category-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                    <h3>Construction</h3>
+
+                    <p>
+                        Building & renovation
+                    </p>
+
+                    <span class="category-link">
+                        Find workers →
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <button
+                class="scroll-control scroll-next"
+                type="button"
+                aria-label="Next categories"
+            >
+                →
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     HOW IT WORKS
+====================================================== -->
+
+<section class="home-section process-section">
+
+    <div class="container">
+
+        <div class="section-heading centered">
+
+            <span class="section-eyebrow">
+                SIMPLE PROCESS
+            </span>
+
+            <h2>
+                Get your work done in 3 simple steps
+            </h2>
+
+            <p>
+                S. F Works makes it easy to find the right
+                professional for your local job.
+            </p>
+
+        </div>
+
+
+        <div class="process-grid">
+
+            <article class="process-card">
+
+                <div class="process-number">
+                    01
+                </div>
+
+                <div class="process-icon">
+                    📝
+                </div>
+
+                <h3>
+                    Post Your Job
+                </h3>
+
+                <p>
+                    Tell us what work you need,
+                    your location and your budget.
+                </p>
+
+            </article>
+
+
+            <div class="process-connector"></div>
+
+
+            <article class="process-card">
+
+                <div class="process-number">
+                    02
+                </div>
+
+                <div class="process-icon">
+                    👷
+                </div>
+
+                <h3>
+                    Find a Worker
+                </h3>
+
+                <p>
+                    Compare skilled local workers
+                    and choose the right professional.
+                </p>
+
+            </article>
+
+
+            <div class="process-connector"></div>
+
+
+            <article class="process-card">
+
+                <div class="process-number">
+                    03
+                </div>
+
+                <div class="process-icon">
+                    ✓
+                </div>
+
+                <h3>
+                    Get It Done
+                </h3>
+
+                <p>
+                    Connect with your worker and
+                    get your job completed.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     REAL FEATURED WORKERS
+====================================================== -->
+
+<section class="home-section workers-section">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    TOP PROFESSIONALS
+                </span>
+
+                <h2>
+                    Meet trusted local workers
+                </h2>
+
+                <p>
+                    Discover skilled professionals available
+                    for your next job.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('worker_public.workers_page') }}"
+                class="section-link"
+            >
+                View all workers →
+            </a>
+
+        </div>
+
+
+        <div class="horizontal-scroll-wrapper worker-scroll-wrapper">
+
+            <button
+                class="scroll-control scroll-prev"
+                type="button"
+                aria-label="Previous workers"
+            >
+                ←
+            </button>
+
+
+            <div
+                class="workers-grid horizontal-scroll worker-horizontal-scroll"
+                data-scroll-container
+            >
+
+                {% if workers %}
+
+                    {% for worker in workers %}
+
+                    <article class="worker-card">
+
+                        <div class="worker-cover
+                            {% if not worker.cover_image %}
+                                worker-cover-default
+                            {% endif %}
+                        ">
+
+                            {% if worker.cover_image %}
+
+                                <img
+                                    src="{{ worker.cover_image }}"
+                                    alt="{{ worker.user.full_name }} cover"
+                                    class="worker-cover-image"
+                                    loading="lazy"
+                                >
+
+                            {% endif %}
+
+
+                            {% if worker.is_available %}
+
+                                <span class="worker-cover-badge">
+                                    AVAILABLE
+                                </span>
+
+                            {% else %}
+
+                                <span class="worker-cover-badge unavailable">
+                                    BUSY
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="worker-profile-area">
+
+                            <div class="worker-avatar">
+
+                                {% if worker.profile_image %}
+
+                                    <img
+                                        src="{{ worker.profile_image }}"
+                                        alt="{{ worker.user.full_name }}"
+                                        loading="lazy"
+                                    >
+
+                                {% else %}
+
+                                    {{ worker.user.full_name[:1]|upper }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="worker-info">
+
+                                <div class="worker-name-row">
+
+                                    <h3>
+                                        {{ worker.user.full_name }}
+                                    </h3>
+
+
+                                    {% if worker.is_verified %}
+
+                                        <span
+                                            class="verified-mark"
+                                            title="Verified Worker"
+                                        >
+                                            ✓
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <p>
+                                    {{ worker.profession or "Professional Worker" }}
+                                </p>
+
+
+                                <div class="worker-meta">
+
+                                    <span>
+                                        ⭐
+                                        {{ "%.1f"|format(worker.rating|float) }}
+                                    </span>
+
+                                    <span>•</span>
+
+                                    <span>
+                                        {{ worker.city or worker.service_area or "Local" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {% if worker.skills %}
+
+                        <div class="worker-tags">
+
+                            {% for skill in worker.skills[:3] %}
+
+                                <span>
+                                    {{ skill.skill_name }}
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                        {% endif %}
+
+
+                        <div class="worker-footer">
+
+                            <span>
+
+                                {% if worker.experience_years %}
+
+                                    {{ worker.experience_years }}+
+                                    years experience
+
+                                {% else %}
+
+                                    Professional Worker
+
+                                {% endif %}
+
+                            </span>
+
+
+                            <a
+                                href="{{ url_for(
+                                    'worker_public.worker_public_profile',
+                                    worker_id=worker.id
+                                ) }}"
+                                class="worker-view-btn"
+                            >
+                                View Profile →
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="empty-workers">
+
+                        <div class="empty-workers-icon">
+                            👷
+                        </div>
+
+                        <h3>
+                            No workers available yet
+                        </h3>
+
+                        <p>
+                            Verified worker profiles will appear here.
+                        </p>
+
+                        <a
+                            href="{{ url_for('worker_public.workers_page') }}"
+                            class="worker-view-btn"
+                        >
+                            Explore Workers →
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <button
+                class="scroll-control scroll-next"
+                type="button"
+                aria-label="Next workers"
+            >
+                →
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FIND DOCTORS & CHAMBERS
+     DEMO PROFILE SCROLLER
+====================================================== -->
+
+<section class="home-section doctors-section">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    HEALTHCARE PROFESSIONALS
+                </span>
+
+                <h2>
+                    Find Doctors & Chambers
+                </h2>
+
+                <p>
+                    Discover trusted doctors and nearby chambers
+                    for your healthcare needs.
+                </p>
+
+            </div>
+
+
+            <a
+                href="#"
+                class="section-link"
+            >
+                Find Doctors →
+            </a>
+
+        </div>
+
+
+        <div class="horizontal-scroll-wrapper doctor-scroll-wrapper">
+
+            <button
+                class="scroll-control scroll-prev"
+                type="button"
+                aria-label="Previous doctors"
+            >
+                ←
+            </button>
+
+
+            <div
+                class="doctor-grid horizontal-scroll"
+                data-scroll-container
+            >
+
+
+                <!-- DOCTOR 1 -->
+
+                <article class="doctor-card">
+
+                    <div class="doctor-cover doctor-cover-blue">
+
+                        <span class="doctor-available">
+                            AVAILABLE
+                        </span>
+
+                    </div>
+
+
+                    <div class="doctor-profile">
+
+                        <div class="doctor-avatar">
+                            👨‍⚕️
+                        </div>
+
+
+                        <div class="doctor-info">
+
+                            <h3>
+                                Dr. Arindam Sen
+                            </h3>
+
+                            <span class="doctor-speciality">
+                                General Physician
+                            </span>
+
+                            <div class="doctor-meta">
+                                ⭐ 4.9
+                                <span>•</span>
+                                Kolkata
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="doctor-tags">
+
+                        <span>
+                            General Medicine
+                        </span>
+
+                        <span>
+                            Family Care
+                        </span>
+
+                    </div>
+
+
+                    <div class="doctor-chamber">
+
+                        <strong>
+                            Sen Medical Chamber
+                        </strong>
+
+                        <small>
+                            📍 Kolkata
+                        </small>
+
+                    </div>
+
+
+                    <div class="doctor-footer">
+
+                        <span>
+                            12+ years experience
+                        </span>
+
+                        <a
+                            href="#"
+                            class="doctor-view-btn"
+                        >
+                            View Chamber →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- DOCTOR 2 -->
+
+                <article class="doctor-card">
+
+                    <div class="doctor-cover doctor-cover-purple">
+
+                        <span class="doctor-available">
+                            AVAILABLE
+                        </span>
+
+                    </div>
+
+
+                    <div class="doctor-profile">
+
+                        <div class="doctor-avatar">
+                            👩‍⚕️
+                        </div>
+
+
+                        <div class="doctor-info">
+
+                            <h3>
+                                Dr. Priya Mukherjee
+                            </h3>
+
+                            <span class="doctor-speciality">
+                                Pediatrician
+                            </span>
+
+                            <div class="doctor-meta">
+                                ⭐ 4.8
+                                <span>•</span>
+                                Kolkata
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="doctor-tags">
+
+                        <span>
+                            Child Care
+                        </span>
+
+                        <span>
+                            Pediatrics
+                        </span>
+
+                    </div>
+
+
+                    <div class="doctor-chamber">
+
+                        <strong>
+                            Little Care Clinic
+                        </strong>
+
+                        <small>
+                            📍 Salt Lake
+                        </small>
+
+                    </div>
+
+
+                    <div class="doctor-footer">
+
+                        <span>
+                            9+ years experience
+                        </span>
+
+                        <a
+                            href="#"
+                            class="doctor-view-btn"
+                        >
+                            View Chamber →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- DOCTOR 3 -->
+
+                <article class="doctor-card">
+
+                    <div class="doctor-cover doctor-cover-green">
+
+                        <span class="doctor-available">
+                            AVAILABLE
+                        </span>
+
+                    </div>
+
+
+                    <div class="doctor-profile">
+
+                        <div class="doctor-avatar">
+                            👨‍⚕️
+                        </div>
+
+
+                        <div class="doctor-info">
+
+                            <h3>
+                                Dr. Souvik Roy
+                            </h3>
+
+                            <span class="doctor-speciality">
+                                Dermatologist
+                            </span>
+
+                            <div class="doctor-meta">
+                                ⭐ 4.9
+                                <span>•</span>
+                                Kolkata
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="doctor-tags">
+
+                        <span>
+                            Skin Care
+                        </span>
+
+                        <span>
+                            Dermatology
+                        </span>
+
+                    </div>
+
+
+                    <div class="doctor-chamber">
+
+                        <strong>
+                            Skin & Care Clinic
+                        </strong>
+
+                        <small>
+                            📍 New Town
+                        </small>
+
+                    </div>
+
+
+                    <div class="doctor-footer">
+
+                        <span>
+                            10+ years experience
+                        </span>
+
+                        <a
+                            href="#"
+                            class="doctor-view-btn"
+                        >
+                            View Chamber →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- DOCTOR 4 -->
+
+                <article class="doctor-card">
+
+                    <div class="doctor-cover doctor-cover-orange">
+
+                        <span class="doctor-available">
+                            AVAILABLE
+                        </span>
+
+                    </div>
+
+
+                    <div class="doctor-profile">
+
+                        <div class="doctor-avatar">
+                            👩‍⚕️
+                        </div>
+
+
+                        <div class="doctor-info">
+
+                            <h3>
+                                Dr. Riya Das
+                            </h3>
+
+                            <span class="doctor-speciality">
+                                Gynecologist
+                            </span>
+
+                            <div class="doctor-meta">
+                                ⭐ 4.9
+                                <span>•</span>
+                                Kolkata
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="doctor-tags">
+
+                        <span>
+                            Women's Health
+                        </span>
+
+                        <span>
+                            Gynecology
+                        </span>
+
+                    </div>
+
+
+                    <div class="doctor-chamber">
+
+                        <strong>
+                            Riya Women's Clinic
+                        </strong>
+
+                        <small>
+                            📍 Behala
+                        </small>
+
+                    </div>
+
+
+                    <div class="doctor-footer">
+
+                        <span>
+                            11+ years experience
+                        </span>
+
+                        <a
+                            href="#"
+                            class="doctor-view-btn"
+                        >
+                            View Chamber →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+            </div>
+
+
+            <button
+                class="scroll-control scroll-next"
+                type="button"
+                aria-label="Next doctors"
+            >
+                →
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     LATEST JOBS — REAL DATABASE DATA
+====================================================== -->
+
+<section class="home-section jobs-section">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    LOCAL OPPORTUNITIES
+                </span>
+
+                <h2>
+                    Latest jobs near you
+                </h2>
+
+                <p>
+                    Browse newly posted work and apply directly.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/jobs"
+                class="section-link"
+            >
+                Browse all jobs →
+            </a>
+
+        </div>
+
+
+        <div class="horizontal-scroll-wrapper jobs-scroll-wrapper">
+
+            <button
+                class="scroll-control scroll-prev"
+                type="button"
+                aria-label="Previous jobs"
+            >
+                ←
+            </button>
+
+
+            <div
+                class="jobs-list horizontal-scroll job-horizontal-scroll"
+                data-scroll-container
+            >
+
+                {% if jobs %}
+
+                    {% for job in jobs %}
+
+                    <article class="home-job-card">
+
+                        <div class="home-job-top">
+
+                            <span class="job-category">
+                                {{ job.category.name if job.category else "GENERAL" }}
+                            </span>
+
+                            <span class="job-status">
+                                ● {{ job.status|upper if job.status else "OPEN" }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="home-job-main">
+
+                            <div class="home-job-icon">
+                                🔧
+                            </div>
+
+
+                            <div class="home-job-content">
+
+                                <h3>
+                                    {{ job.title }}
+                                </h3>
+
+
+                                <p>
+
+                                    {{ job.city or
+                                       job.location or
+                                       "Local" }}
+
+                                    ·
+
+                                    {% if job.created_at %}
+                                        {{ job.created_at.strftime("%d %b %Y") }}
+                                    {% else %}
+                                        Posted recently
+                                    {% endif %}
+
+                                </p>
+
+
+                                <div class="job-details">
+
+                                    <span>
+                                        📍
+                                        {{ job.location or "Local" }}
+                                    </span>
+
+                                    {% if job.applications is defined %}
+
+                                    <span>
+                                        👥
+                                        {{ job.applications|length }}
+                                        Applicants
+                                    </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="home-job-bottom">
+
+                            <strong>
+
+                                {% if job.budget_min and job.budget_max %}
+
+                                    ₹{{ "{:,.0f}".format(job.budget_min) }}
+                                    –
+                                    ₹{{ "{:,.0f}".format(job.budget_max) }}
+
+                                {% elif job.budget %}
+
+                                    ₹{{ job.budget }}
+
+                                {% else %}
+
+                                    Budget on request
+
+                                {% endif %}
+
+                            </strong>
+
+
+                            <div class="job-actions">
+
+                                <a
+                                    href="{{ url_for(
+                                        'jobs.job_detail',
+                                        job_id=job.id
+                                    ) }}"
+                                    class="job-view-btn"
+                                >
+                                    View Job
+                                </a>
+
+
+                                <a
+                                    href="{{ url_for(
+                                        'jobs.apply_job',
+                                        job_id=job.id
+                                    ) }}"
+                                    class="job-apply-btn"
+                                >
+                                    Apply Now
+                                    <span>→</span>
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="empty-jobs">
+
+                        <div class="empty-jobs-icon">
+                            📋
+                        </div>
+
+                        <h3>
+                            No jobs posted yet
+                        </h3>
+
+                        <p>
+                            New local jobs will appear here.
+                        </p>
+
+                        <a
+                            href="/post-job"
+                            class="job-apply-btn"
+                        >
+                            Post a Job →
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <button
+                class="scroll-control scroll-next"
+                type="button"
+                aria-label="Next jobs"
+            >
+                →
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     TRUST STATS
+====================================================== -->
+
+<section class="trust-section">
+
+    <div class="container">
+
+        <div class="trust-panel">
+
+            <div class="trust-intro">
+
+                <span class="section-eyebrow">
+                    BUILT FOR TRUST
+                </span>
+
+                <h2>
+                    Local work.
+                    <span>Better connections.</span>
+                </h2>
+
+                <p>
+                    We're building a trusted marketplace where
+                    customers and skilled professionals can
+                    connect with confidence.
+                </p>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-item">
+                    <strong>10K+</strong>
+                    <span>Workers</span>
+                </div>
+
+                <div class="stat-item">
+                    <strong>25K+</strong>
+                    <span>Jobs Posted</span>
+                </div>
+
+                <div class="stat-item">
+                    <strong>4.9</strong>
+                    <span>Average Rating</span>
+                </div>
+
+                <div class="stat-item">
+                    <strong>50+</strong>
+                    <span>Service Types</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FINAL CTA
+====================================================== -->
+
+<section class="final-cta-section">
+
+    <div class="container">
+
+        <div class="final-cta">
+
+            <div class="cta-decoration cta-decoration-one"></div>
+            <div class="cta-decoration cta-decoration-two"></div>
+
+
+            <div class="final-cta-content">
+
+                <span class="cta-eyebrow">
+                    GET STARTED TODAY
+                </span>
+
+
+                <h2>
+                    Have a job to get done?
+                    <span>
+                        Let's find the right worker.
+                    </span>
+                </h2>
+
+
+                <p>
+                    Post your requirement and connect with
+                    skilled professionals in your area.
+                </p>
+
+
+                <div class="final-cta-actions">
+
+                    <a
+                        href="/post-job"
+                        class="final-cta-button"
+                    >
+                        Post a Job
+                        <span>→</span>
+                    </a>
+
+
+                    <a
+                        href="{{ url_for('worker_public.workers_page') }}"
+                        class="final-cta-link"
+                    >
+                        Explore Workers
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
 {% block extra_js %}
 
 <script
@@ -1585,6 +1688,6 @@ S. F Works — Find Trusted Workers & Local Jobs
 ></script>
 
 {% endblock %}
+
+
 {% endblock %}
-
-
