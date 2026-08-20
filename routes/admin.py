@@ -1346,5 +1346,100 @@ def category_status(category_id):
             "Category status updated"
 
     }), 200
+@admin_bp.route(
+    "/create-first-admin",
+    methods=["POST"]
+)
+def create_first_admin():
 
+    # ----------------------------------------
+    # SECURITY KEY
+    # ----------------------------------------
+
+    setup_key = request.headers.get(
+        "X-Admin-Setup-Key"
+    )
+
+    if setup_key != "SFWORKS-ADMIN-SETUP-2026":
+        return jsonify({
+            "status": "error",
+            "message": "Invalid setup key"
+        }), 403
+
+    # ----------------------------------------
+    # CHECK EXISTING ADMIN
+    # ----------------------------------------
+
+    existing_admin = User.query.filter_by(
+        role="admin"
+    ).first()
+
+    if existing_admin:
+
+        return jsonify({
+            "status": "error",
+            "message": "An admin user already exists"
+        }), 409
+
+    # ----------------------------------------
+    # ADMIN DETAILS
+    # ----------------------------------------
+
+    email = "admin@sfworks.com"
+    password = "Admin@12345"
+
+    # ----------------------------------------
+    # CHECK EMAIL
+    # ----------------------------------------
+
+    existing_user = User.query.filter_by(
+        email=email
+    ).first()
+
+    if existing_user:
+
+        existing_user.role = "admin"
+        existing_user.is_active = True
+        existing_user.set_password(password)
+
+        db.session.commit()
+
+        return jsonify({
+            "status": "success",
+            "message": "Existing user converted to admin",
+            "admin": {
+                "id": existing_user.id,
+                "email": existing_user.email,
+                "role": existing_user.role
+            }
+        }), 200
+
+    # ----------------------------------------
+    # CREATE ADMIN
+    # ----------------------------------------
+
+    admin = User(
+        full_name="S F Works Admin",
+        email=email,
+        phone="9999999999",
+        role="admin",
+        is_active=True
+    )
+
+    admin.set_password(password)
+
+    db.session.add(admin)
+    db.session.commit()
+
+    return jsonify({
+        "status": "success",
+        "message": "First admin created successfully",
+        "admin": {
+            "id": admin.id,
+            "full_name": admin.full_name,
+            "email": admin.email,
+            "role": admin.role,
+            "is_active": admin.is_active
+        }
+    }), 201
 
