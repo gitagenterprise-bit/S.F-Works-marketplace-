@@ -193,10 +193,14 @@ def create_app():
     from routes.admin import (
         admin_bp
     )
+    from routes.admin_pages import admin_pages_bp
 
     app.register_blueprint(
         admin_bp,
         url_prefix="/api/admin"
+    )
+    app.register_blueprint(
+        admin_pages_bp
     )
 
     # ------------------------------
