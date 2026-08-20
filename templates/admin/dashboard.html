@@ -1,650 +1,1970 @@
-{% extends "dashboard_base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
-Admin Dashboard | S. F Works Marketplace
+Admin Dashboard | S. F Works
 {% endblock %}
 
+{% block content %}
 
-{% block page_title %}
-Admin Dashboard
-{% endblock %}
+<main class="sf-admin">
 
+    <!-- SIDEBAR -->
 
-{% block dashboard_content %}
+    <aside class="admin-sidebar">
 
-<div class="admin-dashboard">
+        <div class="admin-sidebar-brand">
 
-    <!-- ============================= -->
-    <!-- Welcome -->
-    <!-- ============================= -->
+            <div class="admin-sidebar-logo">
+                SF
+            </div>
 
-    <div class="admin-welcome">
-
-        <div>
-
-            <span class="admin-eyebrow">
-                S. F WORKS MARKETPLACE
-            </span>
-
-            <h2>
-                Marketplace Overview
-            </h2>
-
-            <p>
-                Monitor users, jobs, applications and
-                worker verification from one place.
-            </p>
+            <div>
+                <strong>S. F Works</strong>
+                <span>Administration</span>
+            </div>
 
         </div>
 
 
-        <div class="admin-actions">
+        <nav class="admin-nav">
 
-            <a
-                href="{{ url_for('admin.admin_jobs') }}"
-                class="admin-action-btn"
+            <button
+                class="admin-nav-item active"
+                data-section="dashboard"
             >
-                Manage Jobs
-            </a>
+                <span>⌂</span>
+                Dashboard
+            </button>
 
-            <a
-                href="{{ url_for('admin.admin_workers') }}"
-                class="admin-action-btn primary"
+            <button
+                class="admin-nav-item"
+                data-section="users"
             >
-                Manage Workers
-            </a>
+                <span>◉</span>
+                Users
+            </button>
+
+            <button
+                class="admin-nav-item"
+                data-section="workers"
+            >
+                <span>★</span>
+                Workers
+            </button>
+
+            <button
+                class="admin-nav-item"
+                data-section="jobs"
+            >
+                <span>▣</span>
+                Jobs
+            </button>
+
+            <button
+                class="admin-nav-item"
+                data-section="categories"
+            >
+                <span>▤</span>
+                Categories
+            </button>
+
+            <button
+                class="admin-nav-item"
+                data-section="settings"
+            >
+                <span>⚙</span>
+                Settings
+            </button>
+
+        </nav>
+
+
+        <div class="admin-sidebar-bottom">
+
+            <button
+                id="adminLogout"
+                class="admin-logout"
+            >
+                ⇥ Logout
+            </button>
 
         </div>
 
-    </div>
+    </aside>
 
 
-    <!-- ============================= -->
-    <!-- User Statistics -->
-    <!-- ============================= -->
+    <!-- MAIN -->
 
-    <div class="admin-section-heading">
+    <section class="admin-main">
 
-        <div>
-
-            <span>
-                USERS
-            </span>
-
-            <h3>
-                User Overview
-            </h3>
-
-        </div>
-
-    </div>
-
-
-    <div class="admin-stats-grid">
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon blue">
-                U
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Total Users
-                </span>
-
-                <strong id="total-users">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon purple">
-                C
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Customers
-                </span>
-
-                <strong id="total-customers">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon green">
-                W
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Workers
-                </span>
-
-                <strong id="total-workers">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon orange">
-                A
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Administrators
-                </span>
-
-                <strong id="total-admins">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ============================= -->
-    <!-- Jobs -->
-    <!-- ============================= -->
-
-    <div class="admin-section-heading">
-
-        <div>
-
-            <span>
-                MARKETPLACE
-            </span>
-
-            <h3>
-                Job Overview
-            </h3>
-
-        </div>
-
-
-        <a
-            href="/admin/jobs"
-            class="admin-view-link"
-        >
-            View All Jobs →
-        </a>
-
-    </div>
-
-
-    <div class="admin-stats-grid">
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon blue">
-                J
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Total Jobs
-                </span>
-
-                <strong id="total-jobs">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon green">
-                O
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Open Jobs
-                </span>
-
-                <strong id="open-jobs">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon orange">
-                A
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Assigned
-                </span>
-
-                <strong id="assigned-jobs">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon purple">
-                ✓
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Completed
-                </span>
-
-                <strong id="completed-jobs">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ============================= -->
-    <!-- Applications -->
-    <!-- ============================= -->
-
-    <div class="admin-section-heading">
-
-        <div>
-
-            <span>
-                APPLICATIONS
-            </span>
-
-            <h3>
-                Application Overview
-            </h3>
-
-        </div>
-
-    </div>
-
-
-    <div class="admin-stats-grid">
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon blue">
-                #
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Total Applications
-                </span>
-
-                <strong id="total-applications">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon orange">
-                P
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Pending
-                </span>
-
-                <strong id="pending-applications">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon green">
-                ✓
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Accepted
-                </span>
-
-                <strong id="accepted-applications">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-stat-card">
-
-            <div class="admin-stat-icon red">
-                ×
-            </div>
-
-            <div class="admin-stat-content">
-
-                <span>
-                    Rejected
-                </span>
-
-                <strong id="rejected-applications">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ============================= -->
-    <!-- Worker Verification -->
-    <!-- ============================= -->
-
-    <div class="admin-section-heading">
-
-        <div>
-
-            <span>
-                WORKER MANAGEMENT
-            </span>
-
-            <h3>
-                Verification
-            </h3>
-
-        </div>
-
-        <a
-            href="/admin/workers/verification"
-            class="admin-view-link"
-        >
-            Verification Queue →
-        </a>
-
-    </div>
-
-
-    <div class="verification-grid">
-
-
-        <div class="verification-card">
-
-            <div class="verification-card-icon verified">
-                ✓
-            </div>
+        <header class="admin-topbar">
 
             <div>
 
-                <span>
-                    Verified Workers
+                <span class="admin-eyebrow">
+                    ADMINISTRATION
                 </span>
 
-                <strong id="verified-workers">
-                    0
-                </strong>
-
-                <small>
-                    Successfully verified
-                </small>
+                <h1 id="adminPageTitle">
+                    Dashboard
+                </h1>
 
             </div>
 
-        </div>
 
+            <div class="admin-profile">
 
-        <div class="verification-card">
+                <div class="admin-avatar">
+                    A
+                </div>
 
-            <div class="verification-card-icon pending">
-                !
-            </div>
+                <div>
 
-            <div>
+                    <strong id="adminName">
+                        Administrator
+                    </strong>
 
-                <span>
-                    Pending Verification
-                </span>
+                    <span>
+                        Super Admin
+                    </span>
 
-                <strong id="pending-verification">
-                    0
-                </strong>
-
-                <small>
-                    Require admin review
-                </small>
+                </div>
 
             </div>
 
-        </div>
-
-    </div>
+        </header>
 
 
-    <!-- ============================= -->
-    <!-- Quick Actions -->
-    <!-- ============================= -->
+        <!-- DASHBOARD -->
 
-    <div class="admin-section-heading">
-
-        <div>
-
-            <span>
-                ADMIN TOOLS
-            </span>
-
-            <h3>
-                Quick Actions
-            </h3>
-
-        </div>
-
-    </div>
-
-
-    <div class="admin-tools-grid">
-
-
-        <a
-            href="/admin/customers"
-            class="admin-tool-card"
+        <section
+            id="section-dashboard"
+            class="admin-section active"
         >
 
-            <div class="admin-tool-icon">
-                C
+            <div class="admin-welcome">
+
+                <div>
+
+                    <span>
+                        CONTROL CENTER
+                    </span>
+
+                    <h2>
+                        Marketplace Overview
+                    </h2>
+
+                    <p>
+                        Monitor and control your S. F Works
+                        marketplace from one secure dashboard.
+                    </p>
+
+                </div>
+
+                <div class="admin-live">
+
+                    <span></span>
+
+                    System Online
+
+                </div>
+
             </div>
 
-            <div>
 
-                <strong>
-                    Customers
-                </strong>
+            <div class="admin-stats">
 
-                <span>
-                    Manage customer accounts
-                </span>
+                <div class="admin-stat">
+                    <span>Users</span>
+                    <strong id="totalUsers">—</strong>
+                </div>
+
+                <div class="admin-stat">
+                    <span>Workers</span>
+                    <strong id="totalWorkers">—</strong>
+                </div>
+
+                <div class="admin-stat">
+                    <span>Customers</span>
+                    <strong id="totalCustomers">—</strong>
+                </div>
+
+                <div class="admin-stat">
+                    <span>Jobs</span>
+                    <strong id="totalJobs">—</strong>
+                </div>
+
+                <div class="admin-stat">
+                    <span>Applications</span>
+                    <strong id="totalApplications">—</strong>
+                </div>
+
+                <div class="admin-stat warning">
+                    <span>Pending Verification</span>
+                    <strong id="pendingWorkers">—</strong>
+                </div>
 
             </div>
 
-            <b>
-                →
-            </b>
 
-        </a>
+            <div class="admin-panels">
+
+                <div class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+                            <span>SECURITY</span>
+                            <h3>System Status</h3>
+                        </div>
+
+                    </div>
+
+                    <div class="system-row">
+                        <span>Authentication</span>
+                        <b>Protected</b>
+                    </div>
+
+                    <div class="system-row">
+                        <span>Admin API</span>
+                        <b>Protected</b>
+                    </div>
+
+                    <div class="system-row">
+                        <span>Session</span>
+                        <b>HttpOnly Cookie</b>
+                    </div>
+
+                </div>
 
 
-        <a
-            href="/admin/workers"
-            class="admin-tool-card"
+                <div class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+                            <span>QUICK ACTIONS</span>
+                            <h3>Management</h3>
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="quick-action"
+                        data-section="users"
+                    >
+                        Manage Users →
+                    </button>
+
+                    <button
+                        class="quick-action"
+                        data-section="workers"
+                    >
+                        Verify Workers →
+                    </button>
+
+                    <button
+                        class="quick-action"
+                        data-section="jobs"
+                    >
+                        Manage Jobs →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- USERS -->
+
+        <section
+            id="section-users"
+            class="admin-section"
         >
 
-            <div class="admin-tool-icon">
-                W
-            </div>
+            <div class="section-heading">
 
-            <div>
-
-                <strong>
-                    Workers
-                </strong>
-
-                <span>
-                    Manage worker profiles
-                </span>
+                <div>
+                    <span>ACCOUNT MANAGEMENT</span>
+                    <h2>Users</h2>
+                </div>
 
             </div>
 
-            <b>
-                →
-            </b>
+            <div
+                id="usersContainer"
+                class="admin-table-wrapper"
+            >
 
-        </a>
+                <div class="admin-loading">
+                    Loading users...
+                </div>
+
+            </div>
+
+        </section>
 
 
-        <a
-            href="/admin/jobs"
-            class="admin-tool-card"
+        <!-- WORKERS -->
+
+        <section
+            id="section-workers"
+            class="admin-section"
         >
 
-            <div class="admin-tool-icon">
-                J
-            </div>
+            <div class="section-heading">
 
-            <div>
-
-                <strong>
-                    Jobs
-                </strong>
-
-                <span>
-                    Review marketplace jobs
-                </span>
+                <div>
+                    <span>PROFESSIONALS</span>
+                    <h2>Worker Verification</h2>
+                </div>
 
             </div>
 
-            <b>
-                →
-            </b>
+            <div class="admin-empty-panel">
 
-        </a>
+                Worker verification management is ready.
+
+                <br>
+
+                Connect this section to your WorkerProfile
+                verification workflow.
+
+            </div>
+
+        </section>
 
 
-        <a
-            href="/admin/applications"
-            class="admin-tool-card"
+        <!-- JOBS -->
+
+        <section
+            id="section-jobs"
+            class="admin-section"
         >
 
-            <div class="admin-tool-icon">
-                A
-            </div>
+            <div class="section-heading">
 
-            <div>
-
-                <strong>
-                    Applications
-                </strong>
-
-                <span>
-                    Review worker applications
-                </span>
+                <div>
+                    <span>MARKETPLACE</span>
+                    <h2>Jobs</h2>
+                </div>
 
             </div>
 
-            <b>
-                →
-            </b>
+            <div
+                id="jobsContainer"
+                class="admin-table-wrapper"
+            >
 
-        </a>
+                <div class="admin-loading">
+                    Loading jobs...
+                </div>
+
+            </div>
+
+        </section>
 
 
-        <a
-            href="/admin/categories"
-            class="admin-tool-card"
+        <!-- CATEGORIES -->
+
+        <section
+            id="section-categories"
+            class="admin-section"
         >
 
-            <div class="admin-tool-icon">
-                #
-            </div>
+            <div class="section-heading">
 
-            <div>
-
-                <strong>
-                    Categories
-                </strong>
-
-                <span>
-                    Manage job categories
-                </span>
+                <div>
+                    <span>MARKETPLACE STRUCTURE</span>
+                    <h2>Categories</h2>
+                </div>
 
             </div>
 
-            <b>
-                →
-            </b>
+            <div
+                id="categoriesContainer"
+                class="admin-table-wrapper"
+            >
 
-        </a>
+                <div class="admin-loading">
+                    Loading categories...
+                </div>
 
-    </div>
+            </div>
 
-</div>
+        </section>
+
+
+        <!-- SETTINGS -->
+
+        <section
+            id="section-settings"
+            class="admin-section"
+        >
+
+            <div class="section-heading">
+
+                <div>
+                    <span>SYSTEM</span>
+                    <h2>Admin Settings</h2>
+                </div>
+
+            </div>
+
+            <div class="admin-empty-panel">
+
+                <h3>Administration Security</h3>
+
+                <p>
+                    Admin-only settings can be connected here,
+                    including password changes, security logs,
+                    account controls and system configuration.
+                </p>
+
+            </div>
+
+        </section>
+
+    </section>
+
+</main>
+
+
+<style>
+
+.sf-admin {
+
+    min-height: calc(100vh - 70px);
+
+    display: flex;
+
+    background: #f8fafc;
+
+    color: #0f172a;
+}
+
+
+/* SIDEBAR */
+
+.admin-sidebar {
+
+    position: sticky;
+
+    top: 0;
+
+    width: 250px;
+
+    min-height: calc(100vh - 70px);
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 24px 16px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #0f172a,
+            #111827
+        );
+
+    color: white;
+}
+
+
+.admin-sidebar-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 5px 8px 28px;
+}
+
+
+.admin-sidebar-logo {
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.10);
+
+    font-size: 13px;
+
+    font-weight: 900;
+}
+
+
+.admin-sidebar-brand strong {
+
+    display: block;
+
+    font-size: 13px;
+}
+
+
+.admin-sidebar-brand span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+}
+
+
+.admin-nav {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.admin-nav-item {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 13px;
+
+    border: 0;
+
+    border-radius: 11px;
+
+    background: transparent;
+
+    color: #94a3b8;
+
+    text-align: left;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.admin-nav-item span {
+
+    width: 18px;
+
+    text-align: center;
+}
+
+
+.admin-nav-item:hover {
+
+    background: rgba(255,255,255,.06);
+
+    color: white;
+}
+
+
+.admin-nav-item.active {
+
+    background: #2563eb;
+
+    color: white;
+
+    box-shadow:
+        0 8px 20px
+        rgba(37,99,235,.20);
+}
+
+
+.admin-sidebar-bottom {
+
+    margin-top: auto;
+}
+
+
+.admin-logout {
+
+    width: 100%;
+
+    padding: 11px;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.04);
+
+    color: #cbd5e1;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+/* MAIN */
+
+.admin-main {
+
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 30px;
+
+}
+
+
+.admin-topbar {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 28px;
+}
+
+
+.admin-eyebrow,
+.section-heading span {
+
+    color: #2563eb;
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: .14em;
+}
+
+
+.admin-topbar h1 {
+
+    margin: 6px 0 0;
+
+    font-size: 28px;
+
+    letter-spacing: -.04em;
+}
+
+
+.admin-profile {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.admin-avatar {
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #dbeafe;
+
+    color: #1d4ed8;
+
+    font-weight: 900;
+}
+
+
+.admin-profile strong {
+
+    display: block;
+
+    font-size: 12px;
+}
+
+
+.admin-profile span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+}
+
+
+/* SECTIONS */
+
+.admin-section {
+
+    display: none;
+}
+
+
+.admin-section.active {
+
+    display: block;
+}
+
+
+/* WELCOME */
+
+.admin-welcome {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 28px;
+
+    margin-bottom: 20px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #172554
+        );
+
+    color: white;
+
+    box-shadow:
+        0 20px 45px
+        rgba(15,23,42,.13);
+}
+
+
+.admin-welcome span {
+
+    color: #93c5fd;
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: .15em;
+}
+
+
+.admin-welcome h2 {
+
+    margin: 8px 0;
+
+    font-size: 27px;
+
+    letter-spacing: -.04em;
+}
+
+
+.admin-welcome p {
+
+    margin: 0;
+
+    color: #cbd5e1;
+
+    font-size: 12px;
+}
+
+
+.admin-live {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 12px;
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    border-radius: 999px;
+
+    color: #cbd5e1;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+
+.admin-live span {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #4ade80;
+}
+
+
+/* STATS */
+
+.admin-stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, minmax(0,1fr));
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+
+.admin-stat {
+
+    padding: 18px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 16px;
+
+    background: white;
+
+    box-shadow:
+        0 8px 24px
+        rgba(15,23,42,.04);
+}
+
+
+.admin-stat span {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+
+.admin-stat strong {
+
+    display: block;
+
+    margin-top: 8px;
+
+    color: #0f172a;
+
+    font-size: 25px;
+
+    letter-spacing: -.04em;
+}
+
+
+.admin-stat.warning strong {
+
+    color: #d97706;
+}
+
+
+/* PANELS */
+
+.admin-panels {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0,1fr));
+
+    gap: 18px;
+}
+
+
+.admin-panel {
+
+    padding: 22px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 18px;
+
+    background: white;
+}
+
+
+.admin-panel-header span {
+
+    color: #94a3b8;
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: .12em;
+}
+
+
+.admin-panel-header h3 {
+
+    margin: 5px 0 18px;
+
+    font-size: 17px;
+}
+
+
+.system-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 13px 0;
+
+    border-top: 1px solid #f1f5f9;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+.system-row b {
+
+    color: #15803d;
+
+    font-size: 10px;
+}
+
+
+.quick-action {
+
+    display: block;
+
+    width: 100%;
+
+    margin-bottom: 8px;
+
+    padding: 12px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 10px;
+
+    background: #f8fafc;
+
+    color: #334155;
+
+    text-align: left;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.quick-action:hover {
+
+    border-color: #93c5fd;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+
+/* SECTION */
+
+.section-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+
+.section-heading h2 {
+
+    margin: 6px 0 0;
+
+    font-size: 26px;
+
+    letter-spacing: -.04em;
+}
+
+
+/* TABLE */
+
+.admin-table-wrapper {
+
+    overflow-x: auto;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 18px;
+
+    background: white;
+}
+
+
+.admin-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 11px;
+}
+
+
+.admin-table th {
+
+    padding: 13px;
+
+    background: #f8fafc;
+
+    color: #64748b;
+
+    text-align: left;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+}
+
+
+.admin-table td {
+
+    padding: 14px 13px;
+
+    border-top: 1px solid #f1f5f9;
+
+}
+
+
+.status-active {
+
+    color: #15803d;
+
+    font-weight: 800;
+}
+
+
+.status-inactive {
+
+    color: #b91c1c;
+
+    font-weight: 800;
+}
+
+
+.user-action {
+
+    border: 0;
+
+    border-radius: 7px;
+
+    padding: 6px 9px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.admin-loading,
+.admin-empty-panel {
+
+    padding: 35px;
+
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+.admin-empty-panel {
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 18px;
+
+    background: white;
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:1100px) {
+
+    .admin-stats {
+
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+}
+
+
+@media(max-width:800px) {
+
+    .admin-sidebar {
+
+        width: 70px;
+
+        padding: 15px 8px;
+    }
+
+
+    .admin-sidebar-brand div:last-child,
+    .admin-nav-item:not(.active)::after {
+
+        display: none;
+    }
+
+
+    .admin-sidebar-brand {
+
+        justify-content: center;
+    }
+
+
+    .admin-nav-item {
+
+        justify-content: center;
+    }
+
+
+    .admin-nav-item span {
+
+        margin: 0;
+    }
+
+
+    .admin-nav-item {
+
+        font-size: 0;
+    }
+
+
+    .admin-nav-item span {
+
+        font-size: 14px;
+    }
+
+
+    .admin-main {
+
+        padding: 20px 14px;
+    }
+
+
+    .admin-panels {
+
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media(max-width:560px) {
+
+    .admin-topbar h1 {
+
+        font-size: 22px;
+    }
+
+
+    .admin-profile div:last-child {
+
+        display: none;
+    }
+
+
+    .admin-welcome {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .admin-stats {
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+</style>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        const navItems =
+            document.querySelectorAll(
+                "[data-section]"
+            );
+
+
+        const title =
+            document.getElementById(
+                "adminPageTitle"
+            );
+
+
+        const titles = {
+
+            dashboard:
+                "Dashboard",
+
+            users:
+                "Users",
+
+            workers:
+                "Worker Verification",
+
+            jobs:
+                "Jobs",
+
+            categories:
+                "Categories",
+
+            settings:
+                "Settings"
+        };
+
+
+        function openSection(
+            section
+        ) {
+
+            document
+                .querySelectorAll(
+                    ".admin-section"
+                )
+                .forEach(
+                    function (element) {
+
+                        element.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+            const target =
+                document.getElementById(
+                    "section-" +
+                    section
+                );
+
+
+            if (target) {
+
+                target.classList.add(
+                    "active"
+                );
+            }
+
+
+            document
+                .querySelectorAll(
+                    ".admin-nav-item"
+                )
+                .forEach(
+                    function (item) {
+
+                        item.classList.toggle(
+                            "active",
+                            item.dataset.section ===
+                                section
+                        );
+
+                    }
+                );
+
+
+            title.textContent =
+                titles[section] ||
+                "Admin";
+
+
+            if (section === "users") {
+
+                loadUsers();
+
+            }
+
+
+            if (section === "jobs") {
+
+                loadJobs();
+
+            }
+
+
+            if (section === "categories") {
+
+                loadCategories();
+
+            }
+
+        }
+
+
+        navItems.forEach(
+            function (item) {
+
+                item.addEventListener(
+                    "click",
+                    function () {
+
+                        openSection(
+                            item.dataset.section
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           DASHBOARD
+        ===================================================== */
+
+        async function loadDashboard() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/admin/dashboard",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+
+                if (
+                    response.status === 401 ||
+                    response.status === 403
+                ) {
+
+                    window.location.replace(
+                        "/admin/login"
+                    );
+
+                    return;
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    !result.stats
+                ) {
+
+                    return;
+                }
+
+
+                const stats =
+                    result.stats;
+
+
+                document.getElementById(
+                    "totalUsers"
+                ).textContent =
+                    stats.total_users;
+
+
+                document.getElementById(
+                    "totalWorkers"
+                ).textContent =
+                    stats.total_workers;
+
+
+                document.getElementById(
+                    "totalCustomers"
+                ).textContent =
+                    stats.total_customers;
+
+
+                document.getElementById(
+                    "totalJobs"
+                ).textContent =
+                    stats.total_jobs;
+
+
+                document.getElementById(
+                    "totalApplications"
+                ).textContent =
+                    stats.total_applications;
+
+
+                document.getElementById(
+                    "pendingWorkers"
+                ).textContent =
+                    stats.pending_workers;
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           ADMIN PROFILE
+        ===================================================== */
+
+        async function loadAdmin() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/admin/me",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    window.location.replace(
+                        "/admin/login"
+                    );
+
+                    return;
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    result.user
+                ) {
+
+                    document.getElementById(
+                        "adminName"
+                    ).textContent =
+                        result.user.full_name;
+                }
+
+
+            } catch (error) {
+
+                window.location.replace(
+                    "/admin/login"
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           USERS
+        ===================================================== */
+
+        async function loadUsers() {
+
+            const container =
+                document.getElementById(
+                    "usersContainer"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/admin/users",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    return;
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                let html = `
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+
+                result.users.forEach(
+                    function (user) {
+
+                        html += `
+                            <tr>
+
+                                <td>
+                                    #${user.id}
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        ${escapeHtml(
+                                            user.full_name
+                                        )}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        user.email
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        user.role
+                                    )}
+                                </td>
+
+                                <td class="${
+                                    user.is_active
+                                        ? "status-active"
+                                        : "status-inactive"
+                                }">
+
+                                    ${
+                                        user.is_active
+                                            ? "Active"
+                                            : "Inactive"
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    <button
+                                        class="user-action"
+                                        data-user-id="${user.id}"
+                                        data-active="${user.is_active}"
+                                    >
+                                        ${
+                                            user.is_active
+                                                ? "Deactivate"
+                                                : "Activate"
+                                        }
+                                    </button>
+
+                                </td>
+
+                            </tr>
+                        `;
+
+                    }
+                );
+
+
+                html += `
+                        </tbody>
+                    </table>
+                `;
+
+
+                container.innerHTML =
+                    html;
+
+
+                container
+                    .querySelectorAll(
+                        ".user-action"
+                    )
+                    .forEach(
+                        function (button) {
+
+                            button.addEventListener(
+                                "click",
+                                function () {
+
+                                    updateUser(
+                                        button.dataset.userId,
+                                        button.dataset.active === "true"
+                                    );
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+            } catch (error) {
+
+                container.innerHTML =
+                    `<div class="admin-loading">
+                        Unable to load users.
+                    </div>`;
+
+            }
+
+        }
+
+
+        async function updateUser(
+            userId,
+            currentStatus
+        ) {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/admin/users/${userId}/status`,
+                        {
+                            method: "PATCH",
+
+                            credentials:
+                                "include",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    is_active:
+                                        !currentStatus
+                                })
+                        }
+                    );
+
+
+                if (response.ok) {
+
+                    loadUsers();
+
+                    loadDashboard();
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           JOBS
+        ===================================================== */
+
+        async function loadJobs() {
+
+            const container =
+                document.getElementById(
+                    "jobsContainer"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/admin/jobs",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                let html =
+                    `<table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+
+                result.jobs.forEach(
+                    function (job) {
+
+                        html += `
+                            <tr>
+                                <td>
+                                    #${job.id}
+                                </td>
+
+                                <td>
+                                    ${job.customer_id || "—"}
+                                </td>
+                            </tr>
+                        `;
+
+                    }
+                );
+
+
+                html +=
+                    `</tbody></table>`;
+
+
+                container.innerHTML =
+                    html;
+
+
+            } catch (error) {
+
+                container.innerHTML =
+                    `<div class="admin-loading">
+                        Unable to load jobs.
+                    </div>`;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           CATEGORIES
+        ===================================================== */
+
+        async function loadCategories() {
+
+            const container =
+                document.getElementById(
+                    "categoriesContainer"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/admin/categories",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                let html =
+                    `<table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+
+                result.categories.forEach(
+                    function (category) {
+
+                        html += `
+                            <tr>
+                                <td>
+                                    #${category.id}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        category.name
+                                    )}
+                                </td>
+                            </tr>
+                        `;
+
+                    }
+                );
+
+
+                html +=
+                    `</tbody></table>`;
+
+
+                container.innerHTML =
+                    html;
+
+
+            } catch (error) {
+
+                container.innerHTML =
+                    `<div class="admin-loading">
+                        Unable to load categories.
+                    </div>`;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           HTML ESCAPE
+        ===================================================== */
+
+        function escapeHtml(value) {
+
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        document
+            .getElementById(
+                "adminLogout"
+            )
+            .addEventListener(
+                "click",
+                async function () {
+
+                    try {
+
+                        await fetch(
+                            "/api/admin/logout",
+                            {
+                                method: "POST",
+
+                                credentials:
+                                    "include"
+                            }
+                        );
+
+                    } finally {
+
+                        window.location.replace(
+                            "/admin/login"
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /* =====================================================
+           START
+        ===================================================== */
+
+        loadAdmin();
+
+        loadDashboard();
+
+    }
+);
+
+</script>
 
 {% endblock %}
