@@ -4,241 +4,554 @@
 Post a Job — S. F Works
 {% endblock %}
 
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/post-job.css') }}"
+>
+
+{% endblock %}
+
+
 {% block content %}
 
 <main class="post-job-page">
 
+    <!-- =====================================================
+         PREMIUM HERO
+    ====================================================== -->
+
     <section class="post-job-hero">
 
-        <div class="container">
+        <div class="post-job-container">
 
-            <span class="hero-badge">
-                S. F Works Marketplace
-            </span>
+            <div class="hero-content">
 
-            <h1>
-                Post Your Job
-            </h1>
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    S. F Works Marketplace
+                </div>
 
-            <p>
-                Tell us what work you need and connect
-                with skilled workers near you.
-            </p>
+                <h1>
+                    Post a Job.
+                    <span>Find the Right Worker.</span>
+                </h1>
+
+                <p>
+                    Tell us what you need and connect with
+                    trusted, skilled professionals near you.
+                </p>
+
+                <div class="hero-features">
+
+                    <div class="hero-feature">
+                        <span>✓</span>
+                        Trusted Workers
+                    </div>
+
+                    <div class="hero-feature">
+                        <span>✓</span>
+                        Local Professionals
+                    </div>
+
+                    <div class="hero-feature">
+                        <span>✓</span>
+                        Secure Marketplace
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
     </section>
 
 
+    <!-- =====================================================
+         FORM SECTION
+    ====================================================== -->
+
     <section class="post-job-section">
 
-        <div class="container">
+        <div class="post-job-container">
 
-            <div class="post-job-card">
+            <div class="post-job-layout">
 
-                <form
-                    id="postJobForm"
-                    novalidate
-                >
+                <!-- LEFT INFO -->
+                <aside class="post-job-sidebar">
 
-                    <div class="form-group">
+                    <div class="sidebar-card">
 
-                        <label for="jobTitle">
-                            Job Title
-                        </label>
-
-                        <input
-                            type="text"
-                            id="jobTitle"
-                            name="title"
-                            placeholder="Example: Home electrical work"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="jobDescription">
-                            Description
-                        </label>
-
-                        <textarea
-                            id="jobDescription"
-                            name="description"
-                            rows="6"
-                            placeholder="Describe the work you need..."
-                            required
-                        ></textarea>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="jobCategory">
-                            Category
-                        </label>
-
-                        <select
-                            id="jobCategory"
-                            name="category_id"
-                            required
-                        >
-
-                            <option value="">
-                                Select category
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="form-grid">
-
-                        <div class="form-group">
-
-                            <label for="budgetMin">
-                                Minimum Budget
-                            </label>
-
-                            <input
-                                type="number"
-                                id="budgetMin"
-                                name="budget_min"
-                                min="0"
-                                step="0.01"
-                                placeholder="₹"
-                            >
-
+                        <div class="sidebar-icon">
+                            +
                         </div>
 
+                        <h2>
+                            Create your job
+                        </h2>
 
-                        <div class="form-group">
+                        <p>
+                            Give workers enough information to
+                            understand your requirements and
+                            send you the right proposals.
+                        </p>
 
-                            <label for="budgetMax">
-                                Maximum Budget
-                            </label>
+                        <div class="sidebar-steps">
 
-                            <input
-                                type="number"
-                                id="budgetMax"
-                                name="budget_max"
-                                min="0"
-                                step="0.01"
-                                placeholder="₹"
-                            >
+                            <div class="sidebar-step">
+                                <div class="step-number">01</div>
+                                <div>
+                                    <strong>Describe the work</strong>
+                                    <span>
+                                        Explain what you need.
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="sidebar-step">
+                                <div class="step-number">02</div>
+                                <div>
+                                    <strong>Set your budget</strong>
+                                    <span>
+                                        Add your expected budget.
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="sidebar-step">
+                                <div class="step-number">03</div>
+                                <div>
+                                    <strong>Choose location</strong>
+                                    <span>
+                                        Help workers find you.
+                                    </span>
+                                </div>
+                            </div>
 
                         </div>
 
                     </div>
 
-
-                    <div class="form-group">
-
-                        <label for="jobLocation">
-                            Location
-                        </label>
-
-                        <input
-                            type="text"
-                            id="jobLocation"
-                            name="location"
-                            placeholder="Full work location"
-                            required
-                        >
-
-                    </div>
+                </aside>
 
 
-                    <div class="form-grid">
+                <!-- FORM -->
+                <div class="post-job-card">
 
-                        <div class="form-group">
+                    <div class="form-header">
 
-                            <label for="jobCity">
-                                City
-                            </label>
+                        <div>
+                            <span class="form-eyebrow">
+                                JOB DETAILS
+                            </span>
 
-                            <input
-                                type="text"
-                                id="jobCity"
-                                name="city"
-                            >
+                            <h2>
+                                Tell us about your job
+                            </h2>
 
+                            <p>
+                                Fill in the details below to publish
+                                your job on S. F Works.
+                            </p>
                         </div>
 
-
-                        <div class="form-group">
-
-                            <label for="jobState">
-                                State
-                            </label>
-
-                            <input
-                                type="text"
-                                id="jobState"
-                                name="state"
-                            >
-
+                        <div class="secure-badge">
+                            <span>🔒</span>
+                            Secure
                         </div>
 
                     </div>
 
 
-                    <div class="form-group">
-
-                        <label for="jobPincode">
-                            Pincode
-                        </label>
-
-                        <input
-                            type="text"
-                            id="jobPincode"
-                            name="pincode"
-                            maxlength="10"
-                        >
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="jobPriority">
-                            Priority
-                        </label>
-
-                        <select
-                            id="jobPriority"
-                            name="priority"
-                        >
-
-                            <option value="normal">
-                                Normal
-                            </option>
-
-                            <option value="high">
-                                High
-                            </option>
-
-                            <option value="urgent">
-                                Urgent
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
+                    <form
+                        id="postJobForm"
+                        novalidate
                     >
-                        Post Job
-                    </button>
 
-                </form>
+                        <!-- =================================================
+                             JOB TITLE
+                        ================================================== -->
+
+                        <div class="form-group">
+
+                            <label for="jobTitle">
+                                Job Title
+                                <span>*</span>
+                            </label>
+
+                            <div class="input-wrapper">
+
+                                <span class="input-icon">
+                                    ✦
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="jobTitle"
+                                    name="title"
+                                    placeholder="e.g. Home electrical work"
+                                    autocomplete="off"
+                                    maxlength="200"
+                                    required
+                                >
+
+                            </div>
+
+                            <small class="field-hint">
+                                Keep it short and specific.
+                            </small>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             DESCRIPTION
+                        ================================================== -->
+
+                        <div class="form-group">
+
+                            <label for="jobDescription">
+                                Job Description
+                                <span>*</span>
+                            </label>
+
+                            <textarea
+                                id="jobDescription"
+                                name="description"
+                                rows="6"
+                                maxlength="5000"
+                                placeholder="Describe the work, requirements, materials, preferred timing, etc."
+                                required
+                            ></textarea>
+
+                            <div class="textarea-footer">
+
+                                <small>
+                                    Give workers enough information
+                                    to understand your requirements.
+                                </small>
+
+                                <span id="descriptionCounter">
+                                    0 / 5000
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             CATEGORY
+                        ================================================== -->
+
+                        <div class="form-group">
+
+                            <label for="jobCategory">
+                                Category
+                                <span>*</span>
+                            </label>
+
+                            <div class="select-wrapper">
+
+                                <span class="input-icon">
+                                    ◈
+                                </span>
+
+                                <select
+                                    id="jobCategory"
+                                    name="category_id"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Loading categories...
+                                    </option>
+
+                                </select>
+
+                                <span class="select-arrow">
+                                   ⌄
+                                </span>
+
+                            </div>
+
+                            <div
+                                id="categoryStatus"
+                                class="category-status"
+                                aria-live="polite"
+                            ></div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             BUDGET
+                        ================================================== -->
+
+                        <div class="form-section-title">
+
+                            <div class="section-line"></div>
+
+                            <span>
+                                Budget
+                            </span>
+
+                            <div class="section-line"></div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="budgetMin">
+                                    Minimum Budget
+                                </label>
+
+                                <div class="input-wrapper currency-input">
+
+                                    <span class="currency-symbol">
+                                        ₹
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        id="budgetMin"
+                                        name="budget_min"
+                                        min="0"
+                                        step="0.01"
+                                        inputmode="decimal"
+                                        placeholder="0"
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="budgetMax">
+                                    Maximum Budget
+                                </label>
+
+                                <div class="input-wrapper currency-input">
+
+                                    <span class="currency-symbol">
+                                        ₹
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        id="budgetMax"
+                                        name="budget_max"
+                                        min="0"
+                                        step="0.01"
+                                        inputmode="decimal"
+                                        placeholder="0"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             LOCATION
+                        ================================================== -->
+
+                        <div class="form-section-title">
+
+                            <div class="section-line"></div>
+
+                            <span>
+                                Work Location
+                            </span>
+
+                            <div class="section-line"></div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="jobLocation">
+                                Full Work Location
+                                <span>*</span>
+                            </label>
+
+                            <div class="input-wrapper">
+
+                                <span class="input-icon">
+                                    ⌖
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="jobLocation"
+                                    name="location"
+                                    placeholder="Enter the complete work location"
+                                    autocomplete="street-address"
+                                    maxlength="500"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="jobCity">
+                                    City
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="jobCity"
+                                    name="city"
+                                    placeholder="e.g. Kolkata"
+                                    maxlength="100"
+                                    autocomplete="address-level2"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="jobState">
+                                    State
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="jobState"
+                                    name="state"
+                                    placeholder="e.g. West Bengal"
+                                    maxlength="100"
+                                    autocomplete="address-level1"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="jobPincode">
+                                    Pincode
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="jobPincode"
+                                    name="pincode"
+                                    maxlength="10"
+                                    inputmode="numeric"
+                                    placeholder="e.g. 700001"
+                                    autocomplete="postal-code"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="jobPriority">
+                                    Priority
+                                </label>
+
+                                <div class="select-wrapper">
+
+                                    <select
+                                        id="jobPriority"
+                                        name="priority"
+                                    >
+
+                                        <option value="normal">
+                                            Normal
+                                        </option>
+
+                                        <option value="high">
+                                            High
+                                        </option>
+
+                                        <option value="urgent">
+                                            Urgent
+                                        </option>
+
+                                    </select>
+
+                                    <span class="select-arrow">
+                                       ⌄
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             MESSAGE
+                        ================================================== -->
+
+                        <div
+                            id="formMessage"
+                            class="form-message"
+                            aria-live="polite"
+                        ></div>
+
+
+                        <!-- =================================================
+                             SUBMIT
+                        ================================================== -->
+
+                        <div class="form-submit-area">
+
+                            <button
+                                type="submit"
+                                id="postJobButton"
+                                class="post-job-button"
+                            >
+
+                                <span class="button-icon">
+                                    +
+                                </span>
+
+                                <span class="button-text">
+                                    Post Job
+                                </span>
+
+                                <span class="button-arrow">
+                                    →
+                                </span>
+
+                            </button>
+
+                            <p class="submit-note">
+                                By posting this job, you agree to
+                                S. F Works marketplace terms.
+                            </p>
+
+                        </div>
+
+                    </form>
+
+                </div>
 
             </div>
 
