@@ -6,194 +6,183 @@ Login | S. F Works Marketplace
 
 {% block content %}
 
-<div class="auth-page"><div class="auth-shell">
+<main class="sf-login-page">
 
-    <!-- =====================================================
-         LOGIN CARD
-    ====================================================== -->
+    <div class="sf-login-shell">
 
-    <section
-        class="auth-card premium-auth-card"
-        aria-labelledby="loginTitle"
-    >
+        <!-- =====================================================
+             LOGIN CARD
+        ====================================================== -->
 
-        <!-- BRAND -->
-
-        <div class="auth-brand">
-
-            <div
-                class="auth-brand-mark"
-                aria-hidden="true"
-            >
-                SF
-            </div>
-
-            <div class="auth-brand-copy">
-
-                <strong>
-                    S. F Works
-                </strong>
-
-                <span>
-                    Trusted Work Marketplace
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- HEADER -->
-
-        <header class="auth-header">
-
-            <span class="auth-badge">
-                Secure Member Login
-            </span>
-
-            <h1 id="loginTitle">
-                Welcome back
-            </h1>
-
-            <p>
-                Sign in to manage your work,
-                applications, profile and marketplace activity.
-            </p>
-
-        </header>
-
-
-        <!-- =================================================
-             MESSAGE
-        ================================================== -->
-
-        <div
-            id="loginMessage"
-            class="auth-message"
-            role="alert"
-            aria-live="polite"
-            hidden
-        ></div>
-
-
-        <!-- =================================================
-             LOGIN FORM
-        ================================================== -->
-
-        <form
-            id="loginForm"
-            class="auth-form"
-            method="POST"
-            novalidate
+        <section
+            class="sf-login-card"
+            aria-labelledby="loginTitle"
         >
 
-            <!-- EMAIL -->
+            <!-- BRAND -->
 
-            <div class="form-group">
+            <div class="sf-login-brand">
 
-                <label
-                    for="email"
-                >
-                    Email address
-                </label>
-
-                <div class="input-wrapper">
-
-                    <span
-                        class="input-icon"
-                        aria-hidden="true"
-                    >
-                        @
-                    </span>
-
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="you@example.com"
-                        autocomplete="email"
-                        inputmode="email"
-                        autocapitalize="none"
-                        spellcheck="false"
-                        required
-                        aria-required="true"
-                    >
-
+                <div class="sf-brand-logo">
+                    SF
                 </div>
 
-                <small class="field-help">
-                    Use the email address associated with your account.
-                </small>
+                <div class="sf-brand-text">
+
+                    <strong>
+                        S. F Works
+                    </strong>
+
+                    <span>
+                        Trusted Work Marketplace
+                    </span>
+
+                </div>
 
             </div>
 
 
-            <!-- PASSWORD -->
+            <!-- HEADER -->
 
-            <div class="form-group">
+            <header class="sf-login-header">
 
-                <div class="field-label-row">
+                <span class="sf-login-badge">
+                    Secure Member Login
+                </span>
 
-                    <label
-                        for="password"
-                    >
-                        Password
+                <h1 id="loginTitle">
+                    Welcome back
+                </h1>
+
+                <p>
+                    Sign in to manage your profile,
+                    jobs, applications and marketplace activity.
+                </p>
+
+            </header>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="loginMessage"
+                class="sf-login-message"
+                role="alert"
+                aria-live="polite"
+                hidden
+            ></div>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+            ================================================== -->
+
+            <form
+                id="loginForm"
+                class="sf-login-form"
+                method="POST"
+                novalidate
+            >
+
+                <!-- EMAIL -->
+
+                <div class="sf-form-group">
+
+                    <label for="email">
+                        Email address
                     </label>
 
-                    <a
-                        href="#"
-                        class="forgot-password"
-                        id="forgotPassword"
-                    >
-                        Forgot password?
-                    </a>
+                    <div class="sf-input-box">
+
+                        <span
+                            class="sf-input-icon"
+                            aria-hidden="true"
+                        >
+                            @
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            inputmode="email"
+                            autocapitalize="none"
+                            spellcheck="false"
+                            required
+                        >
+
+                    </div>
+
+                    <small>
+                        Enter the email associated with your account.
+                    </small>
 
                 </div>
 
 
-                <div class="input-wrapper">
+                <!-- PASSWORD -->
 
-                    <span
-                        class="input-icon"
-                        aria-hidden="true"
-                    >
-                        •
-                    </span>
+                <div class="sf-form-group">
 
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        autocomplete="current-password"
-                        required
-                        aria-required="true"
-                    >
+                    <div class="sf-label-row">
 
-                    <button
-                        type="button"
-                        class="password-toggle"
-                        id="passwordToggle"
-                        aria-label="Show password"
-                        aria-pressed="false"
-                    >
-                        Show
-                    </button>
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <a
+                            href="#"
+                            id="forgotPassword"
+                            class="sf-forgot-link"
+                        >
+                            Forgot password?
+                        </a>
+
+                    </div>
+
+
+                    <div class="sf-input-box">
+
+                        <span
+                            class="sf-input-icon"
+                            aria-hidden="true"
+                        >
+                            •
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="passwordToggle"
+                            class="sf-password-toggle"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+                    <small>
+                        Your password is protected.
+                    </small>
 
                 </div>
 
-                <small class="field-help">
-                    Your password is protected and never stored in the browser.
-                </small>
 
-            </div>
+                <!-- REMEMBER -->
 
-
-            <!-- REMEMBER -->
-
-            <div class="auth-options">
-
-                <label class="remember-option">
+                <label class="sf-remember">
 
                     <input
                         type="checkbox"
@@ -207,493 +196,822 @@ Login | S. F Works Marketplace
 
                 </label>
 
-            </div>
 
+                <!-- SUBMIT -->
 
-            <!-- SUBMIT -->
-
-            <button
-                type="submit"
-                class="btn btn-primary auth-submit premium-login-button"
-                id="loginButton"
-            >
-
-                <span
-                    class="button-loader"
-                    id="loginLoader"
-                    aria-hidden="true"
-                ></span>
-
-                <span id="loginButtonText">
-                    Sign in securely
-                </span>
-
-            </button>
-
-
-            <!-- SECURITY NOTE -->
-
-            <div class="auth-security-note">
-
-                <span
-                    class="security-icon"
-                    aria-hidden="true"
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="sf-login-button"
                 >
-                    ✓
-                </span>
+
+                    <span
+                        id="loginLoader"
+                        class="sf-button-loader"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span id="loginButtonText">
+                        Sign in securely
+                    </span>
+
+                </button>
+
+
+                <!-- SECURITY -->
+
+                <div class="sf-security-note">
+
+                    <span class="sf-security-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Secure authentication with protected session cookies.
+                    </span>
+
+                </div>
+
+            </form>
+
+
+            <!-- FOOTER -->
+
+            <footer class="sf-login-footer">
 
                 <span>
-                    Secure authentication with protected session cookies.
+                    Don't have an account?
                 </span>
 
-            </div>
+                <a
+                    href="{{ url_for('auth_pages.register_page') }}"
+                >
+                    Create your account
+                </a>
 
-        </form>
+            </footer>
 
-
-        <!-- FOOTER -->
-
-        <footer class="auth-footer">
-
-            <span>
-                Don't have an account?
-            </span>
-
-            <a
-                href="{{ url_for('auth_pages.register_page') }}"
-            >
-                Create your account
-            </a>
-
-        </footer>
-
-    </section>
+        </section>
 
 
-    <!-- =====================================================
-         SIDE TRUST PANEL
-    ====================================================== -->
+        <!-- =====================================================
+             PREMIUM TRUST PANEL
+        ====================================================== -->
 
-    <aside
-        class="auth-trust-panel"
-        aria-label="S. F Works benefits"
-    >
+        <aside class="sf-login-trust">
 
-        <span class="trust-eyebrow">
-            S. F WORKS MARKETPLACE
-        </span>
+            <div class="sf-trust-content">
 
-        <h2>
-            Your work.
-            <br>
-            Your opportunities.
-        </h2>
-
-        <p>
-            Connect with customers, manage your professional
-            profile and grow your local work opportunities
-            from one secure marketplace.
-        </p>
-
-
-        <div class="trust-list">
-
-            <div class="trust-item">
-
-                <span class="trust-item-icon">
-                    ✓
+                <span class="sf-trust-eyebrow">
+                    S. F WORKS MARKETPLACE
                 </span>
 
-                <div>
-                    <strong>
-                        Secure account access
-                    </strong>
+                <h2>
+                    Your work.
+                    <br>
+                    Your opportunities.
+                </h2>
 
-                    <span>
-                        Protected authentication for every session.
-                    </span>
+                <p>
+                    Connect with customers, showcase your skills
+                    and manage your professional work from one
+                    secure marketplace.
+                </p>
+
+
+                <!-- BENEFITS -->
+
+                <div class="sf-trust-list">
+
+                    <div class="sf-trust-item">
+
+                        <span class="sf-trust-icon">
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Secure account
+                            </strong>
+
+                            <span>
+                                Protected authentication for every session.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="sf-trust-item">
+
+                        <span class="sf-trust-icon">
+                            ★
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Professional profile
+                            </strong>
+
+                            <span>
+                                Showcase your skills, experience and portfolio.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="sf-trust-item">
+
+                        <span class="sf-trust-icon">
+                            →
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Better opportunities
+                            </strong>
+
+                            <span>
+                                Find jobs and manage applications in one place.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="sf-trust-status">
+
+                    <span></span>
+
+                    Secure marketplace environment
+
                 </div>
 
             </div>
 
+        </aside>
 
-            <div class="trust-item">
+    </div>
 
-                <span class="trust-item-icon">
-                    ★
-                </span>
-
-                <div>
-                    <strong>
-                        Professional profile
-                    </strong>
-
-                    <span>
-                        Showcase your skills, experience and portfolio.
-                    </span>
-                </div>
-
-            </div>
+</main>
 
 
-            <div class="trust-item">
+<!-- =========================================================
+     PREMIUM LOGIN CSS
+========================================================== -->
 
-                <span class="trust-item-icon">
-                    →
-                </span>
+<style>
 
-                <div>
-                    <strong>
-                        Find better opportunities
-                    </strong>
-
-                    <span>
-                        Manage jobs and applications in one place.
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="trust-footer">
-
-            <span class="trust-status-dot"></span>
-
-            <span>
-                Secure marketplace environment
-            </span>
-
-        </div>
-
-    </aside>
-
-</div>
-
-</div><!-- =========================================================
-     PREMIUM LOGIN PAGE STYLES
-========================================================== --><style>
-
-.auth-page {
-    min-height: calc(100vh - 80px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 20px;
-    background:
-        radial-gradient(
-            circle at top left,
-            rgba(37, 99, 235, 0.08),
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at bottom right,
-            rgba(15, 23, 42, 0.06),
-            transparent 35%
-        );
-}
-
-
-.auth-shell {
-    width: 100%;
-    max-width: 1080px;
-    display: grid;
-    grid-template-columns: minmax(0, 470px) minmax(0, 1fr);
-    gap: 28px;
-    align-items: stretch;
-}
-
-
-.premium-auth-card {
-    width: 100%;
-    padding: 38px;
-    border: 1px solid rgba(15, 23, 42, 0.08);
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow:
-        0 24px 70px rgba(15, 23, 42, 0.12),
-        0 4px 16px rgba(15, 23, 42, 0.05);
-    backdrop-filter: blur(18px);
-}
-
-
-.auth-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 30px;
-}
-
-
-.auth-brand-mark {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 13px;
-    background: #111827;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.16);
-}
-
-
-.auth-brand-copy {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-
-.auth-brand-copy strong {
-    font-size: 15px;
-    color: #111827;
-}
-
-
-.auth-brand-copy span {
-    font-size: 11px;
-    color: #64748b;
-}
-
-
-.auth-header {
-    margin-bottom: 28px;
-}
-
-
-.auth-badge {
-    display: inline-flex;
-    align-items: center;
-    min-height: 28px;
-    padding: 5px 10px;
-    border-radius: 999px;
-    background: #eff6ff;
-    color: #2563eb;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-}
-
-
-.auth-header h1 {
-    margin: 15px 0 8px;
-    color: #0f172a;
-    font-size: clamp(30px, 5vw, 38px);
-    line-height: 1.08;
-    letter-spacing: -0.04em;
-}
-
-
-.auth-header p {
-    margin: 0;
-    max-width: 410px;
-    color: #64748b;
-    font-size: 14px;
-    line-height: 1.7;
-}
-
-
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-
-.form-group label {
-    color: #1e293b;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-
-.field-label-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-
-.forgot-password {
-    color: #2563eb;
-    font-size: 12px;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-
-.forgot-password:hover {
-    text-decoration: underline;
-}
-
-
-.input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-
-.input-icon {
-    position: absolute;
-    left: 15px;
-    z-index: 2;
-    width: 18px;
-    color: #94a3b8;
-    font-size: 15px;
-    font-weight: 700;
-    text-align: center;
-    pointer-events: none;
-}
-
-
-.input-wrapper input {
-    width: 100%;
-    min-height: 52px;
-    padding: 0 48px;
-    border: 1px solid #dbe2ea;
-    border-radius: 13px;
-    outline: none;
-    background: #ffffff;
-    color: #0f172a;
-    font-size: 14px;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
+* {
     box-sizing: border-box;
 }
 
 
-.input-wrapper input::placeholder {
-    color: #a1acba;
+/* =========================================================
+   PAGE
+========================================================= */
+
+.sf-login-page {
+
+    min-height: calc(100vh - 80px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 50px 20px;
+
+    background:
+        radial-gradient(
+            circle at 0% 0%,
+            rgba(37, 99, 235, 0.08),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            rgba(15, 23, 42, 0.07),
+            transparent 35%
+        ),
+        #f8fafc;
 }
 
 
-.input-wrapper input:hover {
-    border-color: #cbd5e1;
+/* =========================================================
+   MAIN GRID
+========================================================= */
+
+.sf-login-shell {
+
+    width: 100%;
+    max-width: 1120px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 470px)
+        minmax(0, 1fr);
+
+    gap: 28px;
+
+    align-items: stretch;
 }
 
 
-.input-wrapper input:focus {
-    border-color: #2563eb;
-    background: #ffffff;
+/* =========================================================
+   LOGIN CARD
+========================================================= */
+
+.sf-login-card {
+
+    width: 100%;
+
+    padding: 40px;
+
+    border: 1px solid rgba(15, 23, 42, 0.08);
+
+    border-radius: 26px;
+
+    background:
+        rgba(255, 255, 255, 0.97);
+
     box-shadow:
-        0 0 0 4px rgba(37, 99, 235, 0.10);
+        0 30px 80px rgba(15, 23, 42, 0.12),
+        0 6px 20px rgba(15, 23, 42, 0.05);
+
+    backdrop-filter: blur(18px);
+
+    animation:
+        sfLoginCardIn
+        0.45s
+        ease
+        both;
 }
 
 
-.password-toggle {
-    position: absolute;
-    right: 10px;
-    min-width: 42px;
-    height: 34px;
-    padding: 0 8px;
-    border: 0;
-    border-radius: 8px;
-    background: #f8fafc;
-    color: #475569;
+@keyframes sfLoginCardIn {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(12px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.sf-login-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 30px;
+}
+
+
+.sf-brand-logo {
+
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #111827,
+            #1e293b
+        );
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    letter-spacing: -0.04em;
+
+    box-shadow:
+        0 10px 24px rgba(15, 23, 42, 0.18);
+}
+
+
+.sf-brand-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.sf-brand-text strong {
+
+    color: #0f172a;
+
+    font-size: 15px;
+
+    font-weight: 800;
+}
+
+
+.sf-brand-text span {
+
+    color: #64748b;
+
     font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
 }
 
 
-.password-toggle:hover {
-    background: #f1f5f9;
+/* =========================================================
+   HEADER
+========================================================= */
+
+.sf-login-header {
+
+    margin-bottom: 28px;
+}
+
+
+.sf-login-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 28px;
+
+    padding: 5px 11px;
+
+    border-radius: 999px;
+
+    background: #eff6ff;
+
     color: #2563eb;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
 }
 
 
-.field-help {
-    color: #94a3b8;
-    font-size: 11px;
+.sf-login-header h1 {
+
+    margin: 16px 0 9px;
+
+    color: #0f172a;
+
+    font-size:
+        clamp(30px, 5vw, 39px);
+
+    line-height: 1.05;
+
+    letter-spacing: -0.045em;
+}
+
+
+.sf-login-header p {
+
+    max-width: 410px;
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.sf-login-message {
+
+    margin-bottom: 20px;
+
+    padding: 13px 14px;
+
+    border-radius: 12px;
+
+    font-size: 13px;
+
     line-height: 1.5;
 }
 
 
-.auth-options {
-    margin-top: -2px;
+.sf-login-message.error {
+
+    border: 1px solid #fecaca;
+
+    background: #fef2f2;
+
+    color: #b91c1c;
 }
 
 
-.remember-option {
-    display: inline-flex;
+.sf-login-message.success {
+
+    border: 1px solid #bbf7d0;
+
+    background: #f0fdf4;
+
+    color: #15803d;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.sf-login-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+
+.sf-form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.sf-form-group label {
+
+    color: #1e293b;
+
+    font-size: 13px;
+
+    font-weight: 750;
+}
+
+
+.sf-form-group small {
+
+    color: #94a3b8;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   LABEL ROW
+========================================================= */
+
+.sf-label-row {
+
+    display: flex;
+
     align-items: center;
-    gap: 9px;
-    color: #64748b;
+
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+
+.sf-forgot-link {
+
+    color: #2563eb;
+
     font-size: 12px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+.sf-forgot-link:hover {
+
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.sf-input-box {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+}
+
+
+.sf-input-icon {
+
+    position: absolute;
+
+    left: 15px;
+
+    z-index: 2;
+
+    width: 18px;
+
+    color: #94a3b8;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    pointer-events: none;
+}
+
+
+.sf-input-box input {
+
+    width: 100%;
+
+    min-height: 53px;
+
+    padding:
+        0 50px;
+
+    border:
+        1px solid #dbe2ea;
+
+    border-radius: 14px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #0f172a;
+
+    font-size: 14px;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .2s ease;
+}
+
+
+.sf-input-box input::placeholder {
+
+    color: #a1acba;
+}
+
+
+.sf-input-box input:hover {
+
+    border-color: #cbd5e1;
+}
+
+
+.sf-input-box input:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================================
+   PASSWORD BUTTON
+========================================================= */
+
+.sf-password-toggle {
+
+    position: absolute;
+
+    right: 9px;
+
+    height: 35px;
+
+    min-width: 44px;
+
+    padding: 0 9px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: #f8fafc;
+
+    color: #475569;
+
+    font-size: 11px;
+
+    font-weight: 750;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+
+
+.sf-password-toggle:hover {
+
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   REMEMBER
+========================================================= */
+
+.sf-remember {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    width: fit-content;
+
+    color: #64748b;
+
+    font-size: 12px;
+
     cursor: pointer;
 }
 
 
-.remember-option input {
+.sf-remember input {
+
     width: 15px;
     height: 15px;
+
+    margin: 0;
+
     accent-color: #2563eb;
 }
 
 
-.premium-login-button {
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.sf-login-button {
+
     position: relative;
-    min-height: 52px;
+
+    width: 100%;
+
+    min-height: 53px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
     border: 0;
-    border-radius: 13px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        opacity 0.2s ease;
-}
 
+    border-radius: 14px;
 
-.premium-login-button:hover:not(:disabled) {
-    transform: translateY(-1px);
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
     box-shadow:
-        0 12px 25px rgba(37, 99, 235, 0.20);
+        0 10px 25px
+        rgba(37, 99, 235, 0.20);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
 }
 
 
-.premium-login-button:disabled {
+.sf-login-button:hover:not(:disabled) {
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 15px 32px
+        rgba(37, 99, 235, 0.28);
+}
+
+
+.sf-login-button:active:not(:disabled) {
+
+    transform: translateY(0);
+}
+
+
+.sf-login-button:disabled {
+
     cursor: not-allowed;
-    opacity: 0.72;
+
+    opacity: .70;
 }
 
 
-.button-loader {
+/* =========================================================
+   LOADER
+========================================================= */
+
+.sf-button-loader {
+
     display: none;
-    width: 15px;
-    height: 15px;
+
+    width: 16px;
+    height: 16px;
+
     margin-right: 8px;
-    vertical-align: -2px;
-    border: 2px solid rgba(255, 255, 255, 0.45);
-    border-top-color: #ffffff;
+
+    border:
+        2px solid
+        rgba(255,255,255,.45);
+
+    border-top-color:
+        #ffffff;
+
     border-radius: 50%;
-    animation: loginSpin 0.7s linear infinite;
+
+    animation:
+        sfLoginSpin
+        .7s
+        linear
+        infinite;
 }
 
 
-.auth-submit.is-loading .button-loader {
+.sf-login-button.is-loading
+.sf-button-loader {
+
     display: inline-block;
 }
 
 
-@keyframes loginSpin {
+@keyframes sfLoginSpin {
 
     to {
         transform: rotate(360deg);
@@ -702,80 +1020,100 @@ Login | S. F Works Marketplace
 }
 
 
-.auth-security-note {
+/* =========================================================
+   SECURITY NOTE
+========================================================= */
+
+.sf-security-note {
+
     display: flex;
+
     align-items: flex-start;
+
     gap: 9px;
+
     padding: 12px 13px;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 11px;
+
     background: #f8fafc;
+
     color: #64748b;
+
     font-size: 11px;
+
     line-height: 1.5;
 }
 
 
-.security-icon {
+.sf-security-icon {
+
     flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
     width: 18px;
     height: 18px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
     border-radius: 50%;
+
     background: #dcfce7;
+
     color: #15803d;
+
     font-size: 11px;
+
     font-weight: 800;
 }
 
 
-.auth-message {
-    margin-bottom: 20px;
-    padding: 13px 14px;
-    border-radius: 11px;
-    font-size: 13px;
-    line-height: 1.5;
-}
+/* =========================================================
+   FOOTER
+========================================================= */
 
+.sf-login-footer {
 
-.auth-message.error {
-    border: 1px solid #fecaca;
-    background: #fef2f2;
-    color: #b91c1c;
-}
-
-
-.auth-message.success {
-    border: 1px solid #bbf7d0;
-    background: #f0fdf4;
-    color: #15803d;
-}
-
-
-.auth-footer {
     display: flex;
-    justify-content: center;
+
     align-items: center;
+
+    justify-content: center;
+
     flex-wrap: wrap;
+
     gap: 5px;
+
     margin-top: 28px;
+
     padding-top: 22px;
-    border-top: 1px solid #eef2f7;
+
+    border-top:
+        1px solid #eef2f7;
+
     color: #64748b;
+
     font-size: 12px;
 }
 
 
-.auth-footer a {
+.sf-login-footer a {
+
     color: #2563eb;
-    font-weight: 700;
+
+    font-weight: 800;
+
     text-decoration: none;
 }
 
 
-.auth-footer a:hover {
+.sf-login-footer a:hover {
+
     text-decoration: underline;
 }
 
@@ -784,226 +1122,410 @@ Login | S. F Works Marketplace
    TRUST PANEL
 ========================================================= */
 
-.auth-trust-panel {
+.sf-login-trust {
+
     position: relative;
+
     overflow: hidden;
+
+    min-height: 600px;
+
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 48px;
-    border-radius: 24px;
+
+    align-items: center;
+
+    padding: 52px;
+
+    border-radius: 26px;
+
     background:
         radial-gradient(
             circle at 85% 10%,
-            rgba(59, 130, 246, 0.22),
+            rgba(59,130,246,.22),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 10% 90%,
+            rgba(37,99,235,.10),
             transparent 28%
         ),
         linear-gradient(
             145deg,
             #0f172a,
-            #111827 60%,
+            #111827 58%,
             #172554
         );
+
     color: #ffffff;
+
     box-shadow:
-        0 24px 70px rgba(15, 23, 42, 0.18);
+        0 30px 80px
+        rgba(15,23,42,.18);
 }
 
 
-.auth-trust-panel::before {
+.sf-login-trust::before {
+
     content: "";
+
     position: absolute;
-    width: 260px;
-    height: 260px;
-    right: -120px;
-    bottom: -120px;
-    border: 1px solid rgba(255,255,255,0.08);
+
+    width: 330px;
+    height: 330px;
+
+    right: -170px;
+    bottom: -170px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
     border-radius: 50%;
 }
 
 
-.auth-trust-panel::after {
+.sf-login-trust::after {
+
     content: "";
+
     position: absolute;
-    width: 180px;
-    height: 180px;
-    right: -80px;
-    bottom: -80px;
-    border: 1px solid rgba(255,255,255,0.06);
+
+    width: 210px;
+    height: 210px;
+
+    right: -105px;
+    bottom: -105px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.06);
+
     border-radius: 50%;
 }
 
 
-.trust-eyebrow {
-    margin-bottom: 18px;
-    color: #93c5fd;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-}
+.sf-trust-content {
 
+    position: relative;
 
-.auth-trust-panel h2 {
-    margin: 0 0 18px;
-    font-size: clamp(30px, 4vw, 46px);
-    line-height: 1.05;
-    letter-spacing: -0.045em;
-}
+    z-index: 2;
 
-
-.auth-trust-panel > p {
-    max-width: 480px;
-    margin: 0 0 32px;
-    color: #cbd5e1;
-    font-size: 14px;
-    line-height: 1.8;
-}
-
-
-.trust-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-
-.trust-item {
-    display: flex;
-    gap: 13px;
-    align-items: flex-start;
-}
-
-
-.trust-item-icon {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: 1px solid rgba(147, 197, 253, 0.20);
-    border-radius: 10px;
-    background: rgba(255,255,255,0.06);
-    color: #93c5fd;
-    font-size: 13px;
-    font-weight: 800;
-}
-
-
-.trust-item div {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-
-.trust-item strong {
-    color: #ffffff;
-    font-size: 13px;
-}
-
-
-.trust-item span {
-    color: #94a3b8;
-    font-size: 11px;
-    line-height: 1.5;
-}
-
-
-.trust-footer {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 38px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    color: #94a3b8;
-    font-size: 11px;
-}
-
-
-.trust-status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #4ade80;
-    box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.10);
+    width: 100%;
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   TRUST HEADER
+========================================================= */
+
+.sf-trust-eyebrow {
+
+    display: inline-block;
+
+    margin-bottom: 18px;
+
+    color: #93c5fd;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: .15em;
+}
+
+
+.sf-login-trust h2 {
+
+    margin: 0 0 18px;
+
+    color: #ffffff;
+
+    font-size:
+        clamp(32px, 4vw, 48px);
+
+    line-height: 1.04;
+
+    letter-spacing: -.05em;
+}
+
+
+.sf-login-trust > .sf-trust-content > p {
+
+    max-width: 480px;
+
+    margin: 0 0 34px;
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   TRUST ITEMS
+========================================================= */
+
+.sf-trust-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+
+.sf-trust-item {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 13px;
+}
+
+
+.sf-trust-icon {
+
+    flex: 0 0 auto;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(147,197,253,.20);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color: #93c5fd;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+
+.sf-trust-item div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.sf-trust-item strong {
+
+    color: #ffffff;
+
+    font-size: 13px;
+}
+
+
+.sf-trust-item div span {
+
+    color: #94a3b8;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   TRUST STATUS
+========================================================= */
+
+.sf-trust-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 40px;
+
+    padding-top: 21px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.08);
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+.sf-trust-status > span {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #4ade80;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(74,222,128,.10);
+}
+
+
+/* =========================================================
+   TABLET
 ========================================================= */
 
 @media (max-width: 900px) {
 
-    .auth-shell {
+    .sf-login-shell {
+
         max-width: 560px;
+
         grid-template-columns: 1fr;
     }
 
-    .auth-trust-panel {
+
+    .sf-login-trust {
+
         display: none;
     }
 
 }
 
 
+/* =========================================================
+   MOBILE
+========================================================= */
+
 @media (max-width: 560px) {
 
-    .auth-page {
-        min-height: calc(100vh - 60px);
-        padding: 24px 14px;
+    .sf-login-page {
+
+        min-height:
+            calc(100vh - 60px);
+
         align-items: flex-start;
+
+        padding:
+            24px 13px;
     }
 
-    .auth-shell {
-        margin-top: 12px;
+
+    .sf-login-shell {
+
+        margin-top: 10px;
     }
 
-    .premium-auth-card {
-        padding: 26px 20px;
-        border-radius: 20px;
+
+    .sf-login-card {
+
+        padding:
+            27px 20px;
+
+        border-radius: 21px;
     }
 
-    .auth-brand {
+
+    .sf-login-brand {
+
         margin-bottom: 24px;
     }
 
-    .auth-header h1 {
+
+    .sf-brand-logo {
+
+        width: 43px;
+        height: 43px;
+    }
+
+
+    .sf-login-header {
+
+        margin-bottom: 24px;
+    }
+
+
+    .sf-login-header h1 {
+
         font-size: 30px;
     }
 
-    .auth-header p {
+
+    .sf-login-header p {
+
         font-size: 13px;
+
+        line-height: 1.65;
     }
 
-    .input-wrapper input {
-        min-height: 50px;
+
+    .sf-input-box input {
+
+        min-height: 51px;
     }
 
-    .auth-footer {
+
+    .sf-login-form {
+
+        gap: 18px;
+    }
+
+
+    .sf-login-footer {
+
         text-align: center;
     }
 
 }
 
 
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
 @media (prefers-reduced-motion: reduce) {
 
-    .button-loader {
+    .sf-login-card {
+
         animation: none;
     }
 
-    .premium-login-button {
+
+    .sf-button-loader {
+
+        animation: none;
+    }
+
+
+    .sf-login-button {
+
         transition: none;
     }
 
 }
 
-</style><!-- =========================================================
+</style>
+
+
+<!-- =========================================================
      LOGIN JAVASCRIPT
-========================================================== --><script>
+========================================================= -->
+
+<script>
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -1034,7 +1556,7 @@ document.addEventListener(
                 "loginMessage"
             );
 
-        const button =
+        const loginButton =
             document.getElementById(
                 "loginButton"
             );
@@ -1044,6 +1566,11 @@ document.addEventListener(
                 "loginButtonText"
             );
 
+        const forgotPassword =
+            document.getElementById(
+                "forgotPassword"
+            );
+
 
         if (!form) {
             return;
@@ -1051,8 +1578,47 @@ document.addEventListener(
 
 
         /* =====================================================
-           PASSWORD VISIBILITY
-        ====================================================== */
+           MESSAGE
+        ===================================================== */
+
+        function showMessage(
+            text,
+            type = "error"
+        ) {
+
+            if (!message) {
+                return;
+            }
+
+            message.textContent =
+                text;
+
+            message.className =
+                "sf-login-message " +
+                type;
+
+            message.hidden = false;
+        }
+
+
+        function hideMessage() {
+
+            if (!message) {
+                return;
+            }
+
+            message.hidden = true;
+
+            message.textContent = "";
+
+            message.className =
+                "sf-login-message";
+        }
+
+
+        /* =====================================================
+           PASSWORD SHOW / HIDE
+        ===================================================== */
 
         if (passwordToggle) {
 
@@ -1060,26 +1626,26 @@ document.addEventListener(
                 "click",
                 function () {
 
-                    const isPassword =
+                    const showingPassword =
                         passwordInput.type ===
                         "password";
 
 
                     passwordInput.type =
-                        isPassword
+                        showingPassword
                             ? "text"
                             : "password";
 
 
                     passwordToggle.textContent =
-                        isPassword
+                        showingPassword
                             ? "Hide"
                             : "Show";
 
 
                     passwordToggle.setAttribute(
                         "aria-label",
-                        isPassword
+                        showingPassword
                             ? "Hide password"
                             : "Show password"
                     );
@@ -1087,7 +1653,7 @@ document.addEventListener(
 
                     passwordToggle.setAttribute(
                         "aria-pressed",
-                        isPassword
+                        showingPassword
                             ? "true"
                             : "false"
                     );
@@ -1099,41 +1665,8 @@ document.addEventListener(
 
 
         /* =====================================================
-           MESSAGE HELPER
-        ====================================================== */
-
-        function showMessage(
-            text,
-            type
-        ) {
-
-            message.textContent =
-                text;
-
-            message.className =
-                "auth-message " +
-                type;
-
-            message.hidden = false;
-
-        }
-
-
-        function hideMessage() {
-
-            message.hidden = true;
-
-            message.textContent = "";
-
-            message.className =
-                "auth-message";
-
-        }
-
-
-        /* =====================================================
-           LOGIN
-        ====================================================== */
+           LOGIN SUBMIT
+        ===================================================== */
 
         form.addEventListener(
             "submit",
@@ -1146,19 +1679,33 @@ document.addEventListener(
 
                 const email =
                     emailInput.value
-                    .trim()
-                    .toLowerCase();
-
+                        .trim()
+                        .toLowerCase();
 
                 const password =
                     passwordInput.value;
 
 
+                /* ---------------------------------------------
+                   VALIDATION
+                --------------------------------------------- */
+
                 if (!email) {
 
                     showMessage(
-                        "Please enter your email address.",
-                        "error"
+                        "Please enter your email address."
+                    );
+
+                    emailInput.focus();
+
+                    return;
+                }
+
+
+                if (!email.includes("@")) {
+
+                    showMessage(
+                        "Please enter a valid email address."
                     );
 
                     emailInput.focus();
@@ -1170,8 +1717,7 @@ document.addEventListener(
                 if (!password) {
 
                     showMessage(
-                        "Please enter your password.",
-                        "error"
+                        "Please enter your password."
                     );
 
                     passwordInput.focus();
@@ -1181,12 +1727,12 @@ document.addEventListener(
 
 
                 /* ---------------------------------------------
-                   LOADING STATE
+                   LOADING
                 --------------------------------------------- */
 
-                button.disabled = true;
+                loginButton.disabled = true;
 
-                button.classList.add(
+                loginButton.classList.add(
                     "is-loading"
                 );
 
@@ -1206,6 +1752,9 @@ document.addEventListener(
 
                                 headers: {
                                     "Content-Type":
+                                        "application/json",
+
+                                    "Accept":
                                         "application/json"
                                 },
 
@@ -1218,20 +1767,17 @@ document.addEventListener(
                         );
 
 
-                    let result;
+                    let result = null;
+
 
                     try {
 
                         result =
                             await response.json();
 
-                    } catch (jsonError) {
+                    } catch (error) {
 
-                        result = {
-                            status: "error",
-                            message:
-                                "Unexpected server response."
-                        };
+                        result = null;
 
                     }
 
@@ -1242,8 +1788,8 @@ document.addEventListener(
 
                     if (
                         response.ok &&
-                        result.status ===
-                            "success"
+                        result &&
+                        result.status === "success"
                     ) {
 
                         showMessage(
@@ -1252,64 +1798,78 @@ document.addEventListener(
                         );
 
 
+                        const role =
+                            result.user &&
+                            result.user.role
+                                ? String(
+                                    result.user.role
+                                ).toLowerCase()
+                                : "";
+
+
                         /*
-                         * IMPORTANT:
+                         * MEMBER LOGIN
                          *
-                         * JWT is now stored by Flask
-                         * inside an HttpOnly cookie.
-                         *
-                         * DO NOT store access_token
-                         * or refresh_token in localStorage.
+                         * Admin is intentionally NOT handled
+                         * by this login page.
                          */
 
-
-                        if (
-                            result.user &&
-                            result.user.role ===
-                                "worker"
-                        ) {
+                        if (role === "worker") {
 
                             window.location.replace(
                                 "/worker/dashboard"
                             );
 
                             return;
-
                         }
 
 
-                        if (
-                            result.user &&
-                            result.user.role ===
-                                "customer"
-                        ) {
+                        if (role === "customer") {
 
                             window.location.replace(
                                 "/customer/dashboard"
                             );
 
                             return;
-
                         }
 
 
-                        window.location.replace(
-                            "/"
-                        );
+                        /*
+                         * If an admin account accidentally
+                         * uses member login, do not expose
+                         * the admin dashboard here.
+                         */
+
+                        if (role === "admin") {
+
+                            showMessage(
+                                "Please use the Admin Login page to access the administration panel.",
+                                "error"
+                            );
+
+                            return;
+                        }
+
+
+                        /*
+                         * Unknown authenticated role
+                         */
+
+                        window.location.replace("/");
 
                         return;
-
                     }
 
 
                     /* -----------------------------------------
-                       ERROR
+                       SERVER ERROR
                     ----------------------------------------- */
 
                     showMessage(
-                        result.message ||
-                        "Invalid email or password.",
-                        "error"
+                        result &&
+                        result.message
+                            ? result.message
+                            : "Invalid email or password."
                     );
 
 
@@ -1322,16 +1882,16 @@ document.addEventListener(
 
 
                     showMessage(
-                        "Unable to connect to the server. Please try again.",
-                        "error"
+                        "Unable to connect to the server. Please try again."
                     );
+
 
                 } finally {
 
-                    button.disabled =
+                    loginButton.disabled =
                         false;
 
-                    button.classList.remove(
+                    loginButton.classList.remove(
                         "is-loading"
                     );
 
@@ -1346,13 +1906,7 @@ document.addEventListener(
 
         /* =====================================================
            FORGOT PASSWORD
-        ====================================================== */
-
-        const forgotPassword =
-            document.getElementById(
-                "forgotPassword"
-            );
-
+        ===================================================== */
 
         if (forgotPassword) {
 
@@ -1363,8 +1917,7 @@ document.addEventListener(
                     event.preventDefault();
 
                     showMessage(
-                        "Password recovery will be available soon.",
-                        "error"
+                        "Password recovery will be available soon."
                     );
 
                 }
@@ -1375,4 +1928,6 @@ document.addEventListener(
     }
 );
 
-</script>{% endblock %}
+</script>
+
+{% endblock %}
