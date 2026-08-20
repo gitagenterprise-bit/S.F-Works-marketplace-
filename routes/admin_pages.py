@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template
-from flask_jwt_extended import jwt_required, get_jwt
+from flask import (
+    Blueprint,
+    render_template
+)
 
 
 admin_pages_bp = Blueprint(
@@ -8,19 +10,25 @@ admin_pages_bp = Blueprint(
 )
 
 
-@admin_pages_bp.route(
-    "/admin/dashboard",
-    methods=["GET"]
-)
-@jwt_required()
-def admin_dashboard():
+# =========================================================
+# ADMIN LOGIN PAGE
+# =========================================================
 
-    claims = get_jwt()
+@admin_pages_bp.get("/admin/login")
+def admin_login_page():
 
-    role = claims.get("role")
+    return render_template(
+        "admin/login.html"
+    )
 
-    if role != "admin":
-        return "Access denied", 403
+
+# =========================================================
+# ADMIN DASHBOARD
+# =========================================================
+
+@admin_pages_bp.get("/admin")
+@admin_pages_bp.get("/admin/dashboard")
+def admin_dashboard_page():
 
     return render_template(
         "admin/dashboard.html"
