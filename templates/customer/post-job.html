@@ -243,48 +243,104 @@ Post a Job — S. F Works
 
 
                         <!-- =================================================
-                             CATEGORY
-                        ================================================== -->
+     CATEGORY — SEARCH + CUSTOM OPTION
+================================================== -->
 
-                        <div class="form-group">
+<div class="form-group">
 
-                            <label for="jobCategory">
-                                Category
-                                <span>*</span>
-                            </label>
+    <label for="jobCategory">
+        Category
+        <span>*</span>
+    </label>
 
-                            <div class="select-wrapper">
+    <div class="category-picker" id="categoryPicker">
 
-                                <span class="input-icon">
-                                    ◈
-                                </span>
+        <!-- Selected / typed category -->
+        <div class="category-input-wrapper">
 
-                                <select
-                                    id="jobCategory"
-                                    name="category_id"
-                                    required
-                                >
+            <span class="input-icon">
+                ◈
+            </span>
 
-                                    <option value="">
-                                        Loading categories...
-                                    </option>
+            <input
+                type="text"
+                id="jobCategory"
+                name="category_name"
+                placeholder="Search or type a category..."
+                autocomplete="off"
+                maxlength="100"
+                required
+            >
 
-                                </select>
+            <button
+                type="button"
+                class="category-dropdown-button"
+                id="categoryDropdownButton"
+                aria-label="Open categories"
+            >
+                <span>⌄</span>
+            </button>
 
-                                <span class="select-arrow">
-                                   ⌄
-                                </span>
+        </div>
 
-                            </div>
 
-                            <div
-                                id="categoryStatus"
-                                class="category-status"
-                                aria-live="polite"
-                            ></div>
+        <!-- Category Dropdown -->
+        <div
+            class="category-dropdown"
+            id="categoryDropdown"
+        >
 
-                        </div>
+            <div class="category-dropdown-header">
+                <span>Choose a category</span>
 
+                <span id="categoryCount">
+                    0
+                </span>
+            </div>
+
+
+            <div
+                class="category-list"
+                id="categoryList"
+            >
+
+                <!-- Categories will load here -->
+
+            </div>
+
+
+            <!-- Custom Category -->
+            <button
+                type="button"
+                class="custom-category-option"
+                id="customCategoryButton"
+            >
+
+                <span class="custom-category-icon">
+                    +
+                </span>
+
+                <span>
+                    <strong>Use your own category</strong>
+                    <small>
+                        Type a custom category
+                    </small>
+                </span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="categoryStatus"
+        class="category-status"
+        aria-live="polite"
+    ></div>
+
+</div>
 
                         <!-- =================================================
                              BUDGET
