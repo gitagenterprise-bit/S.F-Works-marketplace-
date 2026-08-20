@@ -1,2471 +1,1581 @@
-/* =========================================================
-   S. F WORKS
-   PREMIUM HOME PAGE
-   static/css/home.css
-========================================================= */
-
-.home-page {
-    --home-primary: #2563eb;
-    --home-primary-dark: #1d4ed8;
-    --home-indigo: #4f46e5;
-    --home-purple: #7c3aed;
-    --home-success: #16a34a;
-    --home-text: #0f172a;
-    --home-muted: #64748b;
-    --home-soft: #f8fafc;
-    --home-border: #e2e8f0;
-
-    color: var(--home-text);
-    overflow: hidden;
-}
-
-
-/* =========================================================
-   GLOBAL HOME SECTIONS
-========================================================= */
-
-.home-section {
-    position: relative;
-    padding: 100px 0;
-}
-
-.home-section:nth-of-type(even) {
-    background: #f8fafc;
-}
-
-
-/* =========================================================
-   PREMIUM HERO
-========================================================= */
-
-.premium-hero {
-    position: relative;
-    min-height: 720px;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-
-    color: #fff;
-
-    background:
-        radial-gradient(
-            circle at 78% 22%,
-            rgba(96, 165, 250, .28),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 15% 75%,
-            rgba(124, 58, 237, .28),
-            transparent 32%
-        ),
-        linear-gradient(
-            135deg,
-            #07142f 0%,
-            #0f2860 48%,
-            #312e81 100%
-        );
-}
-
-
-/* =========================================================
-   HERO ORBS
-========================================================= */
-
-.hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    filter: blur(2px);
-}
-
-.hero-orb-one {
-    width: 420px;
-    height: 420px;
-    top: -190px;
-    right: -100px;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(59, 130, 246, .38),
-            transparent 68%
-        );
-
-    animation: heroFloatOne 10s ease-in-out infinite;
-}
-
-.hero-orb-two {
-    width: 360px;
-    height: 360px;
-    bottom: -180px;
-    left: -100px;
+{% extends "base.html" %}
 
-    background:
-        radial-gradient(
-            circle,
-            rgba(139, 92, 246, .30),
-            transparent 68%
-        );
+{% block title %}
+S. F Works — Find Trusted Workers & Local Jobs
+{% endblock %}
 
-    animation: heroFloatTwo 12s ease-in-out infinite;
-}
+{% block extra_css %}
 
+<link  
+    rel="stylesheet"  
+    href="{{ url_for('static', filename='css/home.css') }}"  
+>  {% endblock %}
 
-@keyframes heroFloatOne {
+{% block content %}
 
-    0%,
-    100% {
-        transform: translate3d(0, 0, 0);
-    }
+<main class="home-page">  <!-- =====================================================  
+     PREMIUM HERO  
+====================================================== -->  
 
-    50% {
-        transform: translate3d(-25px, 30px, 0);
-    }
-}
+<section class="premium-hero">  
 
+    <!-- BACKGROUND DECORATION -->  
 
-@keyframes heroFloatTwo {
+    <div class="hero-orb hero-orb-one"></div>  
+    <div class="hero-orb hero-orb-two"></div>  
+    <div class="hero-grid-pattern"></div>  
 
-    0%,
-    100% {
-        transform: translate3d(0, 0, 0);
-    }
 
-    50% {
-        transform: translate3d(25px, -25px, 0);
-    }
-}
+    <div class="container premium-hero-container">  
 
+        <!-- =================================================  
+             LEFT CONTENT  
+        ================================================== -->  
 
-/* =========================================================
-   HERO GRID PATTERN
-========================================================= */
+        <div class="premium-hero-content">  
 
-.hero-grid-pattern {
-    position: absolute;
-    inset: 0;
+            <div class="premium-badge">  
+                <span class="badge-dot"></span>  
+                Trusted Local Work Marketplace  
+            </div>  
 
-    opacity: .10;
 
-    background-image:
-        linear-gradient(
-            rgba(255,255,255,.16) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(255,255,255,.16) 1px,
-            transparent 1px
-        );
+            <h1 class="premium-title">  
 
-    background-size: 48px 48px;
+                Find trusted workers  
+                <span>for every job.</span>  
 
-    mask-image:
-        linear-gradient(
-            to bottom,
-            black,
-            transparent
-        );
+            </h1>  
 
-    pointer-events: none;
-}
 
+            <p class="premium-description">  
 
-/* =========================================================
-   HERO CONTAINER
-========================================================= */
+                Connect with skilled and verified local professionals  
+                for home services, repairs, construction, cleaning,  
+                electrical work and more.  
 
-.premium-hero-container {
-    position: relative;
-    z-index: 3;
+            </p>  
 
-    width: 100%;
 
-    display: grid;
+            <!-- CTA -->  
 
-    grid-template-columns:
-        minmax(0, 1.05fr)
-        minmax(390px, .95fr);
+            <div class="premium-actions">  
 
-    align-items: center;
+                <a  
+                    href="/post-job"  
+                    class="premium-btn premium-btn-primary"  
+                >  
 
-    gap: clamp(45px, 7vw, 100px);
+                    <span>Post a Job</span>  
 
-    padding-top: 85px;
-    padding-bottom: 125px;
-}
+                    <span class="btn-arrow">  
+                        →  
+                    </span>  
 
+                </a>  
 
-/* =========================================================
-   HERO CONTENT
-========================================================= */
 
-.premium-hero-content {
-    max-width: 720px;
-}
+                <a  
+                    href="/jobs"  
+                    class="premium-btn premium-btn-secondary"  
+                >  
 
+                    <span class="search-icon">  
+                        ⌕  
+                    </span>  
 
-.premium-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
+                    Find Workers  
 
-    padding: 8px 13px;
+                </a>  
 
-    border: 1px solid rgba(255,255,255,.18);
-    border-radius: 999px;
+            </div>  
 
-    background: rgba(255,255,255,.08);
 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+            <!-- TRUST -->  
 
-    color: rgba(255,255,255,.92);
+            <div class="premium-trust">  
 
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .03em;
+                <div class="trust-item">  
 
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.10);
-}
+                    <span class="trust-icon">  
+                        ✓  
+                    </span>  
 
+                    <span>  
+                        Verified Workers  
+                    </span>  
 
-.badge-dot {
-    width: 7px;
-    height: 7px;
+                </div>  
 
-    border-radius: 50%;
 
-    background: #4ade80;
+                <div class="trust-item">  
 
-    box-shadow:
-        0 0 0 5px rgba(74,222,128,.12),
-        0 0 18px rgba(74,222,128,.55);
-}
+                    <span class="trust-icon">  
+                        ✓  
+                    </span>  
 
+                    <span>  
+                        Local Services  
+                    </span>  
 
-/* =========================================================
-   HERO TITLE
-========================================================= */
+                </div>  
 
-.premium-title {
-    margin: 23px 0 20px;
 
-    max-width: 760px;
+                <div class="trust-item">  
 
-    font-family: var(--font-heading, inherit);
+                    <span class="trust-icon">  
+                        ✓  
+                    </span>  
 
-    font-size:
-        clamp(
-            45px,
-            6vw,
-            78px
-        );
+                    <span>  
+                        Easy Booking  
+                    </span>  
 
-    line-height: 1.02;
+                </div>  
 
-    font-weight: 850;
+            </div>  
 
-    letter-spacing: -.055em;
-}
+        </div>  
 
 
-.premium-title span {
-    display: block;
+        <!-- =================================================  
+             RIGHT VISUAL  
+        ================================================== -->  
 
-    background:
-        linear-gradient(
-            90deg,
-            #93c5fd,
-            #c4b5fd,
-            #e0e7ff
-        );
+        <div class="premium-hero-visual">  
 
-    -webkit-background-clip: text;
-    background-clip: text;
 
-    color: transparent;
-}
+            <!-- MAIN CARD -->  
 
+            <div class="premium-job-card">  
 
-/* =========================================================
-   HERO DESCRIPTION
-========================================================= */
+                <div class="job-card-top">  
 
-.premium-description {
-    max-width: 620px;
+                    <div>  
 
-    margin: 0;
+                        <span class="job-card-label">  
+                            POPULAR SERVICE  
+                        </span>  
 
-    color: rgba(255,255,255,.72);
+                        <div class="live-status">  
+                            <span></span>  
+                            Available Now  
+                        </div>  
 
-    font-size: 16px;
-    line-height: 1.8;
-}
+                    </div>  
 
+                    <div class="job-card-menu">  
+                        •••  
+                    </div>  
 
-/* =========================================================
-   HERO ACTIONS
-========================================================= */
+                </div>  
 
-.premium-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
 
-    margin-top: 32px;
-}
+                <div class="service-icon-box">  
+                    ⚡  
+                </div>  
 
 
-.premium-btn {
-    min-height: 50px;
+                <h3>  
+                    Home Electrical Work  
+                </h3>  
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
 
-    padding: 0 20px;
+                <p>  
+                    Experienced electrician needed for  
+                    wiring, installation and home electrical repair.  
+                </p>  
 
-    border-radius: 13px;
 
-    text-decoration: none;
+                <div class="job-location">  
 
-    font-size: 12px;
-    font-weight: 800;
+                    <span>  
+                        📍 Kolkata  
+                    </span>  
 
-    transition:
-        transform .25s ease,
-        box-shadow .25s ease,
-        background .25s ease;
-}
+                    <span>  
+                        ●  
+                    </span>  
 
+                    <strong>  
+                        ₹1,500 – ₹3,000  
+                    </strong>  
 
-.premium-btn:hover {
-    transform: translateY(-3px);
-}
+                </div>  
 
 
-.premium-btn-primary {
-    color: #fff;
+                <a  
+                    href="/jobs"  
+                    class="job-card-button"  
+                >  
 
-    background:
-        linear-gradient(
-            135deg,
-            #3b82f6,
-            #6366f1
-        );
+                    View Available Jobs  
 
-    box-shadow:
-        0 14px 35px rgba(37,99,235,.30);
-}
+                    <span>  
+                        →  
+                    </span>  
 
+                </a>  
 
-.premium-btn-primary:hover {
-    box-shadow:
-        0 18px 42px rgba(37,99,235,.42);
-}
+            </div>  
 
 
-.premium-btn-secondary {
-    color: #fff;
+            <!-- FLOATING VERIFIED CARD -->  
 
-    border: 1px solid rgba(255,255,255,.20);
+            <div class="floating-card verified-floating">  
 
-    background: rgba(255,255,255,.08);
+                <div class="floating-icon">  
+                    ✓  
+                </div>  
 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-}
+                <div>  
 
+                    <strong>  
+                        Verified  
+                    </strong>  
 
-.premium-btn-secondary:hover {
-    background: rgba(255,255,255,.14);
-}
+                    <small>  
+                        Trusted Professionals  
+                    </small>  
 
+                </div>  
 
-.btn-arrow {
-    font-size: 18px;
-}
+            </div>  
 
 
-.search-icon {
-    font-size: 19px;
-}
+            <!-- FLOATING WORKER CARD -->  
 
+            <div class="floating-card worker-floating">  
 
-/* =========================================================
-   HERO TRUST
-========================================================= */
+                <div class="mini-avatar">  
+                    W  
+                </div>  
 
-.premium-trust {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 22px;
+                <div>  
 
-    margin-top: 27px;
-}
+                    <strong>  
+                        Skilled Workers  
+                    </strong>  
 
+                    <small>  
+                        Available near you  
+                    </small>  
 
-.trust-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
+                </div>  
 
-    color: rgba(255,255,255,.65);
+            </div>  
 
-    font-size: 10px;
-    font-weight: 700;
-}
 
+            <!-- GLOW -->  
 
-.trust-icon {
-    width: 19px;
-    height: 19px;
+            <div class="visual-glow"></div>  
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+        </div>  
 
-    border-radius: 50%;
+    </div>  
 
-    color: #4ade80;
 
-    background: rgba(74,222,128,.10);
+    <!-- =====================================================  
+         BOTTOM SERVICE STRIP  
+    ====================================================== -->  
 
-    border: 1px solid rgba(74,222,128,.20);
-}
+    <div class="hero-service-strip">  
 
+        <div class="container service-strip-inner">  
 
-/* =========================================================
-   HERO VISUAL
-========================================================= */
+            <span class="service-title">  
+                Popular Services  
+            </span>  
 
-.premium-hero-visual {
-    position: relative;
+            <span>Electrical</span>  
+            <span>Plumbing</span>  
+            <span>Cleaning</span>  
+            <span>Painting</span>  
+            <span>Carpentry</span>  
+            <span>Construction</span>  
 
-    min-height: 500px;
+        </div>  
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    </div>  
 
+</section>  
+<!-- =====================================================  
+ HOME MARKETPLACE SECTIONS
 
-/* =========================================================
-   MAIN JOB CARD
-========================================================= */
+====================================================== -->
 
-.premium-job-card {
-    position: relative;
-    z-index: 3;
+<!-- =====================================================  
+     POPULAR CATEGORIES  
+====================================================== -->  <section class="home-section categories-section">  <div class="container">  
 
-    width: min(430px, 100%);
+    <div class="section-heading">  
 
-    padding: 29px;
+        <div>  
 
-    border:
-        1px solid
-        rgba(255,255,255,.18);
+            <span class="section-eyebrow">  
+                EXPLORE SERVICES  
+            </span>  
 
-    border-radius: 28px;
+            <h2>  
+                What service do you need?  
+            </h2>  
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.15),
-            rgba(255,255,255,.06)
-        );
+            <p>  
+                Find trusted professionals for everyday  
+                local services.  
+            </p>  
 
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
+        </div>  
 
-    box-shadow:
-        0 35px 90px rgba(0,0,0,.30);
+        <div class="section-heading-action">  
 
-    transition:
-        transform .35s ease,
-        box-shadow .35s ease;
-}
+            <a  
+                href="/categories"  
+                class="section-link"  
+            >  
+                View all categories  
+                <span>→</span>  
+            </a>  
 
+        </div>  
 
-.premium-job-card:hover {
-    transform: translateY(-8px) rotate(.3deg);
+    </div>  
 
-    box-shadow:
-        0 45px 110px rgba(0,0,0,.38);
-}
 
+    <!-- CATEGORY SCROLLER -->  
 
-.job-card-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-}
+    <div class="horizontal-scroll-wrapper">  
 
+        <button  
+            class="scroll-control scroll-prev"  
+            type="button"  
+            aria-label="Previous categories"  
+        >  
+            ←  
+        </button>  
 
-.job-card-label {
-    display: block;
 
-    color: rgba(255,255,255,.52);
+        <div  
+            class="categories-grid horizontal-scroll"  
+            data-scroll-container  
+        >  
 
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .12em;
-}
+            <a  
+                href="/jobs?category=electrical"  
+                class="category-card"  
+            >  
 
+                <div class="category-card-top">  
 
-.live-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+                    <div class="category-icon electrical-icon">  
+                        ⚡  
+                    </div>  
 
-    margin-top: 8px;
+                    <span class="category-arrow">  
+                        →  
+                    </span>  
 
-    color: #86efac;
+                </div>  
 
-    font-size: 10px;
-    font-weight: 700;
-}
+                <h3>  
+                    Electrical  
+                </h3>  
 
+                <p>  
+                    Wiring, repair & installation  
+                </p>  
 
-.live-status span {
-    width: 6px;
-    height: 6px;
+                <span class="category-link">  
+                    Find workers →  
+                </span>  
 
-    border-radius: 50%;
+            </a>  
 
-    background: #4ade80;
 
-    box-shadow:
-        0 0 0 4px rgba(74,222,128,.10);
-}
+            <a  
+                href="/jobs?category=plumbing"  
+                class="category-card"  
+            >  
 
+                <div class="category-card-top">  
 
-.job-card-menu {
-    color: rgba(255,255,255,.45);
+                    <div class="category-icon plumbing-icon">  
+                        🔧  
+                    </div>  
 
-    font-size: 17px;
-    letter-spacing: 3px;
-}
+                    <span class="category-arrow">  
+                        →  
+                    </span>  
 
+                </div>  
 
-.service-icon-box {
-    width: 58px;
-    height: 58px;
+                <h3>  
+                    Plumbing  
+                </h3>  
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+                <p>  
+                    Repair, pipes & fittings  
+                </p>  
 
-    margin: 30px 0 20px;
+                <span class="category-link">  
+                    Find workers →  
+                </span>  
 
-    border-radius: 18px;
+            </a>  
 
-    background:
-        linear-gradient(
-            135deg,
-            rgba(59,130,246,.25),
-            rgba(129,140,248,.18)
-        );
 
-    border:
-        1px solid
-        rgba(255,255,255,.12);
+            <a  
+                href="/jobs?category=cleaning"  
+                class="category-card"  
+            >  
 
-    font-size: 27px;
+                <div class="category-card-top">  
 
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.12);
-}
+                    <div class="category-icon cleaning-icon">  
+                        ✨  
+                    </div>  
 
+                    <span class="category-arrow">  
+                        →  
+                    </span>  
 
-.premium-job-card h3 {
-    margin: 0 0 10px;
+                </div>  
 
-    color: #fff;
+                <h3>  
+                    Cleaning  
+                </h3>  
 
-    font-size: 23px;
-    line-height: 1.25;
-    font-weight: 800;
-}
+                <p>  
+                    Home & office cleaning  
+                </p>  
 
+                <span class="category-link">  
+                    Find workers →  
+                </span>  
 
-.premium-job-card > p {
-    margin: 0;
+            </a>  
 
-    color: rgba(255,255,255,.65);
 
-    font-size: 12px;
-    line-height: 1.7;
-}
+            <a  
+                href="/jobs?category=painting"  
+                class="category-card"  
+            >  
 
+                <div class="category-card-top">  
 
-.job-location {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+                    <div class="category-icon painting-icon">  
+                        🎨  
+                    </div>  
 
-    margin: 23px 0;
+                    <span class="category-arrow">  
+                        →  
+                    </span>  
 
-    padding: 13px;
+                </div>  
 
-    border:
-        1px solid
-        rgba(255,255,255,.10);
+                <h3>  
+                    Painting  
+                </h3>  
 
-    border-radius: 13px;
+                <p>  
+                    Interior & exterior painting  
+                </p>  
 
-    background:
-        rgba(255,255,255,.055);
+                <span class="category-link">  
+                    Find workers →  
+                </span>  
 
-    color: rgba(255,255,255,.65);
+            </a>  
 
-    font-size: 10px;
-}
 
+            <a  
+                href="/jobs?category=carpentry"  
+                class="category-card"  
+            >  
 
-.job-location strong {
-    color: #86efac;
-    white-space: nowrap;
-}
+                <div class="category-card-top">  
 
+                    <div class="category-icon carpentry-icon">  
+                        🪚  
+                    </div>  
 
-.job-card-button {
-    min-height: 46px;
+                    <span class="category-arrow">  
+                        →  
+                    </span>  
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+                </div>  
 
-    padding: 0 16px;
+                <h3>  
+                    Carpentry  
+                </h3>  
 
-    border-radius: 12px;
+                <p>  
+                    Furniture & woodwork  
+                </p>  
 
-    color: #fff;
+                <span class="category-link">  
+                    Find workers →  
+                </span>  
 
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f46e5
-        );
+            </a>  
 
-    text-decoration: none;
 
-    font-size: 11px;
-    font-weight: 800;
+            <a  
+                href="/jobs?category=construction"  
+                class="category-card"  
+            >  
 
-    box-shadow:
-        0 10px 25px rgba(37,99,235,.25);
+                <div class="category-card-top">  
 
-    transition: .25s ease;
-}
+                    <div class="category-icon construction-icon">  
+                        🏗  
+                    </div>  
 
+                    <span class="category-arrow">  
+                        →  
+                    </span>  
 
-.job-card-button:hover {
-    transform: translateY(-2px);
+                </div>  
 
-    box-shadow:
-        0 15px 30px rgba(37,99,235,.38);
-}
+                <h3>  
+                    Construction  
+                </h3>  
 
+                <p>  
+                    Building & renovation  
+                </p>  
 
-/* =========================================================
-   FLOATING CARDS
-========================================================= */
+                <span class="category-link">  
+                    Find workers →  
+                </span>  
 
-.floating-card {
-    position: absolute;
-    z-index: 5;
+            </a>  
 
-    display: flex;
-    align-items: center;
-    gap: 10px;
+        </div>  
 
-    padding: 12px 14px;
 
-    border:
-        1px solid
-        rgba(255,255,255,.16);
+        <button  
+            class="scroll-control scroll-next"  
+            type="button"  
+            aria-label="Next categories"  
+        >  
+            →  
+        </button>  
 
-    border-radius: 15px;
+    </div>  
 
-    background:
-        rgba(15,23,42,.72);
+</div>
 
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+</section>  <!-- =====================================================  
+     HOW IT WORKS  
+====================================================== -->  <section class="home-section process-section">  <div class="container">  
 
-    box-shadow:
-        0 20px 45px rgba(0,0,0,.25);
-}
+    <div class="section-heading centered">  
 
+        <span class="section-eyebrow">  
+            SIMPLE PROCESS  
+        </span>  
 
-.floating-card strong {
-    display: block;
+        <h2>  
+            Get your work done in 3 simple steps  
+        </h2>  
 
-    color: #fff;
+        <p>  
+            S. F Works makes it easy to find the right  
+            professional for your local job.  
+        </p>  
 
-    font-size: 10px;
-}
+    </div>  
 
 
-.floating-card small {
-    display: block;
+    <div class="process-grid">  
 
-    margin-top: 3px;
 
-    color: rgba(255,255,255,.50);
+        <article class="process-card">  
 
-    font-size: 8px;
-}
+            <div class="process-number">  
+                01  
+            </div>  
 
+            <div class="process-icon">  
+                📝  
+            </div>  
 
-.floating-icon,
-.mini-avatar {
-    width: 34px;
-    height: 34px;
+            <h3>  
+                Post Your Job  
+            </h3>  
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+            <p>  
+                Tell us what work you need,  
+                your location and your budget.  
+            </p>  
 
-    border-radius: 11px;
+        </article>  
 
-    font-weight: 900;
-}
 
+        <div class="process-connector"></div>  
 
-.floating-icon {
-    color: #4ade80;
-    background: rgba(74,222,128,.12);
-}
 
+        <article class="process-card">  
 
-.mini-avatar {
-    color: #fff;
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
-}
+            <div class="process-number">  
+                02  
+            </div>  
 
+            <div class="process-icon">  
+                👷  
+            </div>  
 
-.verified-floating {
-    top: 60px;
-    left: -30px;
+            <h3>  
+                Find a Worker  
+            </h3>  
 
-    animation:
-        floatingOne 5s ease-in-out infinite;
-}
+            <p>  
+                Compare skilled local workers  
+                and choose the right professional.  
+            </p>  
 
+        </article>  
 
-.worker-floating {
-    right: -30px;
-    bottom: 70px;
 
-    animation:
-        floatingTwo 6s ease-in-out infinite;
-}
+        <div class="process-connector"></div>  
 
 
-@keyframes floatingOne {
+        <article class="process-card">  
 
-    0%,
-    100% {
-        transform: translateY(0);
-    }
+            <div class="process-number">  
+                03  
+            </div>  
 
-    50% {
-        transform: translateY(-12px);
-    }
-}
+            <div class="process-icon">  
+                ✓  
+            </div>  
 
+            <h3>  
+                Get It Done  
+            </h3>  
 
-@keyframes floatingTwo {
+            <p>  
+                Connect with your worker and  
+                get your job completed.  
+            </p>  
 
-    0%,
-    100% {
-        transform: translateY(0);
-    }
+        </article>  
 
-    50% {
-        transform: translateY(10px);
-    }
-}
+    </div>  
 
+</div>
 
-/* =========================================================
-   VISUAL GLOW
-========================================================= */
+</section>  <!-- =====================================================  
+     FEATURED WORKERS  
+====================================================== -->  <section class="home-section workers-section">  <div class="container">  
 
-.visual-glow {
-    position: absolute;
+    <div class="section-heading">  
 
-    width: 330px;
-    height: 330px;
+        <div>  
 
-    border-radius: 50%;
+            <span class="section-eyebrow">  
+                TOP PROFESSIONALS  
+            </span>  
 
-    background:
-        radial-gradient(
-            circle,
-            rgba(59,130,246,.35),
-            transparent 68%
-        );
+            <h2>  
+                Meet trusted local workers  
+            </h2>  
 
-    filter: blur(25px);
+            <p>  
+                Discover skilled professionals available  
+                for your next job.  
+            </p>  
 
-    z-index: 0;
+        </div>  
 
-    pointer-events: none;
-}
 
+        <a  
+            href="/workers"  
+            class="section-link"  
+        >  
+            View all workers →  
+        </a>  
 
-/* =========================================================
-   HERO SERVICE STRIP
-========================================================= */
+    </div>  
 
-.hero-service-strip {
-    position: absolute;
 
-    bottom: 0;
-    left: 0;
-    right: 0;
+    <!-- FACEBOOK STYLE PROFILE SCROLLER -->  
 
-    z-index: 6;
+    <div class="horizontal-scroll-wrapper worker-scroll-wrapper">  
 
-    border-top:
-        1px solid
-        rgba(255,255,255,.10);
+        <button  
+            class="scroll-control scroll-prev"  
+            type="button"  
+            aria-label="Previous workers"  
+        >  
+            ←  
+        </button>  
 
-    background:
-        rgba(2,6,23,.25);
 
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-}
+        <div  
+            class="workers-grid horizontal-scroll worker-horizontal-scroll"  
+            data-scroll-container  
+        >  
 
 
-.service-strip-inner {
-    min-height: 66px;
+            <!-- WORKER 1 -->  
 
-    display: flex;
-    align-items: center;
-    gap: 25px;
+            <article class="worker-card">  
 
-    overflow-x: auto;
+                <div class="worker-cover worker-cover-blue">  
 
-    scrollbar-width: none;
+                    <span class="worker-cover-badge">  
+                        AVAILABLE  
+                    </span>  
 
-    white-space: nowrap;
-}
+                </div>  
 
 
-.service-strip-inner::-webkit-scrollbar {
-    display: none;
-}
+                <div class="worker-profile-area">  
 
+                    <div class="worker-avatar">  
+                        AK  
+                    </div>  
 
-.service-strip-inner > span {
-    color: rgba(255,255,255,.55);
 
-    font-size: 10px;
-    font-weight: 700;
-}
+                    <div class="worker-info">  
 
+                        <div class="worker-name-row">  
 
-.service-strip-inner .service-title {
-    color: #fff;
+                            <h3>  
+                                Amit Kumar  
+                            </h3>  
 
-    font-size: 10px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-}
+                            <span class="verified-mark">  
+                                ✓  
+                            </span>  
 
+                        </div>  
 
-/* =========================================================
-   SECTION HEADING
-========================================================= */
+                        <p>  
+                            Professional Electrician  
+                        </p>  
 
-.section-heading {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 30px;
+                        <div class="worker-meta">  
+                            ⭐ 4.9  
+                            <span>•</span>  
+                            Kolkata  
+                        </div>  
 
-    margin-bottom: 38px;
-}
+                    </div>  
 
+                </div>  
 
-.section-heading.centered {
-    display: block;
-    text-align: center;
 
-    max-width: 700px;
+                <div class="worker-tags">  
 
-    margin-inline: auto;
-    margin-bottom: 55px;
-}
+                    <span>  
+                        Electrical  
+                    </span>  
 
+                    <span>  
+                        Wiring  
+                    </span>  
 
-.section-eyebrow {
-    display: inline-block;
+                    <span>  
+                        Repair  
+                    </span>  
 
-    margin-bottom: 10px;
+                </div>  
 
-    color: var(--home-primary);
 
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: .13em;
-}
+                <div class="worker-footer">  
 
+                    <span>  
+                        8+ years experience  
+                    </span>  
 
-.section-heading h2 {
-    margin: 0;
+                    <a  
+                        href="/workers"  
+                        class="worker-view-btn"  
+                    >  
+                        View Profile →  
+                    </a>  
 
-    color: var(--home-text);
+                </div>  
 
-    font-size:
-        clamp(
-            27px,
-            4vw,
-            42px
-        );
+            </article>  
 
-    line-height: 1.12;
 
-    letter-spacing: -.04em;
-}
 
+            <!-- WORKER 2 -->  
 
-.section-heading p {
-    max-width: 600px;
+            <article class="worker-card">  
 
-    margin: 12px 0 0;
+                <div class="worker-cover worker-cover-purple">  
 
-    color: var(--home-muted);
+                    <span class="worker-cover-badge">  
+                        AVAILABLE  
+                    </span>  
 
-    font-size: 13px;
-    line-height: 1.7;
-}
+                </div>  
 
 
-.section-link {
-    flex-shrink: 0;
+                <div class="worker-profile-area">  
 
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+                    <div class="worker-avatar">  
+                        RS  
+                    </div>  
 
-    color: var(--home-primary);
 
-    text-decoration: none;
+                    <div class="worker-info">  
 
-    font-size: 11px;
-    font-weight: 800;
+                        <div class="worker-name-row">  
 
-    transition: .2s ease;
-}
+                            <h3>  
+                                Rahul Singh  
+                            </h3>  
 
+                            <span class="verified-mark">  
+                                ✓  
+                            </span>  
 
-.section-link:hover {
-    color: var(--home-primary-dark);
-    transform: translateX(3px);
-}
+                        </div>  
 
+                        <p>  
+                            Plumbing Specialist  
+                        </p>  
 
-/* =========================================================
-   HORIZONTAL SCROLL SYSTEM
-========================================================= */
+                        <div class="worker-meta">  
+                            ⭐ 4.8  
+                            <span>•</span>  
+                            Kolkata  
+                        </div>  
 
-.horizontal-scroll-wrapper {
-    position: relative;
-}
+                    </div>  
 
+                </div>  
 
-.horizontal-scroll {
-    display: flex;
 
-    gap: 18px;
+                <div class="worker-tags">  
 
-    overflow-x: auto;
+                    <span>  
+                        Plumbing  
+                    </span>  
 
-    padding:
-        10px
-        5px
-        25px;
+                    <span>  
+                        Pipes  
+                    </span>  
 
-    scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
+                    <span>  
+                        Repair  
+                    </span>  
 
-    scrollbar-width: none;
+                </div>  
 
-    cursor: grab;
 
-    overscroll-behavior-x: contain;
-}
+                <div class="worker-footer">  
 
+                    <span>  
+                        6+ years experience  
+                    </span>  
 
-.horizontal-scroll::-webkit-scrollbar {
-    display: none;
-}
+                    <a  
+                        href="/workers"  
+                        class="worker-view-btn"  
+                    >  
+                        View Profile →  
+                    </a>  
 
+                </div>  
 
-.horizontal-scroll.is-dragging {
-    cursor: grabbing;
-    scroll-behavior: auto;
-    scroll-snap-type: none;
-}
+            </article>  
 
 
-.horizontal-scroll > * {
-    flex: 0 0 auto;
 
-    scroll-snap-align: start;
-}
+            <!-- WORKER 3 -->  
 
+            <article class="worker-card">  
 
-/* =========================================================
-   SCROLL CONTROLS
-========================================================= */
+                <div class="worker-cover worker-cover-orange">  
 
-.scroll-control {
-    position: absolute;
-    z-index: 10;
+                    <span class="worker-cover-badge">  
+                        AVAILABLE  
+                    </span>  
 
-    top: 50%;
+                </div>  
 
-    width: 42px;
-    height: 42px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+                <div class="worker-profile-area">  
 
-    transform: translateY(-50%);
+                    <div class="worker-avatar">  
+                        SD  
+                    </div>  
 
-    border:
-        1px solid
-        var(--home-border);
 
-    border-radius: 50%;
+                    <div class="worker-info">  
 
-    color: var(--home-text);
+                        <div class="worker-name-row">  
 
-    background:
-        rgba(255,255,255,.95);
+                            <h3>  
+                                Suman Das  
+                            </h3>  
 
-    box-shadow:
-        0 12px 30px rgba(15,23,42,.12);
+                            <span class="verified-mark">  
+                                ✓  
+                            </span>  
 
-    cursor: pointer;
+                        </div>  
 
-    transition: .2s ease;
-}
+                        <p>  
+                            Interior Painter  
+                        </p>  
 
+                        <div class="worker-meta">  
+                            ⭐ 4.9  
+                            <span>•</span>  
+                            Kolkata  
+                        </div>  
 
-.scroll-control:hover {
-    color: #fff;
+                    </div>  
 
-    background:
-        var(--home-primary);
+                </div>  
 
-    border-color:
-        var(--home-primary);
 
-    transform:
-        translateY(-50%)
-        scale(1.05);
-}
+                <div class="worker-tags">  
 
+                    <span>  
+                        Painting  
+                    </span>  
 
-.scroll-prev {
-    left: -20px;
-}
+                    <span>  
+                        Interior  
+                    </span>  
 
+                    <span>  
+                        Design  
+                    </span>  
 
-.scroll-next {
-    right: -20px;
-}
+                </div>  
 
 
-/* =========================================================
-   CATEGORY CARDS
-========================================================= */
+                <div class="worker-footer">  
 
-.categories-section {
-    background: #fff;
-}
+                    <span>  
+                        7+ years experience  
+                    </span>  
 
+                    <a  
+                        href="/workers"  
+                        class="worker-view-btn"  
+                    >  
+                        View Profile →  
+                    </a>  
 
-.category-card {
-    position: relative;
+                </div>  
 
-    width: 235px;
-    min-height: 210px;
+            </article>  
 
-    padding: 22px;
 
-    border:
-        1px solid
-        var(--home-border);
 
-    border-radius: 21px;
+            <!-- WORKER 4 -->  
 
-    background: #fff;
+            <article class="worker-card">  
 
-    text-decoration: none;
+                <div class="worker-cover worker-cover-green">  
 
-    box-shadow:
-        0 10px 30px rgba(15,23,42,.04);
+                    <span class="worker-cover-badge">  
+                        AVAILABLE  
+                    </span>  
 
-    transition:
-        transform .28s ease,
-        box-shadow .28s ease,
-        border-color .28s ease;
-}
+                </div>  
 
 
-.category-card:hover {
-    transform: translateY(-7px);
+                <div class="worker-profile-area">  
 
-    border-color: #bfdbfe;
+                    <div class="worker-avatar">  
+                        MB  
+                    </div>  
 
-    box-shadow:
-        0 24px 50px rgba(37,99,235,.12);
-}
 
+                    <div class="worker-info">  
 
-.category-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
+                        <div class="worker-name-row">  
 
+                            <h3>  
+                                Manoj Biswas  
+                            </h3>  
 
-.category-icon {
-    width: 52px;
-    height: 52px;
+                            <span class="verified-mark">  
+                                ✓  
+                            </span>  
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+                        </div>  
 
-    border-radius: 16px;
+                        <p>  
+                            Carpenter & Furniture Expert  
+                        </p>  
 
-    font-size: 23px;
+                        <div class="worker-meta">  
+                            ⭐ 4.8  
+                            <span>•</span>  
+                            Kolkata  
+                        </div>  
 
-    background: #eff6ff;
-}
+                    </div>  
 
+                </div>  
 
-.category-arrow {
-    color: #94a3b8;
-    font-size: 19px;
 
-    transition: .2s ease;
-}
+                <div class="worker-tags">  
 
+                    <span>  
+                        Carpentry  
+                    </span>  
 
-.category-card:hover .category-arrow {
-    color: var(--home-primary);
-    transform: translateX(4px);
-}
+                    <span>  
+                        Furniture  
+                    </span>  
 
+                </div>  
 
-.category-card h3 {
-    margin: 28px 0 7px;
 
-    color: var(--home-text);
+                <div class="worker-footer">  
 
-    font-size: 18px;
-    font-weight: 800;
-}
+                    <span>  
+                        9+ years experience  
+                    </span>  
 
+                    <a  
+                        href="/workers"  
+                        class="worker-view-btn"  
+                    >  
+                        View Profile →  
+                    </a>  
 
-.category-card p {
-    margin: 0;
+                </div>  
 
-    color: var(--home-muted);
+            </article>  
 
-    font-size: 11px;
-    line-height: 1.6;
-}
 
+        </div>  
 
-.category-link {
-    position: absolute;
-    bottom: 20px;
-    left: 22px;
 
-    color: var(--home-primary);
+        <button  
+            class="scroll-control scroll-next"  
+            type="button"  
+            aria-label="Next workers"  
+        >  
+            →  
+        </button>  
 
-    font-size: 10px;
-    font-weight: 800;
-}
+    </div>  
 
+</div>
 
-/* =========================================================
-   PROCESS
-========================================================= */
+</section>  <!-- =====================================================  
+     LATEST JOBS  
+====================================================== -->  <section class="home-section jobs-section">  <div class="container">  
 
-.process-section {
-    background:
-        linear-gradient(
-            180deg,
-            #f8fafc,
-            #fff
-        );
-}
+    <div class="section-heading">  
 
+        <div>  
 
-.process-grid {
-    display: grid;
+            <span class="section-eyebrow">  
+                LOCAL OPPORTUNITIES  
+            </span>  
 
-    grid-template-columns:
-        1fr
-        70px
-        1fr
-        70px
-        1fr;
+            <h2>  
+                Latest jobs near you  
+            </h2>  
 
-    align-items: center;
-}
+            <p>  
+                Browse newly posted work and apply directly.  
+            </p>  
 
+        </div>  
 
-.process-card {
-    position: relative;
 
-    min-height: 245px;
+        <a  
+            href="/jobs"  
+            class="section-link"  
+        >  
+            Browse all jobs →  
+        </a>  
 
-    padding: 30px;
+    </div>  
 
-    border:
-        1px solid
-        var(--home-border);
 
-    border-radius: 24px;
+    <!-- JOB HORIZONTAL FEED -->  
 
-    background: rgba(255,255,255,.92);
+    <div class="horizontal-scroll-wrapper jobs-scroll-wrapper">  
 
-    box-shadow:
-        0 15px 40px rgba(15,23,42,.05);
+        <button  
+            class="scroll-control scroll-prev"  
+            type="button"  
+            aria-label="Previous jobs"  
+        >  
+            ←  
+        </button>  
 
-    transition: .28s ease;
-}
 
+        <div  
+            class="jobs-list horizontal-scroll job-horizontal-scroll"  
+            data-scroll-container  
+        >  
 
-.process-card:hover {
-    transform: translateY(-6px);
 
-    box-shadow:
-        0 25px 55px rgba(15,23,42,.10);
-}
+            <!-- JOB 1 -->  
 
+            <article class="home-job-card">  
 
-.process-number {
-    position: absolute;
-    top: 18px;
-    right: 20px;
+                <div class="home-job-top">  
 
-    color: #dbeafe;
+                    <span class="job-category">  
+                        ELECTRICAL  
+                    </span>  
 
-    font-size: 12px;
-    font-weight: 900;
-}
+                    <span class="job-status">  
+                        ● OPEN  
+                    </span>  
 
+                </div>  
 
-.process-icon {
-    width: 55px;
-    height: 55px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+                <div class="home-job-main">  
 
-    margin-bottom: 23px;
+                    <div class="home-job-icon">  
+                        ⚡  
+                    </div>  
 
-    border-radius: 16px;
 
-    background:
-        linear-gradient(
-            135deg,
-            #eff6ff,
-            #eef2ff
-        );
+                    <div class="home-job-content">  
 
-    font-size: 24px;
-}
+                        <h3>  
+                            Home wiring and fan installation  
+                        </h3>  
 
+                        <p>  
+                            Kolkata · Posted recently  
+                        </p>  
 
-.process-card h3 {
-    margin: 0 0 10px;
+                        <div class="job-details">  
 
-    font-size: 19px;
-    font-weight: 800;
-}
+                            <span>  
+                                📍 Local  
+                            </span>  
 
+                            <span>  
+                                👥 3 Applicants  
+                            </span>  
 
-.process-card p {
-    margin: 0;
+                        </div>  
 
-    color: var(--home-muted);
+                    </div>  
 
-    font-size: 12px;
-    line-height: 1.7;
-}
+                </div>  
 
 
-.process-connector {
-    height: 1px;
+                <div class="home-job-bottom">  
 
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            #bfdbfe,
-            transparent
-        );
-}
+                    <strong>  
+                        ₹2,000 – ₹3,500  
+                    </strong>  
 
 
-/* =========================================================
-   WORKER CARDS
-========================================================= */
+                    <div class="job-actions">  
 
-.workers-section {
-    background: #fff;
-}
+                        <a  
+                            href="/jobs"  
+                            class="job-view-btn"  
+                        >  
+                            View Job  
+                        </a>  
 
+                        <a  
+                            href="/jobs/1/apply"  
+                            class="job-apply-btn"  
+                        >  
+                            Apply Now  
+                            <span>→</span>  
+                        </a>  
 
-.worker-card {
-    width: 330px;
+                    </div>  
 
-    overflow: hidden;
+                </div>  
 
-    border:
-        1px solid
-        var(--home-border);
+            </article>  
 
-    border-radius: 23px;
 
-    background: #fff;
 
-    box-shadow:
-        0 12px 35px rgba(15,23,42,.055);
+            <!-- JOB 2 -->  
 
-    transition:
-        transform .28s ease,
-        box-shadow .28s ease;
-}
+            <article class="home-job-card">  
 
+                <div class="home-job-top">  
 
-.worker-card:hover {
-    transform: translateY(-8px);
+                    <span class="job-category">  
+                        PLUMBING  
+                    </span>  
 
-    box-shadow:
-        0 28px 65px rgba(15,23,42,.12);
-}
+                    <span class="job-status">  
+                        ● OPEN  
+                    </span>  
 
+                </div>  
 
-/* =========================================================
-   WORKER COVER
-========================================================= */
 
-.worker-cover {
-    position: relative;
+                <div class="home-job-main">  
 
-    height: 105px;
+                    <div class="home-job-icon">  
+                        🔧  
+                    </div>  
 
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f46e5
-        );
-}
 
+                    <div class="home-job-content">  
 
-.worker-cover-blue {
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #0ea5e9
-        );
-}
+                        <h3>  
+                            Bathroom pipe leakage repair  
+                        </h3>  
 
+                        <p>  
+                            Kolkata · Posted recently  
+                        </p>  
 
-.worker-cover-purple {
-    background:
-        linear-gradient(
-            135deg,
-            #7c3aed,
-            #4f46e5
-        );
-}
+                        <div class="job-details">  
 
+                            <span>  
+                                📍 Local  
+                            </span>  
 
-.worker-cover-orange {
-    background:
-        linear-gradient(
-            135deg,
-            #f97316,
-            #ef4444
-        );
-}
+                            <span>  
+                                👥 5 Applicants  
+                            </span>  
 
+                        </div>  
 
-.worker-cover-green {
-    background:
-        linear-gradient(
-            135deg,
-            #059669,
-            #0f766e
-        );
-}
+                    </div>  
 
+                </div>  
 
-.worker-cover::after {
-    content: "";
 
-    position: absolute;
-    inset: 0;
+                <div class="home-job-bottom">  
 
-    opacity: .18;
+                    <strong>  
+                        ₹800 – ₹1,500  
+                    </strong>  
 
-    background-image:
-        radial-gradient(
-            rgba(255,255,255,.8) 1px,
-            transparent 1px
-        );
 
-    background-size: 18px 18px;
-}
+                    <div class="job-actions">  
 
+                        <a  
+                            href="/jobs"  
+                            class="job-view-btn"  
+                        >  
+                            View Job  
+                        </a>  
 
-.worker-cover-badge {
-    position: absolute;
-    z-index: 2;
+                        <a  
+                            href="/jobs/2/apply"  
+                            class="job-apply-btn"  
+                        >  
+                            Apply Now  
+                            <span>→</span>  
+                        </a>  
 
-    top: 14px;
-    right: 14px;
+                    </div>  
 
-    padding: 6px 9px;
+                </div>  
 
-    border-radius: 999px;
+            </article>  
 
-    color: #fff;
 
-    background: rgba(0,0,0,.18);
 
-    backdrop-filter: blur(8px);
+            <!-- JOB 3 -->  
 
-    font-size: 8px;
-    font-weight: 900;
-    letter-spacing: .08em;
-}
+            <article class="home-job-card">  
 
+                <div class="home-job-top">  
 
-/* =========================================================
-   WORKER PROFILE
-========================================================= */
+                    <span class="job-category">  
+                        PAINTING  
+                    </span>  
 
-.worker-profile-area {
-    display: flex;
-    gap: 15px;
-    align-items: center;
+                    <span class="job-status">  
+                        ● OPEN  
+                    </span>  
 
-    padding: 0 21px;
+                </div>  
 
-    margin-top: -27px;
 
-    position: relative;
-    z-index: 4;
-}
+                <div class="home-job-main">  
 
+                    <div class="home-job-icon">  
+                        🎨  
+                    </div>  
 
-.worker-avatar {
-    width: 64px;
-    height: 64px;
 
-    flex-shrink: 0;
+                    <div class="home-job-content">  
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+                        <h3>  
+                            2BHK interior wall painting  
+                        </h3>  
 
-    border: 4px solid #fff;
+                        <p>  
+                            Kolkata · Posted recently  
+                        </p>  
 
-    border-radius: 50%;
+                        <div class="job-details">  
 
-    color: #fff;
+                            <span>  
+                                📍 Local  
+                            </span>  
 
-    background:
-        linear-gradient(
-            135deg,
-            #1d4ed8,
-            #7c3aed
-        );
+                            <span>  
+                                👥 2 Applicants  
+                            </span>  
 
-    box-shadow:
-        0 10px 25px rgba(15,23,42,.15);
+                        </div>  
 
-    font-size: 15px;
-    font-weight: 900;
-}
+                    </div>  
 
+                </div>  
 
-.worker-info {
-    min-width: 0;
 
-    padding-top: 28px;
-}
+                <div class="home-job-bottom">  
 
+                    <strong>  
+                        ₹8,000 – ₹12,000  
+                    </strong>  
 
-.worker-name-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
 
+                    <div class="job-actions">  
 
-.worker-name-row h3 {
-    margin: 0;
+                        <a  
+                            href="/jobs"  
+                            class="job-view-btn"  
+                        >  
+                            View Job  
+                        </a>  
 
-    overflow: hidden;
+                        <a  
+                            href="/jobs/3/apply"  
+                            class="job-apply-btn"  
+                        >  
+                            Apply Now  
+                            <span>→</span>  
+                        </a>  
 
-    color: var(--home-text);
+                    </div>  
 
-    font-size: 15px;
-    font-weight: 850;
+                </div>  
 
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
+            </article>  
 
 
-.verified-mark {
-    width: 16px;
-    height: 16px;
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+            <!-- JOB 4 -->  
 
-    flex-shrink: 0;
+            <article class="home-job-card">  
 
-    border-radius: 50%;
+                <div class="home-job-top">  
 
-    color: #fff;
+                    <span class="job-category">  
+                        CARPENTRY  
+                    </span>  
 
-    background: #2563eb;
+                    <span class="job-status">  
+                        ● OPEN  
+                    </span>  
 
-    font-size: 9px;
-    font-weight: 900;
-}
+                </div>  
 
 
-.worker-info p {
-    margin: 4px 0;
+                <div class="home-job-main">  
 
-    color: var(--home-muted);
+                    <div class="home-job-icon">  
+                        🪚  
+                    </div>  
 
-    font-size: 10px;
-}
 
+                    <div class="home-job-content">  
 
-.worker-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+                        <h3>  
+                            Custom kitchen cabinet work  
+                        </h3>  
 
-    color: #64748b;
+                        <p>  
+                            Kolkata · Posted today  
+                        </p>  
 
-    font-size: 9px;
-    font-weight: 700;
-}
+                        <div class="job-details">  
 
+                            <span>  
+                                📍 Local  
+                            </span>  
 
-.worker-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+                            <span>  
+                                👥 4 Applicants  
+                            </span>  
 
-    padding: 20px 21px 17px;
-}
+                        </div>  
 
+                    </div>  
 
-.worker-tags span {
-    padding: 6px 9px;
+                </div>  
 
-    border-radius: 999px;
 
-    color: #475569;
+                <div class="home-job-bottom">  
 
-    background: #f1f5f9;
+                    <strong>  
+                        ₹12,000 – ₹20,000  
+                    </strong>  
 
-    font-size: 8px;
-    font-weight: 800;
-}
 
+                    <div class="job-actions">  
 
-.worker-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+                        <a  
+                            href="/jobs"  
+                            class="job-view-btn"  
+                        >  
+                            View Job  
+                        </a>  
 
-    padding: 14px 21px 18px;
+                        <a  
+                            href="/jobs/4/apply"  
+                            class="job-apply-btn"  
+                        >  
+                            Apply Now  
+                            <span>→</span>  
+                        </a>  
 
-    border-top:
-        1px solid
-        var(--home-border);
+                    </div>  
 
-    color: #94a3b8;
+                </div>  
 
-    font-size: 9px;
-    font-weight: 700;
-}
+            </article>  
 
 
-.worker-view-btn {
-    color: var(--home-primary);
+        </div>  
 
-    text-decoration: none;
 
-    font-size: 9px;
-    font-weight: 900;
+        <button  
+            class="scroll-control scroll-next"  
+            type="button"  
+            aria-label="Next jobs"  
+        >  
+            →  
+        </button>  
 
-    white-space: nowrap;
-}
+    </div>  
 
+</div>
 
-/* =========================================================
-   JOB SECTION
-========================================================= */
+</section>  <!-- =====================================================  
+     TRUST STATS  
+====================================================== -->  <section class="trust-section">  <div class="container">  
 
-.jobs-section {
-    background:
-        #f8fafc;
-}
+    <div class="trust-panel">  
 
+        <div class="trust-intro">  
 
-.home-job-card {
-    width: 460px;
+            <span class="section-eyebrow">  
+                BUILT FOR TRUST  
+            </span>  
 
-    padding: 22px;
+            <h2>  
+                Local work.  
+                <span>Better connections.</span>  
+            </h2>  
 
-    border:
-        1px solid
-        var(--home-border);
+            <p>  
+                We're building a trusted marketplace where  
+                customers and skilled professionals can  
+                connect with confidence.  
+            </p>  
 
-    border-radius: 22px;
+        </div>  
 
-    background: #fff;
 
-    box-shadow:
-        0 12px 35px rgba(15,23,42,.045);
+        <div class="stats-grid">  
 
-    transition:
-        transform .28s ease,
-        box-shadow .28s ease;
-}
+            <div class="stat-item">  
+                <strong>10K+</strong>  
+                <span>Workers</span>  
+            </div>  
 
+            <div class="stat-item">  
+                <strong>25K+</strong>  
+                <span>Jobs Posted</span>  
+            </div>  
 
-.home-job-card:hover {
-    transform: translateY(-6px);
+            <div class="stat-item">  
+                <strong>4.9</strong>  
+                <span>Average Rating</span>  
+            </div>  
 
-    box-shadow:
-        0 25px 55px rgba(15,23,42,.10);
-}
+            <div class="stat-item">  
+                <strong>50+</strong>  
+                <span>Service Types</span>  
+            </div>  
 
+        </div>  
 
-.home-job-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    </div>  
 
-    margin-bottom: 20px;
-}
+</div>
 
+</section>  <!-- =====================================================  
+     FINAL CTA  
+====================================================== -->  <section class="final-cta-section">  <div class="container">  
 
-.job-category {
-    color: var(--home-primary);
+    <div class="final-cta">  
 
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .09em;
-}
+        <div class="cta-decoration cta-decoration-one"></div>  
+        <div class="cta-decoration cta-decoration-two"></div>  
 
 
-.job-status {
-    padding: 5px 8px;
+        <div class="final-cta-content">  
 
-    border-radius: 999px;
+            <span class="cta-eyebrow">  
+                GET STARTED TODAY  
+            </span>  
 
-    color: #15803d;
+            <h2>  
+                Have a job to get done?  
+                <span>Let's find the right worker.</span>  
+            </h2>  
 
-    background: #f0fdf4;
+            <p>  
+                Post your requirement and connect with  
+                skilled professionals in your area.  
+            </p>  
 
-    border: 1px solid #dcfce7;
 
-    font-size: 8px;
-    font-weight: 900;
-}
+            <div class="final-cta-actions">  
 
+                <a  
+                    href="/post-job"  
+                    class="final-cta-button"  
+                >  
+                    Post a Job  
+                    <span>→</span>  
+                </a>  
 
-.home-job-main {
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-}
 
+                <a  
+                    href="/workers"  
+                    class="final-cta-link"  
+                >  
+                    Explore Workers  
+                </a>  
 
-.home-job-icon {
-    width: 52px;
-    height: 52px;
+            </div>  
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+        </div>  
 
-    flex-shrink: 0;
+    </div>  
 
-    border-radius: 16px;
+</div>  
 
-    background:
-        linear-gradient(
-            135deg,
-            #eff6ff,
-            #eef2ff
-        );
+</section>
 
-    font-size: 23px;
-}
+</main>  
+{% endblock %}
 
-
-.home-job-content {
-    min-width: 0;
-}
-
-
-.home-job-content h3 {
-    margin: 0 0 7px;
-
-    color: var(--home-text);
-
-    font-size: 16px;
-    line-height: 1.35;
-    font-weight: 800;
-}
-
-
-.home-job-content p {
-    margin: 0;
-
-    color: var(--home-muted);
-
-    font-size: 10px;
-}
-
-
-.job-details {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-
-    margin-top: 12px;
-
-    color: #94a3b8;
-
-    font-size: 9px;
-    font-weight: 700;
-}
-
-
-.home-job-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-
-    margin-top: 22px;
-
-    padding-top: 17px;
-
-    border-top:
-        1px solid
-        var(--home-border);
-}
-
-
-.home-job-bottom strong {
-    color: var(--home-success);
-
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-
-.job-actions {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-
-.job-view-btn,
-.job-apply-btn {
-    min-height: 36px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-
-    padding: 0 12px;
-
-    border-radius: 10px;
-
-    text-decoration: none;
-
-    font-size: 9px;
-    font-weight: 900;
-
-    transition: .2s ease;
-}
-
-
-.job-view-btn {
-    color: #475569;
-
-    background: #f1f5f9;
-}
-
-
-.job-view-btn:hover {
-    background: #e2e8f0;
-}
-
-
-.job-apply-btn {
-    color: #fff;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f46e5
-        );
-
-    box-shadow:
-        0 8px 18px rgba(37,99,235,.20);
-}
-
-
-.job-apply-btn:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 12px 25px rgba(37,99,235,.32);
-}
-
-
-/* =========================================================
-   TRUST PANEL
-========================================================= */
-
-.trust-section {
-    padding: 100px 0;
-
-    background: #fff;
-}
-
-
-.trust-panel {
-    position: relative;
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        minmax(0, 1.2fr);
-
-    gap: 50px;
-
-    padding: 55px;
-
-    overflow: hidden;
-
-    border-radius: 30px;
-
-    color: #fff;
-
-    background:
-        radial-gradient(
-            circle at 90% 20%,
-            rgba(96,165,250,.28),
-            transparent 28%
-        ),
-        linear-gradient(
-            135deg,
-            #0f172a,
-            #1e3a8a
-        );
-
-    box-shadow:
-        0 30px 80px rgba(15,23,42,.18);
-}
-
-
-.trust-intro .section-eyebrow {
-    color: #93c5fd;
-}
-
-
-.trust-intro h2 {
-    margin: 0;
-
-    max-width: 450px;
-
-    font-size:
-        clamp(
-            30px,
-            4vw,
-            48px
-        );
-
-    line-height: 1.05;
-
-    letter-spacing: -.045em;
-}
-
-
-.trust-intro h2 span {
-    display: block;
-
-    color: #93c5fd;
-}
-
-
-.trust-intro p {
-    max-width: 450px;
-
-    margin: 18px 0 0;
-
-    color: rgba(255,255,255,.60);
-
-    font-size: 12px;
-    line-height: 1.75;
-}
-
-
-.stats-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 12px;
-}
-
-
-.stat-item {
-    min-height: 140px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    padding: 25px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.10);
-
-    border-radius: 20px;
-
-    background:
-        rgba(255,255,255,.06);
-
-    backdrop-filter: blur(12px);
-}
-
-
-.stat-item strong {
-    color: #fff;
-
-    font-size: 32px;
-    font-weight: 850;
-
-    letter-spacing: -.04em;
-}
-
-
-.stat-item span {
-    margin-top: 5px;
-
-    color: rgba(255,255,255,.52);
-
-    font-size: 9px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-}
-
-
-/* =========================================================
-   FINAL CTA
-========================================================= */
-
-.final-cta-section {
-    padding: 0 0 100px;
-
-    background: #fff;
-}
-
-
-.final-cta {
-    position: relative;
-
-    min-height: 380px;
-
-    display: flex;
-    align-items: center;
-
-    overflow: hidden;
-
-    padding: 60px;
-
-    border-radius: 30px;
-
-    color: #fff;
-
-    background:
-        radial-gradient(
-            circle at 80% 30%,
-            rgba(129,140,248,.38),
-            transparent 32%
-        ),
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f46e5 55%,
-            #7c3aed
-        );
-
-    box-shadow:
-        0 30px 80px rgba(37,99,235,.20);
-}
-
-
-.final-cta-content {
-    position: relative;
-    z-index: 3;
-
-    max-width: 700px;
-}
-
-
-.cta-eyebrow {
-    display: inline-block;
-
-    margin-bottom: 13px;
-
-    color: #bfdbfe;
-
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .14em;
-}
-
-
-.final-cta h2 {
-    margin: 0;
-
-    font-size:
-        clamp(
-            32px,
-            5vw,
-            54px
-        );
-
-    line-height: 1.05;
-
-    letter-spacing: -.05em;
-}
-
-
-.final-cta h2 span {
-    display: block;
-
-    color: #dbeafe;
-}
-
-
-.final-cta p {
-    max-width: 560px;
-
-    margin: 17px 0 0;
-
-    color: rgba(255,255,255,.72);
-
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-
-.final-cta-actions {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-
-    margin-top: 27px;
-}
-
-
-.final-cta-button {
-    min-height: 47px;
-
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-
-    padding: 0 18px;
-
-    border-radius: 12px;
-
-    color: #1e3a8a;
-
-    background: #fff;
-
-    text-decoration: none;
-
-    font-size: 11px;
-    font-weight: 900;
-
-    box-shadow:
-        0 12px 30px rgba(0,0,0,.12);
-
-    transition: .25s ease;
-}
-
-
-.final-cta-button:hover {
-    transform: translateY(-3px);
-
-    box-shadow:
-        0 17px 35px rgba(0,0,0,.18);
-}
-
-
-.final-cta-link {
-    color: rgba(255,255,255,.85);
-
-    text-decoration: none;
-
-    font-size: 11px;
-    font-weight: 800;
-}
-
-
-.cta-decoration {
-    position: absolute;
-
-    border-radius: 50%;
-
-    pointer-events: none;
-}
-
-
-.cta-decoration-one {
-    width: 330px;
-    height: 330px;
-
-    right: -90px;
-    top: -160px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.12);
-}
-
-
-.cta-decoration-two {
-    width: 220px;
-    height: 220px;
-
-    right: 80px;
-    bottom: -140px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
-}
-
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 1050px) {
-
-    .premium-hero-container {
-        grid-template-columns:
-            minmax(0, 1fr)
-            minmax(330px, .8fr);
-    }
-
-    .premium-title {
-        font-size: clamp(44px, 6vw, 65px);
-    }
-
-    .process-grid {
-        grid-template-columns:
-            1fr
-            35px
-            1fr
-            35px
-            1fr;
-    }
-
-    .scroll-prev {
-        left: -8px;
-    }
-
-    .scroll-next {
-        right: -8px;
-    }
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 800px) {
-
-    .premium-hero {
-        min-height: auto;
-    }
-
-    .premium-hero-container {
-        grid-template-columns: 1fr;
-
-        gap: 40px;
-
-        padding-top: 65px;
-        padding-bottom: 115px;
-    }
-
-    .premium-title {
-        font-size:
-            clamp(
-                42px,
-                10vw,
-                60px
-            );
-    }
-
-    .premium-description {
-        font-size: 14px;
-    }
-
-    .premium-hero-visual {
-        min-height: 440px;
-    }
-
-    .verified-floating {
-        left: -5px;
-    }
-
-    .worker-floating {
-        right: -5px;
-    }
-
-    .home-section {
-        padding: 75px 0;
-    }
-
-    .section-heading {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .section-heading.centered {
-        align-items: center;
-    }
-
-    .process-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .process-connector {
-        display: none;
-    }
-
-    .trust-panel {
-        grid-template-columns: 1fr;
-        padding: 35px 25px;
-    }
-
-    .final-cta {
-        padding: 40px 25px;
-    }
-
-    .scroll-control {
-        display: none;
-    }
-
-    .horizontal-scroll {
-        padding-left: 2px;
-        padding-right: 2px;
-    }
-}
-
-
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
-
-@media (max-width: 500px) {
-
-    .premium-hero-container {
-        padding-top: 50px;
-    }
-
-    .premium-badge {
-        font-size: 9px;
-    }
-
-    .premium-title {
-        margin-top: 18px;
-
-        font-size: 40px;
-
-        letter-spacing: -.045em;
-    }
-
-    .premium-description {
-        font-size: 13px;
-    }
-
-    .premium-actions {
-        flex-direction: column;
-    }
-
-    .premium-btn {
-        width: 100%;
-    }
-
-    .premium-trust {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 9px;
-    }
-
-    .premium-hero-visual {
-        min-height: 400px;
-    }
-
-    .premium-job-card {
-        padding: 22px;
-
-        border-radius: 22px;
-    }
-
-    .premium-job-card h3 {
-        font-size: 20px;
-    }
-
-    .job-location {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .floating-card {
-        transform: scale(.88);
-    }
-
-    .verified-floating {
-        left: -15px;
-        top: 25px;
-    }
-
-    .worker-floating {
-        right: -15px;
-        bottom: 25px;
-    }
-
-    .category-card {
-        width: 235px;
-    }
-
-    .worker-card {
-        width: 305px;
-    }
-
-    .home-job-card {
-        width: 320px;
-    }
-
-    .home-job-bottom {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .job-actions {
-        width: 100%;
-    }
-
-    .job-view-btn,
-    .job-apply-btn {
-        flex: 1;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .stat-item {
-        min-height: 110px;
-        padding: 18px;
-    }
-
-    .stat-item strong {
-        font-size: 26px;
-    }
-
-    .final-cta-actions {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-}
-
-
-/* =========================================================
-   REDUCED MOTION
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        scroll-behavior: auto !important;
-        animation: none !important;
-        transition: none !important;
-    }
-}
