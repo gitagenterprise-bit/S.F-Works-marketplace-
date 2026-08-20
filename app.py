@@ -223,11 +223,32 @@ def create_app():
     )
 
     @app.route("/")
-    def home():
+def home():
 
-        return render_template(
-            "public/home.html"
+    # ==========================================
+    # REAL WORKER PROFILES
+    # ==========================================
+
+    featured_workers = (
+        WorkerProfile.query
+        .filter(
+            WorkerProfile.profile_completed.is_(True)
         )
+        .order_by(
+            WorkerProfile.is_verified.desc(),
+            WorkerProfile.is_available.desc(),
+            WorkerProfile.rating.desc(),
+            WorkerProfile.total_reviews.desc(),
+            WorkerProfile.created_at.desc()
+        )
+        .limit(8)
+        .all()
+    )
+
+    return render_template(
+        "public/home.html",
+        featured_workers=featured_workers
+    )
         
 
     @app.route("/health")
