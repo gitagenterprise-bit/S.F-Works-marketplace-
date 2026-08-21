@@ -1,0 +1,2203 @@
+/* =========================================================
+   S. F WORKS
+   PREMIUM LOGIN SYSTEM
+========================================================= */
+
+:root {
+
+    --sf-blue: #2563eb;
+    --sf-blue-dark: #1d4ed8;
+    --sf-blue-light: #eff6ff;
+
+    --sf-indigo: #4f46e5;
+
+    --sf-text: #0f172a;
+    --sf-text-soft: #334155;
+    --sf-muted: #64748b;
+    --sf-light: #94a3b8;
+
+    --sf-border: #e2e8f0;
+
+    --sf-card:
+        rgba(255, 255, 255, 0.96);
+
+    --sf-radius: 26px;
+
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.sf-login-page {
+
+    position: relative;
+
+    min-height:
+        calc(100vh - 70px);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding:
+        55px 20px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 0% 0%,
+            rgba(37, 99, 235, .10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            rgba(79, 70, 229, .09),
+            transparent 34%
+        ),
+        #f8fafc;
+
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.sf-login-bg {
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+}
+
+
+.sf-login-orb {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter:
+        blur(2px);
+
+    animation:
+        sfOrbFloat
+        10s
+        ease-in-out
+        infinite;
+
+}
+
+
+.sf-orb-one {
+
+    width: 300px;
+
+    height: 300px;
+
+    top: -130px;
+
+    left: -100px;
+
+    background:
+        rgba(37, 99, 235, .10);
+
+}
+
+
+.sf-orb-two {
+
+    width: 380px;
+
+    height: 380px;
+
+    right: -170px;
+
+    bottom: -160px;
+
+    background:
+        rgba(79, 70, 229, .09);
+
+    animation-delay:
+        -4s;
+
+}
+
+
+@keyframes sfOrbFloat {
+
+    0%,
+    100% {
+
+        transform:
+            translate3d(0, 0, 0)
+            scale(1);
+
+    }
+
+    50% {
+
+        transform:
+            translate3d(0, -18px, 0)
+            scale(1.04);
+
+    }
+
+}
+
+
+.sf-login-grid {
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: .35;
+
+    background-image:
+        linear-gradient(
+            rgba(15,23,42,.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(15,23,42,.025) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        45px 45px;
+
+}
+
+
+/* =========================================================
+   SHELL
+========================================================= */
+
+.sf-login-shell {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    max-width:
+        1160px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 475px)
+        minmax(0, 1fr);
+
+    gap: 30px;
+
+    align-items: stretch;
+
+}
+
+
+/* =========================================================
+   LOGIN CARD
+========================================================= */
+
+.sf-login-card {
+
+    position: relative;
+
+    width: 100%;
+
+    padding:
+        42px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.9);
+
+    border-radius:
+        var(--sf-radius);
+
+    background:
+        var(--sf-card);
+
+    box-shadow:
+        0 30px 80px
+        rgba(15,23,42,.11),
+
+        0 8px 25px
+        rgba(15,23,42,.045);
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    animation:
+        sfCardIn
+        .55s
+        ease
+        both;
+
+}
+
+
+@keyframes sfCardIn {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(18px)
+            scale(.985);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.sf-login-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom:
+        32px;
+
+}
+
+
+.sf-brand-logo {
+
+    width: 49px;
+
+    height: 49px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius:
+        15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #334155
+        );
+
+    box-shadow:
+        0 10px 25px
+        rgba(15,23,42,.18);
+
+}
+
+
+.sf-brand-logo span {
+
+    color: #fff;
+
+    font-size:
+        14px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        -.04em;
+
+}
+
+
+.sf-brand-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+
+.sf-brand-text strong {
+
+    color:
+        var(--sf-text);
+
+    font-size:
+        15px;
+
+    font-weight:
+        850;
+
+}
+
+
+.sf-brand-text span {
+
+    color:
+        var(--sf-muted);
+
+    font-size:
+        10.5px;
+
+    font-weight:
+        500;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.sf-login-header {
+
+    margin-bottom:
+        27px;
+
+}
+
+
+.sf-login-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        7px 12px;
+
+    border-radius:
+        999px;
+
+    background:
+        var(--sf-blue-light);
+
+    color:
+        var(--sf-blue);
+
+    font-size:
+        10px;
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        .07em;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+.sf-badge-dot {
+
+    width: 6px;
+
+    height: 6px;
+
+    border-radius:
+        50%;
+
+    background:
+        #22c55e;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(34,197,94,.10);
+
+}
+
+
+.sf-login-header h1 {
+
+    margin:
+        17px 0 9px;
+
+    color:
+        var(--sf-text);
+
+    font-size:
+        clamp(30px, 5vw, 40px);
+
+    line-height:
+        1.05;
+
+    letter-spacing:
+        -.05em;
+
+    font-weight:
+        850;
+
+}
+
+
+.sf-login-header p {
+
+    max-width:
+        415px;
+
+    margin: 0;
+
+    color:
+        var(--sf-muted);
+
+    font-size:
+        13.5px;
+
+    line-height:
+        1.7;
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.sf-login-message {
+
+    display: flex;
+
+    align-items: center;
+
+    min-height:
+        45px;
+
+    margin-bottom:
+        18px;
+
+    padding:
+        11px 14px;
+
+    border-radius:
+        12px;
+
+    font-size:
+        12.5px;
+
+    font-weight:
+        650;
+
+    line-height:
+        1.5;
+
+}
+
+
+.sf-login-message.error {
+
+    border:
+        1px solid
+        #fecaca;
+
+    background:
+        #fef2f2;
+
+    color:
+        #b91c1c;
+
+}
+
+
+.sf-login-message.success {
+
+    border:
+        1px solid
+        #a7f3d0;
+
+    background:
+        #ecfdf5;
+
+    color:
+        #047857;
+
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.sf-login-form {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        19px;
+
+}
+
+
+.sf-form-group {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        8px;
+
+}
+
+
+.sf-form-group label {
+
+    color:
+        var(--sf-text-soft);
+
+    font-size:
+        12.5px;
+
+    font-weight:
+        800;
+
+}
+
+
+.sf-form-group small {
+
+    color:
+        var(--sf-light);
+
+    font-size:
+        10.5px;
+
+    line-height:
+        1.5;
+
+}
+
+
+/* =========================================================
+   LABEL ROW
+========================================================= */
+
+.sf-label-row {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        10px;
+
+}
+
+
+.sf-forgot-link {
+
+    color:
+        var(--sf-blue);
+
+    font-size:
+        11px;
+
+    font-weight:
+        750;
+
+    text-decoration:
+        none;
+
+}
+
+
+.sf-forgot-link:hover {
+
+    text-decoration:
+        underline;
+
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.sf-input-box {
+
+    position:
+        relative;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+}
+
+
+.sf-input-icon {
+
+    position:
+        absolute;
+
+    left:
+        15px;
+
+    top:
+        50%;
+
+    transform:
+        translateY(-50%);
+
+    width:
+        18px;
+
+    height:
+        18px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    color:
+        #94a3b8;
+
+    pointer-events:
+        none;
+
+    z-index:
+        2;
+
+}
+
+
+.sf-input-icon svg {
+
+    width:
+        18px;
+
+    height:
+        18px;
+
+    fill:
+        none;
+
+    stroke:
+        currentColor;
+
+    stroke-width:
+        1.8;
+
+    stroke-linecap:
+        round;
+
+    stroke-linejoin:
+        round;
+
+}
+
+
+.sf-input-box:focus-within
+.sf-input-icon {
+
+    color:
+        var(--sf-blue);
+
+}
+
+
+.sf-input-box input {
+
+    width:
+        100%;
+
+    height:
+        53px;
+
+    padding:
+        0 48px;
+
+    border:
+        1px solid
+        var(--sf-border);
+
+    border-radius:
+        14px;
+
+    outline:
+        none;
+
+    background:
+        #ffffff;
+
+    color:
+        var(--sf-text);
+
+    font-family:
+        inherit;
+
+    font-size:
+        13.5px;
+
+    font-weight:
+        550;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+
+}
+
+
+.sf-input-box input::placeholder {
+
+    color:
+        #a1acba;
+
+}
+
+
+.sf-input-box input:hover {
+
+    border-color:
+        #cbd5e1;
+
+}
+
+
+.sf-input-box input:focus {
+
+    border-color:
+        rgba(37,99,235,.75);
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(37,99,235,.09);
+
+}
+
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+.sf-password-toggle {
+
+    position:
+        absolute;
+
+    right:
+        8px;
+
+    top:
+        50%;
+
+    transform:
+        translateY(-50%);
+
+    width:
+        37px;
+
+    height:
+        37px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    background:
+        transparent;
+
+    color:
+        #94a3b8;
+
+    cursor:
+        pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+
+}
+
+
+.sf-password-toggle:hover {
+
+    background:
+        #f1f5f9;
+
+    color:
+        var(--sf-blue);
+
+}
+
+
+.sf-password-toggle.is-visible {
+
+    background:
+        var(--sf-blue-light);
+
+    color:
+        var(--sf-blue);
+
+}
+
+
+.sf-password-toggle svg {
+
+    width:
+        19px;
+
+    height:
+        19px;
+
+    fill:
+        none;
+
+    stroke:
+        currentColor;
+
+    stroke-width:
+        1.8;
+
+    stroke-linecap:
+        round;
+
+    stroke-linejoin:
+        round;
+
+}
+
+
+/* =========================================================
+   REMEMBER
+========================================================= */
+
+.sf-remember {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    width:
+        fit-content;
+
+    color:
+        var(--sf-muted);
+
+    font-size:
+        11.5px;
+
+    font-weight:
+        550;
+
+    cursor:
+        pointer;
+
+}
+
+
+.sf-remember input {
+
+    position:
+        absolute;
+
+    opacity:
+        0;
+
+    pointer-events:
+        none;
+
+}
+
+
+.sf-custom-check {
+
+    width:
+        18px;
+
+    height:
+        18px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1.5px solid
+        #cbd5e1;
+
+    border-radius:
+        6px;
+
+    background:
+        #ffffff;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease;
+
+}
+
+
+.sf-custom-check svg {
+
+    width:
+        12px;
+
+    height:
+        12px;
+
+    fill:
+        none;
+
+    stroke:
+        #ffffff;
+
+    stroke-width:
+        3;
+
+    stroke-linecap:
+        round;
+
+    stroke-linejoin:
+        round;
+
+    opacity:
+        0;
+
+}
+
+
+.sf-remember input:checked
++ .sf-custom-check {
+
+    border-color:
+        var(--sf-blue);
+
+    background:
+        var(--sf-blue);
+
+}
+
+
+.sf-remember input:checked
++ .sf-custom-check svg {
+
+    opacity:
+        1;
+
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.sf-login-button {
+
+    position:
+        relative;
+
+    width:
+        100%;
+
+    min-height:
+        54px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        9px;
+
+    overflow:
+        hidden;
+
+    border:
+        none;
+
+    border-radius:
+        14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--sf-blue),
+            var(--sf-indigo)
+        );
+
+    color:
+        #ffffff;
+
+    font-family:
+        inherit;
+
+    font-size:
+        13.5px;
+
+    font-weight:
+        850;
+
+    cursor:
+        pointer;
+
+    box-shadow:
+        0 12px 28px
+        rgba(37,99,235,.22);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+
+}
+
+
+.sf-login-button::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    background:
+        linear-gradient(
+            110deg,
+            transparent 25%,
+            rgba(255,255,255,.22) 50%,
+            transparent 75%
+        );
+
+    transform:
+        translateX(-120%);
+
+    transition:
+        transform .65s ease;
+
+}
+
+
+.sf-login-button:hover::before {
+
+    transform:
+        translateX(120%);
+
+}
+
+
+.sf-login-button:hover:not(:disabled) {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 17px 35px
+        rgba(37,99,235,.28);
+
+}
+
+
+.sf-login-button:active:not(:disabled) {
+
+    transform:
+        translateY(0);
+
+}
+
+
+.sf-login-button:disabled {
+
+    cursor:
+        not-allowed;
+
+    opacity:
+        .72;
+
+}
+
+
+/* =========================================================
+   BUTTON CONTENT
+========================================================= */
+
+#loginButtonText {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+}
+
+
+.sf-button-arrow {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    font-size:
+        17px;
+
+    transition:
+        transform .2s ease;
+
+}
+
+
+.sf-login-button:hover
+.sf-button-arrow {
+
+    transform:
+        translateX(3px);
+
+}
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+.sf-button-loader {
+
+    display:
+        none;
+
+    width:
+        17px;
+
+    height:
+        17px;
+
+    border:
+        2px solid
+        rgba(255,255,255,.4);
+
+    border-top-color:
+        #ffffff;
+
+    border-radius:
+        50%;
+
+    animation:
+        sfLoginSpin
+        .7s
+        linear
+        infinite;
+
+}
+
+
+.sf-login-button.is-loading
+.sf-button-loader {
+
+    display:
+        inline-block;
+
+}
+
+
+.sf-login-button.is-loading
+.sf-button-arrow {
+
+    display:
+        none;
+
+}
+
+
+@keyframes sfLoginSpin {
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   SECURITY NOTE
+========================================================= */
+
+.sf-security-note {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    gap:
+        10px;
+
+    padding:
+        12px 13px;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius:
+        12px;
+
+    background:
+        #f8fafc;
+
+    color:
+        #64748b;
+
+    font-size:
+        10.5px;
+
+    line-height:
+        1.5;
+
+}
+
+
+.sf-security-icon {
+
+    flex:
+        0 0 auto;
+
+    width:
+        20px;
+
+    height:
+        20px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        7px;
+
+    background:
+        #dcfce7;
+
+    color:
+        #15803d;
+
+}
+
+
+.sf-security-icon svg {
+
+    width:
+        13px;
+
+    height:
+        13px;
+
+    fill:
+        none;
+
+    stroke:
+        currentColor;
+
+    stroke-width:
+        2;
+
+    stroke-linecap:
+        round;
+
+    stroke-linejoin:
+        round;
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.sf-login-footer {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        5px;
+
+    margin-top:
+        27px;
+
+    padding-top:
+        21px;
+
+    border-top:
+        1px solid
+        #eef2f7;
+
+    color:
+        #64748b;
+
+    font-size:
+        11.5px;
+
+}
+
+
+.sf-login-footer a {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        5px;
+
+    color:
+        var(--sf-blue);
+
+    font-weight:
+        800;
+
+    text-decoration:
+        none;
+
+}
+
+
+.sf-login-footer a:hover {
+
+    text-decoration:
+        underline;
+
+}
+
+
+.footer-arrow {
+
+    font-size:
+        14px;
+
+}
+
+
+/* =========================================================
+   TRUST PANEL
+========================================================= */
+
+.sf-login-trust {
+
+    position:
+        relative;
+
+    min-height:
+        610px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    overflow:
+        hidden;
+
+    padding:
+        55px;
+
+    border-radius:
+        var(--sf-radius);
+
+    background:
+        radial-gradient(
+            circle at 85% 10%,
+            rgba(59,130,246,.22),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 5% 90%,
+            rgba(79,70,229,.18),
+            transparent 28%
+        ),
+        linear-gradient(
+            145deg,
+            #0f172a 0%,
+            #111827 58%,
+            #172554 100%
+        );
+
+    box-shadow:
+        0 30px 80px
+        rgba(15,23,42,.17);
+
+}
+
+
+.sf-trust-content {
+
+    position:
+        relative;
+
+    z-index:
+        5;
+
+    width:
+        100%;
+
+}
+
+
+.sf-trust-logo {
+
+    width:
+        48px;
+
+    height:
+        48px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    margin-bottom:
+        25px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.13);
+
+    border-radius:
+        15px;
+
+    background:
+        rgba(255,255,255,.07);
+
+    backdrop-filter:
+        blur(10px);
+
+}
+
+
+.sf-trust-logo span {
+
+    color:
+        #ffffff;
+
+    font-size:
+        13px;
+
+    font-weight:
+        900;
+
+}
+
+
+.sf-trust-eyebrow {
+
+    display:
+        block;
+
+    margin-bottom:
+        17px;
+
+    color:
+        #93c5fd;
+
+    font-size:
+        9.5px;
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        .16em;
+
+}
+
+
+.sf-login-trust h2 {
+
+    margin:
+        0 0 18px;
+
+    color:
+        #ffffff;
+
+    font-size:
+        clamp(34px, 4vw, 50px);
+
+    line-height:
+        1.02;
+
+    letter-spacing:
+        -.055em;
+
+    font-weight:
+        850;
+
+}
+
+
+.sf-login-trust h2 span {
+
+    color:
+        #93c5fd;
+
+}
+
+
+.sf-login-trust
+> .sf-trust-content
+> p {
+
+    max-width:
+        485px;
+
+    margin:
+        0 0 36px;
+
+    color:
+        #cbd5e1;
+
+    font-size:
+        13.5px;
+
+    line-height:
+        1.8;
+
+}
+
+
+/* =========================================================
+   TRUST ITEMS
+========================================================= */
+
+.sf-trust-list {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        21px;
+
+}
+
+
+.sf-trust-item {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    gap:
+        13px;
+
+}
+
+
+.sf-trust-icon {
+
+    flex:
+        0 0 auto;
+
+    width:
+        36px;
+
+    height:
+        36px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid
+        rgba(147,197,253,.18);
+
+    border-radius:
+        11px;
+
+    background:
+        rgba(255,255,255,.055);
+
+    color:
+        #93c5fd;
+
+}
+
+
+.sf-trust-icon svg {
+
+    width:
+        17px;
+
+    height:
+        17px;
+
+    fill:
+        none;
+
+    stroke:
+        currentColor;
+
+    stroke-width:
+        1.8;
+
+    stroke-linecap:
+        round;
+
+    stroke-linejoin:
+        round;
+
+}
+
+
+.sf-trust-item div {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        4px;
+
+}
+
+
+.sf-trust-item strong {
+
+    color:
+        #ffffff;
+
+    font-size:
+        12.5px;
+
+    font-weight:
+        800;
+
+}
+
+
+.sf-trust-item div span {
+
+    color:
+        #94a3b8;
+
+    font-size:
+        10.5px;
+
+    line-height:
+        1.5;
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.sf-trust-status {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    margin-top:
+        40px;
+
+    padding-top:
+        20px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.08);
+
+    color:
+        #94a3b8;
+
+    font-size:
+        10.5px;
+
+}
+
+
+.sf-status-dot {
+
+    width:
+        7px;
+
+    height:
+        7px;
+
+    flex:
+        0 0 auto;
+
+    border-radius:
+        50%;
+
+    background:
+        #4ade80;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(74,222,128,.09);
+
+}
+
+
+.sf-status-line {
+
+    width:
+        45px;
+
+    height:
+        1px;
+
+    margin-left:
+        auto;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(147,197,253,.5),
+            transparent
+        );
+
+}
+
+
+/* =========================================================
+   DECORATION
+========================================================= */
+
+.sf-trust-decoration {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    pointer-events:
+        none;
+
+}
+
+
+.sf-trust-decoration span {
+
+    position:
+        absolute;
+
+    border:
+        1px solid
+        rgba(255,255,255,.05);
+
+    border-radius:
+        50%;
+
+}
+
+
+.sf-trust-decoration span:nth-child(1) {
+
+    width:
+        500px;
+
+    height:
+        500px;
+
+    right:
+        -280px;
+
+    top:
+        -180px;
+
+}
+
+
+.sf-trust-decoration span:nth-child(2) {
+
+    width:
+        350px;
+
+    height:
+        350px;
+
+    right:
+        -190px;
+
+    top:
+        -100px;
+
+}
+
+
+.sf-trust-decoration span:nth-child(3) {
+
+    width:
+        180px;
+
+    height:
+        180px;
+
+    left:
+        -100px;
+
+    bottom:
+        -90px;
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 930px) {
+
+    .sf-login-shell {
+
+        max-width:
+            570px;
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .sf-login-trust {
+
+        display:
+            none;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .sf-login-page {
+
+        min-height:
+            calc(100vh - 60px);
+
+        align-items:
+            flex-start;
+
+        padding:
+            20px 11px;
+
+    }
+
+
+    .sf-login-shell {
+
+        margin-top:
+            6px;
+
+    }
+
+
+    .sf-login-card {
+
+        padding:
+            28px 20px 23px;
+
+        border-radius:
+            21px;
+
+    }
+
+
+    .sf-login-brand {
+
+        margin-bottom:
+            25px;
+
+    }
+
+
+    .sf-brand-logo {
+
+        width:
+            45px;
+
+        height:
+            45px;
+
+    }
+
+
+    .sf-login-header {
+
+        margin-bottom:
+            24px;
+
+    }
+
+
+    .sf-login-header h1 {
+
+        font-size:
+            30px;
+
+    }
+
+
+    .sf-login-header p {
+
+        font-size:
+            12.5px;
+
+    }
+
+
+    .sf-login-form {
+
+        gap:
+            17px;
+
+    }
+
+
+    .sf-input-box input {
+
+        height:
+            51px;
+
+    }
+
+
+    .sf-login-button {
+
+        min-height:
+            53px;
+
+    }
+
+
+    .sf-login-footer {
+
+        text-align:
+            center;
+
+        line-height:
+            1.6;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .sf-login-page {
+
+        padding:
+            14px 8px;
+
+    }
+
+
+    .sf-login-card {
+
+        padding:
+            24px 16px 20px;
+
+        border-radius:
+            19px;
+
+    }
+
+
+    .sf-login-header h1 {
+
+        font-size:
+            27px;
+
+    }
+
+
+    .sf-login-header p {
+
+        font-size:
+            12px;
+
+    }
+
+
+    .sf-brand-text span {
+
+        display:
+            none;
+
+    }
+
+
+    .sf-forgot-link {
+
+        font-size:
+            10px;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .sf-login-card,
+    .sf-login-orb {
+
+        animation:
+            none;
+
+    }
+
+
+    .sf-login-button,
+    .sf-password-toggle {
+
+        transition:
+            none;
+
+    }
+
+}
