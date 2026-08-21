@@ -264,7 +264,6 @@ def serialize_job_image(image):
         "image_path": image.image_path
     }
 
-
 def serialize_job(
     job,
     include_description=True,
@@ -299,7 +298,22 @@ def serialize_job(
             )
         },
 
-        "budget_display": job.budget_display,
+        "budget_display": (
+            f"₹{job.budget_min:,.0f} - ₹{job.budget_max:,.0f}"
+            if (
+                job.budget_min is not None
+                and job.budget_max is not None
+            )
+            else (
+                f"₹{job.budget_min:,.0f}"
+                if job.budget_min is not None
+                else (
+                    f"₹{job.budget_max:,.0f}"
+                    if job.budget_max is not None
+                    else "Budget not specified"
+                )
+            )
+        ),
 
         "location": job.location,
 
