@@ -16,45 +16,70 @@ from extensions import (
     migrate,
     jwt
 )
-from utils.cloudinary_config import init_cloudinary
 
+from utils.cloudinary_config import (
+    init_cloudinary
+)
+
+
+# ============================================================
+# DATABASE COMPATIBILITY SYNC
+# ============================================================
 
 def sync_worker_profiles_columns():
 
     required_columns = {
 
         "headline": "VARCHAR(255)",
+
         "about": "TEXT",
+
         "profile_image": "VARCHAR(500)",
+
         "cover_image": "VARCHAR(500)",
+
         "experience_years": "INTEGER DEFAULT 0",
 
         "service_area": "VARCHAR(255)",
+
         "service_radius_km": "INTEGER",
+
         "address": "VARCHAR(255)",
 
         "city": "VARCHAR(100)",
+
         "state": "VARCHAR(100)",
+
         "pincode": "VARCHAR(10)",
 
         "latitude": "NUMERIC(10,7)",
+
         "longitude": "NUMERIC(10,7)",
 
         "hourly_rate": "NUMERIC(10,2)",
+
         "minimum_charge": "NUMERIC(10,2)",
 
         "availability": "VARCHAR(100)",
+
         "is_available": "BOOLEAN DEFAULT TRUE",
 
         "is_verified": "BOOLEAN DEFAULT FALSE",
+
         "verification_status":
             "VARCHAR(30) DEFAULT 'pending'",
 
-        "rating": "NUMERIC(3,2) DEFAULT 0.00",
+        "rating":
+            "NUMERIC(3,2) DEFAULT 0.00",
 
-        "total_reviews": "INTEGER DEFAULT 0",
-        "total_jobs": "INTEGER DEFAULT 0",
-        "completed_jobs": "INTEGER DEFAULT 0",
+        "total_reviews":
+            "INTEGER DEFAULT 0",
+
+        "total_jobs":
+            "INTEGER DEFAULT 0",
+
+        "completed_jobs":
+            "INTEGER DEFAULT 0",
 
         "profile_completed":
             "BOOLEAN DEFAULT FALSE",
@@ -66,24 +91,40 @@ def sync_worker_profiles_columns():
             "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
     }
 
-    inspector = inspect(db.engine)
+    inspector = inspect(
+        db.engine
+    )
 
-    if "worker_profiles" not in inspector.get_table_names():
+    if "worker_profiles" not in (
+        inspector.get_table_names()
+    ):
 
         return
 
     existing_columns = {
+
         column["name"]
+
         for column in inspector.get_columns(
             "worker_profiles"
         )
     }
 
-    for column_name, column_type in required_columns.items():
+    changed = False
 
-        if column_name not in existing_columns:
+    for (
+        column_name,
+        column_type
+    ) in required_columns.items():
+
+        if column_name in existing_columns:
+
+            continue
+
+        try:
 
             db.session.execute(
+
                 text(
                     f"""
                     ALTER TABLE worker_profiles
@@ -92,44 +133,99 @@ def sync_worker_profiles_columns():
                 )
             )
 
+            changed = True
+
             print(
                 f"[DB SYNC] Added column: "
                 f"worker_profiles.{column_name}"
             )
 
-    db.session.commit()
+        except Exception as exc:
 
+            db.session.rollback()
+
+            print(
+                f"[DB SYNC ERROR] "
+                f"{column_name}: {exc}"
+            )
+
+            raise
+
+    if changed:
+
+        db.session.commit()
+
+
+# ============================================================
+# APPLICATION FACTORY
+# ============================================================
 
 def create_app():
 
-    app = Flask(__name__)
+    app = Flask(
+        __name__
+    )
 
-    # Configuration
+    # ========================================================
+    # CONFIG
+    # ========================================================
 
-    app.config.from_object(Config)
+    app.config.from_object(
+        Config
+    )
 
-    # Extensions
+    # ========================================================
+    # EXTENSIONS
+    # ========================================================
 
-    db.init_app(app)
-    migrate.init_app(app, db)
-    jwt.init_app(app)
+    db.init_app(
+        app
+    )
+
+    migrate.init_app(
+        app,
+        db
+    )
+
+    jwt.init_app(
+        app
+    )
+
+    # ========================================================
+    # CLOUDINARY
+    # ========================================================
 
     init_cloudinary()
 
-    # Models
+    # ========================================================
+    # MODELS
+    #
+    # IMPORTANT:
+    # Import every model before create_all / migrations.
+    # ========================================================
 
     from models import (
+
         User,
+
         CustomerProfile,
+
         WorkerProfile,
+
         WorkerPortfolio,
+
         Category,
+
         Job,
+
         JobImage,
+
         JobApplication
     )
 
-    # Database
+    # ========================================================
+    # DATABASE INITIALIZATION
+    # ========================================================
 
     with app.app_context():
 
@@ -137,17 +233,21 @@ def create_app():
 
         sync_worker_profiles_columns()
 
-    # ------------------------------
-    # Blueprints
-    # ------------------------------
+    # ========================================================
+    # AUTH
+    # ========================================================
 
     from routes.auth import (
+
         auth_bp,
+
         auth_pages_bp
     )
 
     app.register_blueprint(
+
         auth_bp,
+
         url_prefix="/api/auth"
     )
 
@@ -155,23 +255,39 @@ def create_app():
         auth_pages_bp
     )
 
+    # ========================================================
+    # CUSTOMER
+    # ========================================================
+
     from routes.customer import (
         customer_bp
     )
 
     app.register_blueprint(
+
         customer_bp,
+
         url_prefix="/api/customer"
     )
+
+    # ========================================================
+    # WORKER API
+    # ========================================================
 
     from routes.worker import (
         worker_bp
     )
 
     app.register_blueprint(
+
         worker_bp,
+
         url_prefix="/api/worker"
     )
+
+    # ========================================================
+    # WORKER PAGES
+    # ========================================================
 
     from routes.worker_pages import (
         worker_pages_bp
@@ -181,31 +297,47 @@ def create_app():
         worker_pages_bp
     )
 
+    # ========================================================
+    # JOB API
+    # ========================================================
+
     from routes.jobs import (
         jobs_bp
     )
 
     app.register_blueprint(
+
         jobs_bp,
+
         url_prefix="/api/jobs"
     )
+
+    # ========================================================
+    # ADMIN
+    # ========================================================
 
     from routes.admin import (
         admin_bp
     )
-    from routes.admin_pages import admin_pages_bp
+
+    from routes.admin_pages import (
+        admin_pages_bp
+    )
 
     app.register_blueprint(
+
         admin_bp,
+
         url_prefix="/api/admin"
     )
+
     app.register_blueprint(
         admin_pages_bp
     )
 
-    # ------------------------------
-    # Job Pages
-    # ------------------------------
+    # ========================================================
+    # JOB PAGES
+    # ========================================================
 
     from routes.job_pages import (
         job_pages_bp
@@ -214,9 +346,10 @@ def create_app():
     app.register_blueprint(
         job_pages_bp
     )
-    # ------------------------------
-    # Public Workers
-    # ------------------------------
+
+    # ========================================================
+    # PUBLIC WORKERS
+    # ========================================================
 
     from routes.worker_public import (
         worker_public_bp
@@ -226,58 +359,85 @@ def create_app():
         worker_public_bp
     )
 
-    # ------------------------------
-    # Home Page
-    # ------------------------------
+    # ========================================================
+    # HOME
+    # ========================================================
 
     @app.route("/")
     def home():
 
         workers = (
+
             WorkerProfile.query
+
             .filter(
                 WorkerProfile.profile_completed.is_(True)
             )
+
             .order_by(
+
                 WorkerProfile.is_verified.desc(),
+
                 WorkerProfile.is_available.desc(),
+
                 WorkerProfile.rating.desc(),
+
                 WorkerProfile.total_reviews.desc(),
+
                 WorkerProfile.created_at.desc()
             )
+
             .limit(8)
+
             .all()
         )
 
         return render_template(
+
             "public/home.html",
+
             workers=workers
         )
 
-    # ------------------------------
-    # Health Check
-    # ------------------------------
+    # ========================================================
+    # HEALTH CHECK
+    # ========================================================
 
-    @app.route("/health")
+    @app.route(
+        "/health"
+    )
     def health():
 
         return jsonify({
+
             "status": "success",
-            "message": "S. F Works Marketplace API is running",
-            "service": "sf-works-marketplace"
-        })
 
-    # ------------------------------
-    # API Root
-    # ------------------------------
+            "message":
+                "S. F Works Marketplace API is running",
 
-    @app.route("/api")
+            "service":
+                "sf-works-marketplace"
+        }), 200
+
+    # ========================================================
+    # API ROOT
+    # ========================================================
+
+    @app.route(
+        "/api"
+    )
     def api_root():
 
         return jsonify({
-            "name": "S. F Works Marketplace",
-            "version": "1.0.0",
-            "status": "online"
-        })
+
+            "name":
+                "S. F Works Marketplace",
+
+            "version":
+                "1.0.0",
+
+            "status":
+                "online"
+        }), 200
 
     return app
