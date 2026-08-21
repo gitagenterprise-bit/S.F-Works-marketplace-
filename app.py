@@ -359,46 +359,85 @@ def create_app():
         worker_public_bp
     )
 
-    # ========================================================
-    # HOME
-    # ========================================================
+ 
+
+    # ============================================================
+    # HOME PAGE
+    # ============================================================
 
     @app.route("/")
     def home():
 
-        workers = (
+    # ========================================================
+    # FEATURED WORKERS
+    # ========================================================
 
-            WorkerProfile.query
+    workers = (
 
-            .filter(
-                WorkerProfile.profile_completed.is_(True)
-            )
+        WorkerProfile.query
 
-            .order_by(
-
-                WorkerProfile.is_verified.desc(),
-
-                WorkerProfile.is_available.desc(),
-
-                WorkerProfile.rating.desc(),
-
-                WorkerProfile.total_reviews.desc(),
-
-                WorkerProfile.created_at.desc()
-            )
-
-            .limit(8)
-
-            .all()
+        .filter(
+            WorkerProfile.profile_completed.is_(True)
         )
 
-        return render_template(
+        .order_by(
 
-            "public/home.html",
+            WorkerProfile.is_verified.desc(),
 
-            workers=workers
+            WorkerProfile.is_available.desc(),
+
+            WorkerProfile.rating.desc(),
+
+            WorkerProfile.total_reviews.desc(),
+
+            WorkerProfile.created_at.desc()
         )
 
+        .limit(8)
+
+        .all()
+    )
+
+
+    # ========================================================
+    # LATEST JOBS
+    # ========================================================
+
+    jobs = (
+
+        Job.query
+
+        .filter(
+            Job.status.in_([
+                "open",
+                "OPEN",
+                "active",
+                "ACTIVE"
+            ])
+        )
+
+        .order_by(
+            Job.created_at.desc()
+        )
+
+        .limit(8)
+
+        .all()
+    )
+
+
+    # ========================================================
+    # HOME TEMPLATE
+    # ========================================================
+
+    return render_template(
+
+        "public/home.html",
+
+        workers=workers,
+
+        jobs=jobs
+        )
     # ========================================================
     # HEALTH CHECK
     # ========================================================
