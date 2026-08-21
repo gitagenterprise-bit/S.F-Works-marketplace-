@@ -22,7 +22,7 @@ from models import (
 )
 
 from utils.admin_security import admin_required
-
+from utils.decorators import admin_required
 
 admin_bp = Blueprint(
     "admin",
