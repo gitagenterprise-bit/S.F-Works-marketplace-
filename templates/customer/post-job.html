@@ -20,7 +20,7 @@ Post a Job — S. F Works
 <main class="post-job-page">
 
     <!-- =====================================================
-         PREMIUM HERO
+         HERO
     ====================================================== -->
 
     <section class="post-job-hero">
@@ -30,25 +30,19 @@ Post a Job — S. F Works
             <div class="hero-content">
 
                 <div class="hero-badge">
-
                     <span class="badge-dot"></span>
-
                     S. F Works Marketplace
-
                 </div>
-
 
                 <h1>
                     Post a Job.
                     <span>Find the Right Worker.</span>
                 </h1>
 
-
                 <p>
                     Tell us what you need and connect with
                     trusted, skilled professionals near you.
                 </p>
-
 
                 <div class="hero-features">
 
@@ -57,12 +51,10 @@ Post a Job — S. F Works
                         Trusted Workers
                     </div>
 
-
                     <div class="hero-feature">
                         <span>✓</span>
                         Local Professionals
                     </div>
-
 
                     <div class="hero-feature">
                         <span>✓</span>
@@ -78,843 +70,549 @@ Post a Job — S. F Works
     </section>
 
 
-
     <!-- =====================================================
-         POST JOB SECTION
+         FORM SECTION
     ====================================================== -->
-<!-- =====================================================
-     PREMIUM CATEGORY PICKER
-====================================================== -->
 
-<div class="form-group">
+    <section class="post-job-section">
 
-    <label for="jobCategory">
+        <div class="post-job-container">
 
-        Category
+            <div class="post-job-card">
 
-        <span>*</span>
+                <!-- =================================================
+                     FORM HEADER
+                ================================================== -->
 
-    </label>
+                <div class="form-header">
 
+                    <div>
 
-    <div
-        class="category-picker"
-        id="categoryPicker"
-    >
+                        <span class="form-eyebrow">
+                            JOB DETAILS
+                        </span>
 
-        <!-- =================================================
-             SEARCH INPUT
-        ================================================== -->
+                        <h2>
+                            Tell us about your job
+                        </h2>
 
-        <div class="category-input-wrapper">
+                        <p>
+                            Fill in the details below to publish
+                            your job on S. F Works.
+                        </p>
 
-            <span
-                class="input-icon category-search-icon"
-                aria-hidden="true"
-            >
-                ◈
-            </span>
+                    </div>
 
-
-            <input
-                type="text"
-                id="jobCategory"
-                name="category_search"
-                placeholder="Search category..."
-                autocomplete="off"
-                maxlength="100"
-                required
-                role="combobox"
-                aria-expanded="false"
-                aria-controls="categoryDropdown"
-                aria-autocomplete="list"
-            >
-
-
-            <button
-                type="button"
-                class="category-dropdown-button"
-                id="categoryDropdownButton"
-                aria-label="Open categories"
-                aria-expanded="false"
-            >
-                <span aria-hidden="true">
-                   ⌄
-                </span>
-            </button>
-
-        </div>
-
-
-        <!-- =================================================
-             REAL DATABASE CATEGORY ID
-
-             THIS VALUE IS SENT TO BACKEND
-             category_id = Category.id
-        ================================================== -->
-
-        <input
-            type="hidden"
-            id="jobCategoryId"
-            name="category_id"
-            value=""
-        >
-
-
-        <!-- =================================================
-             DROPDOWN
-        ================================================== -->
-
-        <div
-            class="category-dropdown"
-            id="categoryDropdown"
-            aria-hidden="true"
-        >
-
-            <!-- HEADER -->
-
-            <div class="category-dropdown-header">
-
-                <div class="category-header-title">
-
-                    <span class="category-header-icon">
-                        ✦
-                    </span>
-
-                    <span>
-                        Choose a category
-                    </span>
-
-                </div>
-
-
-                <span
-                    id="categoryCount"
-                    class="category-count"
-                >
-                    0
-                </span>
-
-            </div>
-
-
-            <!-- CATEGORY LIST -->
-
-            <div
-                class="category-list"
-                id="categoryList"
-                role="listbox"
-            >
-
-                <div class="category-loading">
-
-                    <span class="category-spinner"></span>
-
-                    <strong>
-                        Loading categories...
-                    </strong>
-
-                    <small>
-                        Please wait
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 CUSTOM CATEGORY
-
-                 DOES NOT BYPASS ADMIN CONTROL
-             ================================================== -->
-
-            <button
-                type="button"
-                class="custom-category-option"
-                id="customCategoryButton"
-            >
-
-                <span class="custom-category-icon">
-                    +
-                </span>
-
-
-                <span class="custom-category-content">
-
-                    <strong>
-                        Can't find your category?
-                    </strong>
-
-                    <small>
-                        Search another approved category
-                    </small>
-
-                </span>
-
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- CATEGORY STATUS -->
-
-    <div
-        id="categoryStatus"
-        class="category-status"
-        aria-live="polite"
-    ></div>
+                    <div class="secure-badge">
+                        <span>🔒</span>
+                        Secure
+                    </div>
 
                 </div>
 
 
                 <!-- =================================================
-                     MAIN FORM CARD
+                     FORM
                 ================================================== -->
 
-                <div class="post-job-card">
-
+                <form
+                    id="postJobForm"
+                    method="POST"
+                    action=""
+                    novalidate
+                >
 
                     <!-- =================================================
-                         FORM HEADER
+                         JOB TITLE
                     ================================================== -->
 
-                    <div class="form-header">
+                    <div class="form-group">
 
-                        <div>
+                        <label for="jobTitle">
+                            Job Title
+                            <span>*</span>
+                        </label>
 
-                            <span class="form-eyebrow">
-                                JOB DETAILS
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                ✦
                             </span>
 
-
-                            <h2>
-                                Tell us about your job
-                            </h2>
-
-
-                            <p>
-                                Fill in the details below to publish
-                                your job on S. F Works.
-                            </p>
+                            <input
+                                type="text"
+                                id="jobTitle"
+                                name="title"
+                                placeholder="e.g. Home electrical work"
+                                autocomplete="off"
+                                maxlength="200"
+                                required
+                            >
 
                         </div>
 
+                        <small class="field-hint">
+                            Keep it short and specific.
+                        </small>
 
-                        <div class="secure-badge">
+                    </div>
 
-                            <span>
-                                🔒
+
+                    <!-- =================================================
+                         DESCRIPTION
+                    ================================================== -->
+
+                    <div class="form-group">
+
+                        <label for="jobDescription">
+                            Job Description
+                            <span>*</span>
+                        </label>
+
+                        <textarea
+                            id="jobDescription"
+                            name="description"
+                            rows="6"
+                            maxlength="5000"
+                            placeholder="Describe the work, requirements, materials, preferred timing, etc."
+                            required
+                        ></textarea>
+
+                        <div class="textarea-footer">
+
+                            <small>
+                                Give workers enough information
+                                to understand your requirements.
+                            </small>
+
+                            <span id="descriptionCounter">
+                                0 / 5000
                             </span>
-
-                            Secure
 
                         </div>
 
                     </div>
 
 
-
                     <!-- =================================================
-                         FORM
+                         CATEGORY
                     ================================================== -->
 
-                    <form
-                        id="postJobForm"
-                        method="POST"
-                        novalidate
-                    >
+                    <div class="form-group">
+
+                        <label for="jobCategory">
+                            Category
+                            <span>*</span>
+                        </label>
 
 
-                        <!-- =============================================
-                             JOB TITLE
-                        ============================================== -->
+                        <div
+                            class="category-picker"
+                            id="categoryPicker"
+                        >
 
-                        <div class="form-group">
+                            <!-- INPUT -->
 
-                            <label for="jobTitle">
-
-                                Job Title
-
-                                <span>*</span>
-
-                            </label>
-
-
-                            <div class="input-wrapper">
+                            <div class="category-input-wrapper">
 
                                 <span class="input-icon">
-                                    ✦
+                                    ◈
                                 </span>
-
 
                                 <input
                                     type="text"
-                                    id="jobTitle"
-                                    name="title"
-                                    placeholder="e.g. Home electrical work"
+                                    id="jobCategory"
+                                    name="category_search"
+                                    placeholder="Search or choose a category..."
                                     autocomplete="off"
-                                    maxlength="200"
+                                    maxlength="100"
                                     required
+                                    role="combobox"
+                                    aria-expanded="false"
+                                    aria-controls="categoryDropdown"
+                                    aria-autocomplete="list"
                                 >
 
-                            </div>
-
-
-                            <small class="field-hint">
-                                Keep it short and specific.
-                            </small>
-
-                        </div>
-
-
-
-                        <!-- =============================================
-                             DESCRIPTION
-                        ============================================== -->
-
-                        <div class="form-group">
-
-                            <label for="jobDescription">
-
-                                Job Description
-
-                                <span>*</span>
-
-                            </label>
-
-
-                            <textarea
-                                id="jobDescription"
-                                name="description"
-                                rows="6"
-                                maxlength="5000"
-                                placeholder="Describe the work, requirements, materials, preferred timing, etc."
-                                required
-                            ></textarea>
-
-
-                            <div class="textarea-footer">
-
-                                <small>
-                                    Give workers enough information
-                                    to understand your requirements.
-                                </small>
-
-
-                                <span id="descriptionCounter">
-                                    0 / 5000
-                                </span>
+                                <button
+                                    type="button"
+                                    class="category-dropdown-button"
+                                    id="categoryDropdownButton"
+                                    aria-label="Open categories"
+                                    aria-expanded="false"
+                                >
+                                    <span>⌄</span>
+                                </button>
 
                             </div>
 
-                        </div>
 
+                            <!-- REAL DATABASE CATEGORY ID -->
 
-
-                        <!-- =====================================================
-                             PREMIUM CATEGORY PICKER
-                        ====================================================== -->
-
-                        <div class="form-group">
-
-                            <label for="jobCategory">
-
-                                Category
-
-                                <span>*</span>
-
-                            </label>
-
-
-                            <div
-                                class="category-picker"
-                                id="categoryPicker"
+                            <input
+                                type="hidden"
+                                id="jobCategoryId"
+                                name="category_id"
+                                value=""
                             >
 
 
-                                <!-- =================================================
-                                     SEARCH / TYPE CATEGORY
-                                ================================================== -->
+                            <!-- DROPDOWN -->
 
-                                <div class="category-input-wrapper">
+                            <div
+                                class="category-dropdown"
+                                id="categoryDropdown"
+                                aria-hidden="true"
+                            >
 
-                                    <span class="input-icon">
-                                        ◈
-                                    </span>
+                                <div class="category-dropdown-header">
 
+                                    <div class="category-header-title">
 
-                                    <input
-                                        type="text"
-                                        id="jobCategory"
-                                        name="category_search"
-                                        placeholder="Search or type a category..."
-                                        autocomplete="off"
-                                        maxlength="100"
-                                        required
-                                        aria-expanded="false"
-                                        aria-controls="categoryDropdown"
-                                    >
-
-
-                                    <button
-                                        type="button"
-                                        class="category-dropdown-button"
-                                        id="categoryDropdownButton"
-                                        aria-label="Open categories"
-                                        aria-expanded="false"
-                                    >
-
-                                        <span>
-                                            ⌄
+                                        <span class="category-header-icon">
+                                            ✦
                                         </span>
-
-                                    </button>
-
-                                </div>
-
-
-
-                                <!-- =================================================
-                                     IMPORTANT:
-                                     Actual category ID
-                                     sent to backend
-                                ================================================== -->
-
-                                <input
-                                    type="hidden"
-                                    id="jobCategoryId"
-                                    name="category_id"
-                                >
-
-
-
-                                <!-- =================================================
-                                     CATEGORY DROPDOWN
-                                ================================================== -->
-
-                                <div
-                                    class="category-dropdown"
-                                    id="categoryDropdown"
-                                >
-
-
-                                    <!-- HEADER -->
-
-                                    <div class="category-dropdown-header">
 
                                         <span>
                                             Choose a category
                                         </span>
 
-
-                                        <span id="categoryCount">
-                                            0
-                                        </span>
-
                                     </div>
 
-
-
-                                    <!-- CATEGORY LIST -->
-
-                                    <div
-                                        class="category-list"
-                                        id="categoryList"
+                                    <span
+                                        id="categoryCount"
+                                        class="category-count"
                                     >
+                                        0
+                                    </span>
 
-                                        <div class="category-loading">
+                                </div>
 
+
+                                <div
+                                    class="category-list"
+                                    id="categoryList"
+                                    role="listbox"
+                                >
+
+                                    <div class="category-loading">
+
+                                        <span class="category-spinner"></span>
+
+                                        <strong>
                                             Loading categories...
+                                        </strong>
 
-                                        </div>
+                                        <small>
+                                            Please wait
+                                        </small>
 
                                     </div>
 
-
-
-                                    <!-- =================================================
-                                         CUSTOM CATEGORY
-                                    ================================================== -->
-
-                                    <button
-                                        type="button"
-                                        class="custom-category-option"
-                                        id="customCategoryButton"
-                                    >
-
-                                        <span class="custom-category-icon">
-                                            +
-                                        </span>
-
-
-                                        <span>
-
-                                            <strong>
-                                                Can't find your category?
-                                            </strong>
-
-
-                                            <small>
-                                                Type a category name to search
-                                            </small>
-
-                                        </span>
-
-                                    </button>
-
                                 </div>
 
-                            </div>
 
-
-
-                            <!-- CATEGORY STATUS -->
-
-                            <div
-                                id="categoryStatus"
-                                class="category-status"
-                                aria-live="polite"
-                            ></div>
-
-                        </div>
-
-
-
-                        <!-- =================================================
-                             BUDGET DIVIDER
-                        ================================================== -->
-
-                        <div class="form-section-title">
-
-                            <div class="section-line"></div>
-
-                            <span>
-                                Budget
-                            </span>
-
-                            <div class="section-line"></div>
-
-                        </div>
-
-
-
-                        <!-- =================================================
-                             BUDGET
-                        ================================================== -->
-
-                        <div class="form-grid">
-
-
-                            <!-- MINIMUM -->
-
-                            <div class="form-group">
-
-                                <label for="budgetMin">
-                                    Minimum Budget
-                                </label>
-
-
-                                <div
-                                    class="input-wrapper currency-input"
+                                <button
+                                    type="button"
+                                    class="custom-category-option"
+                                    id="customCategoryButton"
                                 >
 
-                                    <span class="currency-symbol">
-                                        ₹
+                                    <span class="custom-category-icon">
+                                        +
                                     </span>
 
+                                    <span class="custom-category-content">
 
-                                    <input
-                                        type="number"
-                                        id="budgetMin"
-                                        name="budget_min"
-                                        min="0"
-                                        step="0.01"
-                                        inputmode="decimal"
-                                        placeholder="0"
-                                    >
+                                        <strong>
+                                            Can't find your category?
+                                        </strong>
 
-                                </div>
+                                        <small>
+                                            Search approved categories
+                                        </small>
 
-                            </div>
-
-
-
-                            <!-- MAXIMUM -->
-
-                            <div class="form-group">
-
-                                <label for="budgetMax">
-                                    Maximum Budget
-                                </label>
-
-
-                                <div
-                                    class="input-wrapper currency-input"
-                                >
-
-                                    <span class="currency-symbol">
-                                        ₹
                                     </span>
 
-
-                                    <input
-                                        type="number"
-                                        id="budgetMax"
-                                        name="budget_max"
-                                        min="0"
-                                        step="0.01"
-                                        inputmode="decimal"
-                                        placeholder="0"
-                                    >
-
-                                </div>
+                                </button>
 
                             </div>
 
                         </div>
 
-
-
-                        <!-- =================================================
-                             LOCATION DIVIDER
-                        ================================================== -->
-
-                        <div class="form-section-title">
-
-                            <div class="section-line"></div>
-
-                            <span>
-                                Work Location
-                            </span>
-
-                            <div class="section-line"></div>
-
-                        </div>
-
-
-
-                        <!-- =================================================
-                             FULL LOCATION
-                        ================================================== -->
-
-                        <div class="form-group">
-
-                            <label for="jobLocation">
-
-                                Full Work Location
-
-                                <span>*</span>
-
-                            </label>
-
-
-                            <div class="input-wrapper">
-
-                                <span class="input-icon">
-                                    ⌖
-                                </span>
-
-
-                                <input
-                                    type="text"
-                                    id="jobLocation"
-                                    name="location"
-                                    placeholder="Enter the complete work location"
-                                    autocomplete="street-address"
-                                    maxlength="500"
-                                    required
-                                >
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- =================================================
-                             CITY + STATE
-                        ================================================== -->
-
-                        <div class="form-grid">
-
-
-                            <!-- CITY -->
-
-                            <div class="form-group">
-
-                                <label for="jobCity">
-                                    City
-                                </label>
-
-
-                                <input
-                                    type="text"
-                                    id="jobCity"
-                                    name="city"
-                                    placeholder="e.g. Kolkata"
-                                    maxlength="100"
-                                    autocomplete="address-level2"
-                                >
-
-                            </div>
-
-
-
-                            <!-- STATE -->
-
-                            <div class="form-group">
-
-                                <label for="jobState">
-                                    State
-                                </label>
-
-
-                                <input
-                                    type="text"
-                                    id="jobState"
-                                    name="state"
-                                    placeholder="e.g. West Bengal"
-                                    maxlength="100"
-                                    autocomplete="address-level1"
-                                >
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- =================================================
-                             PINCODE + PRIORITY
-                        ================================================== -->
-
-                        <div class="form-grid">
-
-
-                            <!-- PINCODE -->
-
-                            <div class="form-group">
-
-                                <label for="jobPincode">
-                                    Pincode
-                                </label>
-
-
-                                <input
-                                    type="text"
-                                    id="jobPincode"
-                                    name="pincode"
-                                    maxlength="10"
-                                    inputmode="numeric"
-                                    placeholder="e.g. 700001"
-                                    autocomplete="postal-code"
-                                >
-
-                            </div>
-
-
-
-                            <!-- PRIORITY -->
-
-                            <div class="form-group">
-
-                                <label for="jobPriority">
-                                    Priority
-                                </label>
-
-
-                                <div class="select-wrapper">
-
-                                    <select
-                                        id="jobPriority"
-                                        name="priority"
-                                    >
-
-                                        <option value="normal">
-                                            Normal
-                                        </option>
-
-
-                                        <option value="high">
-                                            High
-                                        </option>
-
-
-                                        <option value="urgent">
-                                            Urgent
-                                        </option>
-
-                                    </select>
-
-
-                                    <span class="select-arrow">
-                                        ⌄
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- =================================================
-                             FORM MESSAGE
-                        ================================================== -->
 
                         <div
-                            id="formMessage"
-                            class="form-message"
+                            id="categoryStatus"
+                            class="category-status"
                             aria-live="polite"
                         ></div>
 
+                    </div>
 
 
-                        <!-- =================================================
-                             SUBMIT
-                        ================================================== -->
+                    <!-- =================================================
+                         BUDGET
+                    ================================================== -->
 
-                        <div class="form-submit-area">
+                    <div class="form-section-title">
 
-                            <button
-                                type="submit"
-                                id="postJobButton"
-                                class="post-job-button"
-                            >
+                        <div class="section-line"></div>
 
-                                <span class="button-icon">
-                                    +
+                        <span>Budget</span>
+
+                        <div class="section-line"></div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="budgetMin">
+                                Minimum Budget
+                            </label>
+
+                            <div class="input-wrapper currency-input">
+
+                                <span class="currency-symbol">
+                                    ₹
                                 </span>
 
+                                <input
+                                    type="number"
+                                    id="budgetMin"
+                                    name="budget_min"
+                                    min="0"
+                                    step="0.01"
+                                    inputmode="decimal"
+                                    placeholder="0"
+                                >
 
-                                <span class="button-text">
-                                    Post Job
-                                </span>
-
-
-                                <span class="button-arrow">
-                                    →
-                                </span>
-
-                            </button>
-
-
-                            <p class="submit-note">
-
-                                By posting this job, you agree to
-                                S. F Works marketplace terms.
-
-                            </p>
+                            </div>
 
                         </div>
 
-                    </form>
 
-                </div>
+                        <div class="form-group">
+
+                            <label for="budgetMax">
+                                Maximum Budget
+                            </label>
+
+                            <div class="input-wrapper currency-input">
+
+                                <span class="currency-symbol">
+                                    ₹
+                                </span>
+
+                                <input
+                                    type="number"
+                                    id="budgetMax"
+                                    name="budget_max"
+                                    min="0"
+                                    step="0.01"
+                                    inputmode="decimal"
+                                    placeholder="0"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         LOCATION
+                    ================================================== -->
+
+                    <div class="form-section-title">
+
+                        <div class="section-line"></div>
+
+                        <span>Work Location</span>
+
+                        <div class="section-line"></div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="jobLocation">
+                            Full Work Location
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                ⌖
+                            </span>
+
+                            <input
+                                type="text"
+                                id="jobLocation"
+                                name="location"
+                                placeholder="Enter the complete work location"
+                                autocomplete="street-address"
+                                maxlength="500"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CITY + STATE -->
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="jobCity">
+                                City
+                            </label>
+
+                            <input
+                                type="text"
+                                id="jobCity"
+                                name="city"
+                                placeholder="e.g. Kolkata"
+                                maxlength="100"
+                                autocomplete="address-level2"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="jobState">
+                                State
+                            </label>
+
+                            <input
+                                type="text"
+                                id="jobState"
+                                name="state"
+                                placeholder="e.g. West Bengal"
+                                maxlength="100"
+                                autocomplete="address-level1"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PINCODE + PRIORITY -->
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="jobPincode">
+                                Pincode
+                            </label>
+
+                            <input
+                                type="text"
+                                id="jobPincode"
+                                name="pincode"
+                                maxlength="10"
+                                inputmode="numeric"
+                                placeholder="e.g. 700001"
+                                autocomplete="postal-code"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="jobPriority">
+                                Priority
+                            </label>
+
+                            <div class="select-wrapper">
+
+                                <select
+                                    id="jobPriority"
+                                    name="priority"
+                                >
+
+                                    <option value="normal">
+                                        Normal
+                                    </option>
+
+                                    <option value="high">
+                                        High
+                                    </option>
+
+                                    <option value="urgent">
+                                        Urgent
+                                    </option>
+
+                                </select>
+
+                                <span class="select-arrow">
+                                    ⌄
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         FORM MESSAGE
+                    ================================================== -->
+
+                    <div
+                        id="formMessage"
+                        class="form-message"
+                        aria-live="polite"
+                    ></div>
+
+
+                    <!-- =================================================
+                         SUBMIT
+                    ================================================== -->
+
+                    <div class="form-submit-area">
+
+                        <button
+                            type="submit"
+                            id="postJobButton"
+                            class="post-job-button"
+                        >
+
+                            <span class="button-icon">
+                                +
+                            </span>
+
+                            <span class="button-text">
+                                Post Job
+                            </span>
+
+                            <span class="button-arrow">
+                                →
+                            </span>
+
+                        </button>
+
+                        <p class="submit-note">
+                            By posting this job, you agree to
+                            S. F Works marketplace terms.
+                        </p>
+
+                    </div>
+
+                </form>
 
             </div>
 
@@ -927,11 +625,11 @@ Post a Job — S. F Works
 {% endblock %}
 
 
-
 {% block extra_js %}
 
 <script
     src="{{ url_for('static', filename='js/post-job.js') }}"
+    defer
 ></script>
 
 {% endblock %}
