@@ -17,7 +17,14 @@ Post a Job — S. F Works
 
 {% block content %}
 
-<main class="post-job-page">
+<main
+    class="post-job-page"
+    id="postJobPage"
+
+    data-categories-url="{{ url_for('jobs.categories') }}"
+    data-create-job-url="{{ url_for('jobs.create_job') }}"
+>
+
 
     <!-- =====================================================
          HERO
@@ -27,40 +34,49 @@ Post a Job — S. F Works
 
         <div class="post-job-container">
 
-            <div class="hero-content">
+            <div class="hero-badge">
 
-                <div class="hero-badge">
-                    <span class="badge-dot"></span>
-                    S. F Works Marketplace
+                <span class="hero-badge-dot"></span>
+
+                S. F WORKS MARKETPLACE
+
+            </div>
+
+
+            <h1>
+
+                Post a Job.
+
+                <span>
+                    Find the Right Worker.
+                </span>
+
+            </h1>
+
+
+            <p>
+
+                Tell us what you need and connect with
+                trusted, skilled professionals near you.
+
+            </p>
+
+
+            <div class="hero-features">
+
+                <div class="hero-feature">
+                    <span>✓</span>
+                    Trusted Workers
                 </div>
 
-                <h1>
-                    Post a Job.
-                    <span>Find the Right Worker.</span>
-                </h1>
+                <div class="hero-feature">
+                    <span>✓</span>
+                    Local Professionals
+                </div>
 
-                <p>
-                    Tell us what you need and connect with
-                    trusted, skilled professionals near you.
-                </p>
-
-                <div class="hero-features">
-
-                    <div class="hero-feature">
-                        <span>✓</span>
-                        Trusted Workers
-                    </div>
-
-                    <div class="hero-feature">
-                        <span>✓</span>
-                        Local Professionals
-                    </div>
-
-                    <div class="hero-feature">
-                        <span>✓</span>
-                        Secure Marketplace
-                    </div>
-
+                <div class="hero-feature">
+                    <span>✓</span>
+                    Secure Marketplace
                 </div>
 
             </div>
@@ -78,7 +94,9 @@ Post a Job — S. F Works
 
         <div class="post-job-container">
 
+
             <div class="post-job-card">
+
 
                 <!-- =================================================
                      HEADER
@@ -103,9 +121,13 @@ Post a Job — S. F Works
 
                     </div>
 
+
                     <div class="secure-badge">
+
                         <span>🔒</span>
+
                         Secure
+
                     </div>
 
                 </div>
@@ -119,9 +141,8 @@ Post a Job — S. F Works
                     id="postJobForm"
                     method="POST"
                     novalidate
-                    data-category-url="{{ url_for('jobs.categories') }}"
-                    data-create-url="{{ url_for('jobs.create_job') }}"
                 >
+
 
                     <!-- =================================================
                          TITLE
@@ -130,9 +151,13 @@ Post a Job — S. F Works
                     <div class="form-group">
 
                         <label for="jobTitle">
+
                             Job Title
+
                             <span>*</span>
+
                         </label>
+
 
                         <div class="input-wrapper">
 
@@ -144,16 +169,19 @@ Post a Job — S. F Works
                                 type="text"
                                 id="jobTitle"
                                 name="title"
+                                maxlength="200"
                                 placeholder="e.g. Home electrical work"
                                 autocomplete="off"
-                                maxlength="200"
                                 required
                             >
 
                         </div>
 
+
                         <small class="field-hint">
+
                             Keep it short and specific.
+
                         </small>
 
                     </div>
@@ -166,9 +194,13 @@ Post a Job — S. F Works
                     <div class="form-group">
 
                         <label for="jobDescription">
+
                             Job Description
+
                             <span>*</span>
+
                         </label>
+
 
                         <textarea
                             id="jobDescription"
@@ -178,6 +210,7 @@ Post a Job — S. F Works
                             placeholder="Describe the work, requirements, materials, preferred timing, etc."
                             required
                         ></textarea>
+
 
                         <div class="textarea-footer">
 
@@ -202,8 +235,11 @@ Post a Job — S. F Works
                     <div class="form-group">
 
                         <label for="jobCategory">
+
                             Category
+
                             <span>*</span>
+
                         </label>
 
 
@@ -212,19 +248,21 @@ Post a Job — S. F Works
                             id="categoryPicker"
                         >
 
-                            <!-- SEARCH -->
+
+                            <!-- INPUT -->
 
                             <div class="category-input-wrapper">
 
-                                <span class="input-icon">
+                                <span class="category-input-icon">
                                     ◈
                                 </span>
+
 
                                 <input
                                     type="text"
                                     id="jobCategory"
                                     name="category_search"
-                                    placeholder="Search or select a category..."
+                                    placeholder="Search or choose a category..."
                                     autocomplete="off"
                                     maxlength="100"
                                     required
@@ -234,20 +272,25 @@ Post a Job — S. F Works
                                     aria-autocomplete="list"
                                 >
 
+
                                 <button
                                     type="button"
-                                    class="category-dropdown-button"
                                     id="categoryDropdownButton"
+                                    class="category-dropdown-button"
                                     aria-label="Open categories"
                                     aria-expanded="false"
                                 >
-                                    <span>⌄</span>
+
+                                    <span>
+                                       ⌄
+                                    </span>
+
                                 </button>
 
                             </div>
 
 
-                            <!-- ACTUAL DATABASE ID -->
+                            <!-- REAL DATABASE ID -->
 
                             <input
                                 type="hidden"
@@ -265,19 +308,19 @@ Post a Job — S. F Works
                                 aria-hidden="true"
                             >
 
+
                                 <div class="category-dropdown-header">
 
-                                    <div class="category-header-title">
+                                    <div>
 
-                                        <span>
+                                        <span class="dropdown-header-icon">
                                             ✦
                                         </span>
 
-                                        <strong>
-                                            Choose a category
-                                        </strong>
+                                        Choose a category
 
                                     </div>
+
 
                                     <span
                                         id="categoryCount"
@@ -290,8 +333,8 @@ Post a Job — S. F Works
 
 
                                 <div
-                                    class="category-list"
                                     id="categoryList"
+                                    class="category-list"
                                     role="listbox"
                                 >
 
@@ -299,37 +342,34 @@ Post a Job — S. F Works
 
                                         <span class="category-spinner"></span>
 
-                                        <strong>
-                                            Loading categories...
-                                        </strong>
-
-                                        <small>
-                                            Please wait
-                                        </small>
+                                        Loading categories...
 
                                     </div>
 
                                 </div>
 
 
+                                <!-- OTHER -->
+
                                 <button
                                     type="button"
-                                    class="custom-category-option"
-                                    id="customCategoryButton"
+                                    id="otherCategoryButton"
+                                    class="other-category-option"
                                 >
 
-                                    <span class="custom-category-icon">
+                                    <span class="other-icon">
                                         +
                                     </span>
 
-                                    <span class="custom-category-content">
+
+                                    <span class="other-content">
 
                                         <strong>
                                             Can't find your category?
                                         </strong>
 
                                         <small>
-                                            Search approved categories
+                                            Choose Other
                                         </small>
 
                                     </span>
@@ -356,16 +396,13 @@ Post a Job — S. F Works
 
                     <div class="form-section-title">
 
-                        <div class="section-line"></div>
-
                         <span>Budget</span>
-
-                        <div class="section-line"></div>
 
                     </div>
 
 
                     <div class="form-grid">
+
 
                         <div class="form-group">
 
@@ -373,11 +410,13 @@ Post a Job — S. F Works
                                 Minimum Budget
                             </label>
 
+
                             <div class="input-wrapper currency-input">
 
                                 <span class="currency-symbol">
                                     ₹
                                 </span>
+
 
                                 <input
                                     type="number"
@@ -400,11 +439,13 @@ Post a Job — S. F Works
                                 Maximum Budget
                             </label>
 
+
                             <div class="input-wrapper currency-input">
 
                                 <span class="currency-symbol">
                                     ₹
                                 </span>
+
 
                                 <input
                                     type="number"
@@ -429,11 +470,7 @@ Post a Job — S. F Works
 
                     <div class="form-section-title">
 
-                        <div class="section-line"></div>
-
                         <span>Work Location</span>
-
-                        <div class="section-line"></div>
 
                     </div>
 
@@ -441,9 +478,13 @@ Post a Job — S. F Works
                     <div class="form-group">
 
                         <label for="jobLocation">
+
                             Full Work Location
+
                             <span>*</span>
+
                         </label>
+
 
                         <div class="input-wrapper">
 
@@ -451,13 +492,14 @@ Post a Job — S. F Works
                                 ⌖
                             </span>
 
+
                             <input
                                 type="text"
                                 id="jobLocation"
                                 name="location"
+                                maxlength="500"
                                 placeholder="Enter the complete work location"
                                 autocomplete="street-address"
-                                maxlength="500"
                                 required
                             >
 
@@ -480,8 +522,8 @@ Post a Job — S. F Works
                                 type="text"
                                 id="jobCity"
                                 name="city"
-                                placeholder="e.g. Kolkata"
                                 maxlength="100"
+                                placeholder="e.g. Kolkata"
                                 autocomplete="address-level2"
                             >
 
@@ -498,8 +540,8 @@ Post a Job — S. F Works
                                 type="text"
                                 id="jobState"
                                 name="state"
-                                placeholder="e.g. West Bengal"
                                 maxlength="100"
+                                placeholder="e.g. West Bengal"
                                 autocomplete="address-level1"
                             >
 
@@ -508,7 +550,7 @@ Post a Job — S. F Works
                     </div>
 
 
-                    <!-- PINCODE / PRIORITY -->
+                    <!-- PIN / PRIORITY -->
 
                     <div class="form-grid">
 
@@ -517,6 +559,7 @@ Post a Job — S. F Works
                             <label for="jobPincode">
                                 Pincode
                             </label>
+
 
                             <input
                                 type="text"
@@ -536,6 +579,7 @@ Post a Job — S. F Works
                             <label for="jobPriority">
                                 Priority
                             </label>
+
 
                             <div class="select-wrapper">
 
@@ -559,7 +603,7 @@ Post a Job — S. F Works
                                 </select>
 
                                 <span class="select-arrow">
-                                    ⌄
+                                   ⌄
                                 </span>
 
                             </div>
@@ -569,9 +613,7 @@ Post a Job — S. F Works
                     </div>
 
 
-                    <!-- =================================================
-                         MESSAGE
-                    ================================================== -->
+                    <!-- MESSAGE -->
 
                     <div
                         id="formMessage"
@@ -580,9 +622,7 @@ Post a Job — S. F Works
                     ></div>
 
 
-                    <!-- =================================================
-                         SUBMIT
-                    ================================================== -->
+                    <!-- SUBMIT -->
 
                     <div class="form-submit-area">
 
@@ -606,12 +646,16 @@ Post a Job — S. F Works
 
                         </button>
 
+
                         <p class="submit-note">
+
                             By posting this job, you agree to
                             S. F Works marketplace terms.
+
                         </p>
 
                     </div>
+
 
                 </form>
 
