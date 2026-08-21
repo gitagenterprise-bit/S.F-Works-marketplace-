@@ -428,38 +428,180 @@ def update_worker_verification(
 # JOBS
 # =========================================================
 
-@admin_bp.get("/jobs")
-@admin_required
+@admin_bp.route(
+    "/jobs",
+    methods=["GET"]
+)
+@role_required("admin")
 def admin_jobs():
 
-    jobs = (
-        Job.query
-        .order_by(
-            Job.id.desc()
-        )
-        .limit(100)
-        .all()
+    page = request.args.get(
+        "page",
+        1,
+        type=int
     )
+
+    per_page = request.args.get(
+        "per_page",
+        25,
+        type=int
+    )
+
+
+    if per_page < 1:
+
+        per_page = 25
+
+
+    if per_page > 100:
+
+        per_page = 100
+
+
+    query = (
+        Job.query
+        .join(
+            User,
+            Job.customer_id == User.id
+        )
+        .order_by(
+            Job.created_at.desc()
+        )
+    )
+
+
+    pagination = query.paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False
+    )
+
+
+    jobs = []
+
+
+    for job in pagination.items:
+
+        user = db.session.get(
+            User,
+            job.customer_id
+        )
+
+
+        jobs.append({
+
+            "id": job.id,
+
+            "title": job.title,
+
+            "description": job.description,
+
+            "status": job.status,
+
+            "priority": job.priority,
+
+            "is_featured": job.is_featured,
+
+            "views": job.views,
+
+            "budget": {
+
+                "min":
+                    float(job.budget_min)
+                    if job.budget_min is not None
+                    else None,
+
+                "max":
+                    float(job.budget_max)
+                    if job.budget_max is not None
+                    else None
+            },
+
+            "location": job.location,
+
+            "city": job.city,
+
+            "state": job.state,
+
+            "pincode": job.pincode,
+
+            "category": {
+
+                "id":
+                    job.category.id
+                    if job.category
+                    else None,
+
+                "name":
+                    job.category.name
+                    if job.category
+                    else None
+            },
+
+            "posted_by": {
+
+                "id":
+                    user.id
+                    if user
+                    else None,
+
+                "name":
+                    user.full_name
+                    if user
+                    else "Unknown",
+
+                "phone":
+                    user.phone
+                    if user
+                    else None,
+
+                "email":
+                    user.email
+                    if user
+                    else None,
+
+                "role":
+                    user.role
+                    if user
+                    else None
+            },
+
+            "created_at":
+                job.created_at.isoformat()
+                if job.created_at
+                else None
+        })
+
 
     return jsonify({
 
         "status": "success",
 
-        "jobs": [
+        "jobs": jobs,
 
-            {
-                "id": job.id,
-                "customer_id":
-                    getattr(
-                        job,
-                        "customer_id",
-                        None
-                    )
-            }
+        "pagination": {
 
-            for job in jobs
-        ]
-    })
+            "page":
+                pagination.page,
+
+            "per_page":
+                pagination.per_page,
+
+            "total":
+                pagination.total,
+
+            "pages":
+                pagination.pages,
+
+            "has_next":
+                pagination.has_next,
+
+            "has_prev":
+                pagination.has_prev
+        }
+
+    }), 200
+
 
 
 # =========================================================
