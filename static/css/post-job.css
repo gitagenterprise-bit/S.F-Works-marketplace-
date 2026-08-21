@@ -1,184 +1,150 @@
-/* =========================================================
+/* ============================================================
    S. F WORKS — PREMIUM POST JOB
-========================================================= */
+============================================================ */
 
 :root {
-
     --pj-bg: #f5f7fb;
     --pj-card: #ffffff;
-
-    --pj-text: #101828;
-    --pj-muted: #667085;
-
-    --pj-border: #e4e7ec;
-
-    --pj-primary: #2563eb;
-    --pj-primary-dark: #1d4ed8;
-
-    --pj-success: #16a34a;
+    --pj-text: #111827;
+    --pj-muted: #6b7280;
+    --pj-border: #e5e7eb;
+    --pj-primary: #111827;
+    --pj-accent: #2563eb;
+    --pj-accent-soft: #eff6ff;
+    --pj-success: #15803d;
     --pj-danger: #dc2626;
-
-    --pj-radius: 22px;
-
     --pj-shadow:
-        0 20px 60px rgba(16, 24, 40, .10);
-
-    --pj-shadow-small:
-        0 8px 25px rgba(16, 24, 40, .08);
+        0 25px 70px rgba(15, 23, 42, 0.10);
 }
 
 
-/* =========================================================
+/* ============================================================
    PAGE
-========================================================= */
+============================================================ */
 
 .post-job-page {
-
     min-height: 100vh;
-
     background:
         radial-gradient(
-            circle at 10% 10%,
-            rgba(37, 99, 235, .08),
-            transparent 30%
+            circle at top left,
+            rgba(37, 99, 235, 0.08),
+            transparent 35%
         ),
-        linear-gradient(
-            180deg,
-            #f8faff 0%,
-            var(--pj-bg) 100%
-        );
-
+        var(--pj-bg);
     color: var(--pj-text);
 }
 
 
-/* =========================================================
+/* ============================================================
    CONTAINER
-========================================================= */
+============================================================ */
 
 .post-job-container {
-
     width: min(
         1120px,
         calc(100% - 32px)
     );
-
     margin: 0 auto;
 }
 
 
-/* =========================================================
+/* ============================================================
    HERO
-========================================================= */
+============================================================ */
 
 .post-job-hero {
-
-    position: relative;
-
-    padding:
-        75px
-        0
-        110px;
-
-    overflow: hidden;
+    padding: 76px 0 70px;
 
     background:
         linear-gradient(
             135deg,
-            #0f172a,
-            #172554 55%,
-            #1e40af
+            #0f172a 0%,
+            #111827 55%,
+            #172554 100%
         );
 
     color: #ffffff;
+
+    position: relative;
+    overflow: hidden;
 }
 
 
 .post-job-hero::before {
-
     content: "";
-
     position: absolute;
 
-    width: 420px;
-    height: 420px;
+    width: 430px;
+    height: 430px;
 
-    right: -140px;
+    right: -160px;
     top: -180px;
 
     border-radius: 50%;
 
     background:
-        rgba(255,255,255,.07);
-
-    filter: blur(2px);
+        radial-gradient(
+            circle,
+            rgba(59, 130, 246, 0.30),
+            transparent 70%
+        );
 }
 
 
 .post-job-hero::after {
-
     content: "";
 
     position: absolute;
 
-    width: 280px;
-    height: 280px;
+    width: 300px;
+    height: 300px;
 
-    left: -120px;
-    bottom: -180px;
+    left: -160px;
+    bottom: -170px;
 
     border-radius: 50%;
 
     background:
-        rgba(96,165,250,.12);
+        radial-gradient(
+            circle,
+            rgba(96, 165, 250, 0.14),
+            transparent 70%
+        );
 }
 
 
-.hero-content {
-
+.post-job-hero .post-job-container {
     position: relative;
-
     z-index: 2;
-
-    max-width: 760px;
 }
 
 
 .hero-badge {
-
     display: inline-flex;
 
     align-items: center;
-
     gap: 9px;
 
-    padding:
-        9px
-        15px;
+    padding: 9px 14px;
 
-    margin-bottom: 22px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.18);
+    border: 1px solid
+        rgba(255, 255, 255, 0.16);
 
     border-radius: 999px;
 
     background:
-        rgba(255,255,255,.08);
+        rgba(255, 255, 255, 0.06);
 
     backdrop-filter: blur(12px);
 
-    font-size: 13px;
+    font-size: 11px;
+    font-weight: 800;
 
-    font-weight: 700;
-
-    letter-spacing: .3px;
+    letter-spacing: 0.14em;
 }
 
 
-.badge-dot {
-
+.hero-badge-dot {
     width: 8px;
     height: 8px;
 
@@ -188,57 +154,40 @@
 
     box-shadow:
         0 0 0 5px
-        rgba(96,165,250,.14);
+        rgba(96, 165, 250, 0.12);
 }
 
 
-.hero-content h1 {
+.post-job-hero h1 {
+    max-width: 820px;
 
-    margin: 0;
+    margin: 25px 0 18px;
 
     font-size:
-        clamp(38px, 5vw, 66px);
+        clamp(38px, 6vw, 68px);
 
     line-height: 1.03;
 
-    letter-spacing: -2.5px;
+    letter-spacing: -0.045em;
 
     font-weight: 850;
 }
 
 
-.hero-content h1 span {
-
+.post-job-hero h1 span {
     display: block;
 
-    margin-top: 8px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #93c5fd,
-            #dbeafe
-        );
-
-    -webkit-background-clip: text;
-
-    background-clip: text;
-
-    color: transparent;
+    color: #93c5fd;
 }
 
 
-.hero-content p {
-
+.post-job-hero p {
     max-width: 650px;
 
-    margin:
-        24px
-        0
-        28px;
+    margin: 0;
 
     color:
-        rgba(255,255,255,.72);
+        rgba(255, 255, 255, 0.70);
 
     font-size: 17px;
 
@@ -247,403 +196,312 @@
 
 
 .hero-features {
-
     display: flex;
 
     flex-wrap: wrap;
 
     gap: 12px;
+
+    margin-top: 30px;
 }
 
 
 .hero-feature {
-
-    display: inline-flex;
+    display: flex;
 
     align-items: center;
 
     gap: 8px;
 
-    padding:
-        9px
-        13px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.12);
+    padding: 10px 14px;
 
     border-radius: 12px;
 
     background:
-        rgba(255,255,255,.06);
+        rgba(255, 255, 255, 0.06);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.09);
 
     font-size: 13px;
-
     font-weight: 650;
 }
 
 
 .hero-feature span {
-
     color: #93c5fd;
-
-    font-weight: 900;
 }
 
 
-/* =========================================================
+/* ============================================================
    FORM SECTION
-========================================================= */
+============================================================ */
 
 .post-job-section {
-
-    position: relative;
-
-    margin-top: -65px;
-
-    padding-bottom: 80px;
-
-    z-index: 5;
+    padding: 52px 0 90px;
 }
 
 
-/* =========================================================
-   CARD
-========================================================= */
-
 .post-job-card {
-
-    padding: 38px;
+    background: var(--pj-card);
 
     border:
         1px solid
-        rgba(255,255,255,.8);
+        rgba(15, 23, 42, 0.07);
 
-    border-radius:
-        var(--pj-radius);
+    border-radius: 28px;
 
-    background:
-        rgba(255,255,255,.96);
+    box-shadow: var(--pj-shadow);
 
-    box-shadow:
-        var(--pj-shadow);
-
-    backdrop-filter:
-        blur(20px);
+    padding:
+        clamp(22px, 5vw, 48px);
 }
 
 
-/* =========================================================
-   FORM HEADER
-========================================================= */
+/* ============================================================
+   HEADER
+============================================================ */
 
 .form-header {
-
     display: flex;
 
     align-items: flex-start;
-
     justify-content: space-between;
 
-    gap: 20px;
+    gap: 25px;
 
-    padding-bottom: 28px;
+    padding-bottom: 30px;
 
-    margin-bottom: 30px;
+    margin-bottom: 32px;
 
     border-bottom:
-        1px solid
-        var(--pj-border);
+        1px solid var(--pj-border);
 }
 
 
 .form-eyebrow {
-
-    display: block;
-
-    margin-bottom: 8px;
-
-    color:
-        var(--pj-primary);
+    color: var(--pj-accent);
 
     font-size: 11px;
-
     font-weight: 850;
 
-    letter-spacing: 1.5px;
+    letter-spacing: 0.16em;
 }
 
 
 .form-header h2 {
+    margin: 7px 0 7px;
 
-    margin: 0;
+    font-size: 29px;
 
-    font-size: 27px;
-
-    letter-spacing: -.7px;
+    letter-spacing: -0.035em;
 }
 
 
 .form-header p {
+    margin: 0;
 
-    margin:
-        8px
-        0
-        0;
-
-    color:
-        var(--pj-muted);
+    color: var(--pj-muted);
 
     line-height: 1.6;
 }
 
 
 .secure-badge {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 7px;
 
     flex-shrink: 0;
 
-    display: flex;
+    padding: 9px 13px;
 
-    align-items: center;
+    border-radius: 999px;
 
-    gap: 7px;
+    background: #f0fdf4;
 
-    padding:
-        9px
-        13px;
-
-    border:
-        1px solid
-        #d1fae5;
-
-    border-radius: 10px;
-
-    background:
-        #ecfdf3;
-
-    color:
-        #15803d;
+    color: var(--pj-success);
 
     font-size: 12px;
-
-    font-weight: 750;
+    font-weight: 800;
 }
 
 
-/* =========================================================
-   FORM
-========================================================= */
+/* ============================================================
+   FORM GROUP
+============================================================ */
 
 .form-group {
-
-    margin-bottom: 24px;
-
-    min-width: 0;
+    margin-bottom: 25px;
 }
 
 
 .form-group label {
-
     display: block;
 
     margin-bottom: 9px;
 
     font-size: 13px;
+    font-weight: 800;
 
-    font-weight: 750;
-
-    color:
-        #344054;
+    color: #374151;
 }
 
 
 .form-group label span {
-
-    color:
-        var(--pj-danger);
+    color: var(--pj-danger);
 }
 
 
-/* =========================================================
+.field-hint {
+    display: block;
+
+    margin-top: 8px;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+}
+
+
+/* ============================================================
    INPUT
-========================================================= */
+============================================================ */
 
 .input-wrapper {
-
     position: relative;
+}
 
-    display: flex;
 
-    align-items: center;
+.input-icon,
+.category-input-icon {
+    position: absolute;
+
+    left: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #9ca3af;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+
+.input-wrapper input,
+.input-wrapper textarea,
+.form-group > input,
+.category-input-wrapper input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid var(--pj-border);
+
+    background: #ffffff;
+
+    color: var(--pj-text);
+
+    border-radius: 14px;
+
+    outline: none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+
+.input-wrapper input,
+.form-group > input,
+.category-input-wrapper input {
+    height: 52px;
+
+    padding:
+        0 16px;
 }
 
 
 .input-wrapper input {
-
-    width: 100%;
-
-    height: 54px;
-
-    padding:
-        0
-        16px
-        0
-        47px;
-
-    border:
-        1px solid
-        var(--pj-border);
-
-    border-radius: 13px;
-
-    outline: none;
-
-    background: #fff;
-
-    color:
-        var(--pj-text);
-
-    font-size: 14px;
-
-    transition:
-        .2s ease;
+    padding-left: 46px;
 }
 
 
 .input-wrapper input:focus,
 .form-group > input:focus,
 .form-group textarea:focus,
-.form-group select:focus {
-
+.form-group select:focus,
+.category-input-wrapper input:focus {
     border-color:
-        var(--pj-primary);
+        rgba(37, 99, 235, 0.65);
 
     box-shadow:
         0 0 0 4px
-        rgba(37,99,235,.10);
+        rgba(37, 99, 235, 0.09);
 }
 
-
-.input-icon {
-
-    position: absolute;
-
-    left: 17px;
-
-    z-index: 2;
-
-    color:
-        var(--pj-primary);
-
-    font-size: 17px;
-
-    pointer-events: none;
-}
-
-
-.form-group > input {
-
-    width: 100%;
-
-    height: 54px;
-
-    padding:
-        0
-        16px;
-
-    border:
-        1px solid
-        var(--pj-border);
-
-    border-radius: 13px;
-
-    outline: none;
-
-    background: #fff;
-
-    font-size: 14px;
-
-    transition: .2s ease;
-}
-
-
-.field-hint {
-
-    display: block;
-
-    margin-top: 7px;
-
-    color:
-        #98a2b3;
-
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   TEXTAREA
-========================================================= */
 
 .form-group textarea {
+    min-height: 145px;
 
-    width: 100%;
-
-    padding: 15px 16px;
-
-    border:
-        1px solid
-        var(--pj-border);
-
-    border-radius: 13px;
+    padding: 16px;
 
     resize: vertical;
 
-    min-height: 145px;
-
-    outline: none;
-
-    font:
-        inherit;
-
-    font-size: 14px;
-
-    line-height: 1.6;
-
-    transition: .2s ease;
+    line-height: 1.65;
 }
 
 
-.textarea-footer {
+.form-group textarea::placeholder,
+.form-group input::placeholder {
+    color: #a1a1aa;
+}
 
+
+/* ============================================================
+   TEXTAREA FOOTER
+============================================================ */
+
+.textarea-footer {
     display: flex;
 
     justify-content: space-between;
 
     gap: 15px;
 
-    margin-top: 7px;
+    margin-top: 8px;
 
-    color:
-        #98a2b3;
+    color: #9ca3af;
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
 
-/* =========================================================
+#descriptionCounter {
+    white-space: nowrap;
+
+    font-weight: 700;
+}
+
+
+/* ============================================================
    CATEGORY PICKER
-========================================================= */
+============================================================ */
 
 .category-picker {
-
     position: relative;
-
-    width: 100%;
 }
 
 
 .category-input-wrapper {
-
     position: relative;
 
     display: flex;
@@ -652,255 +510,216 @@
 }
 
 
+.category-input-icon {
+    left: 16px;
+}
+
+
 .category-input-wrapper input {
-
-    width: 100%;
-
-    height: 56px;
-
-    padding:
-        0
-        52px
-        0
-        48px;
-
-    border:
-        1px solid
-        var(--pj-border);
-
-    border-radius: 14px;
-
-    outline: none;
-
-    background: #fff;
-
-    color:
-        var(--pj-text);
-
-    font-size: 14px;
-
-    transition:
-        .2s ease;
+    padding-left: 46px;
+    padding-right: 55px;
 }
 
 
-.category-input-wrapper input:focus {
-
+.category-input-wrapper input.has-selection {
     border-color:
-        var(--pj-primary);
-
-    box-shadow:
-        0 0 0 4px
-        rgba(37,99,235,.10);
-}
-
-
-.category-input-wrapper input.category-selected {
-
-    border-color:
-        #86efac;
+        rgba(37, 99, 235, 0.45);
 
     background:
-        #f0fdf4;
+        #f8fbff;
 }
 
 
 .category-dropdown-button {
-
     position: absolute;
 
-    right: 7px;
+    right: 8px;
 
-    top: 7px;
+    top: 50%;
 
-    width: 42px;
+    transform: translateY(-50%);
 
-    height: 42px;
+    width: 38px;
+    height: 38px;
 
     border: 0;
 
     border-radius: 10px;
 
-    background:
-        #f2f4f7;
+    background: #f3f4f6;
 
-    color:
-        #475467;
+    color: #4b5563;
 
     cursor: pointer;
 
-    font-size: 19px;
+    font-size: 18px;
 
     transition: .2s ease;
 }
 
 
 .category-dropdown-button:hover {
-
-    background:
-        #e4e7ec;
-
-    color:
-        var(--pj-primary);
+    background: #e5e7eb;
 }
 
 
-/* =========================================================
-   DROPDOWN
-========================================================= */
-
 .category-dropdown {
-
     position: absolute;
 
-    left: 0;
+    z-index: 100;
 
+    left: 0;
     right: 0;
 
-    top: calc(100% + 9px);
+    top: calc(100% + 10px);
 
-    z-index: 1000;
-
-    display: none;
-
-    overflow: hidden;
+    background: #ffffff;
 
     border:
         1px solid
-        var(--pj-border);
+        rgba(15, 23, 42, 0.09);
 
-    border-radius: 17px;
-
-    background:
-        #ffffff;
+    border-radius: 20px;
 
     box-shadow:
         0 25px 70px
-        rgba(16,24,40,.18);
+        rgba(15, 23, 42, 0.16);
+
+    overflow: hidden;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+        translateY(-7px)
+        scale(.985);
+
+    pointer-events: none;
+
+    transition:
+        opacity .18s ease,
+        transform .18s ease,
+        visibility .18s ease;
 }
 
 
 .category-dropdown.is-open {
+    opacity: 1;
 
-    display: block;
+    visibility: visible;
 
-    animation:
-        categoryDrop .16s ease;
+    transform:
+        translateY(0)
+        scale(1);
+
+    pointer-events: auto;
 }
 
 
-@keyframes categoryDrop {
-
-    from {
-        opacity: 0;
-        transform: translateY(-6px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-/* =========================================================
-   DROPDOWN HEADER
-========================================================= */
+/* ============================================================
+   CATEGORY HEADER
+============================================================ */
 
 .category-dropdown-header {
-
     display: flex;
 
     align-items: center;
 
     justify-content: space-between;
 
-    padding:
-        15px
-        17px;
+    padding: 15px 17px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f9fafb,
+            #ffffff
+        );
 
     border-bottom:
-        1px solid
-        #f0f2f5;
-
-    background:
-        #fbfcfe;
-}
-
-
-.category-header-title {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
+        1px solid var(--pj-border);
 
     font-size: 13px;
-}
-
-
-.category-header-title > span {
-
-    color:
-        var(--pj-primary);
-}
-
-
-.category-count {
-
-    min-width: 27px;
-
-    padding:
-        4px
-        7px;
-
-    border-radius: 8px;
-
-    background:
-        #eff6ff;
-
-    color:
-        var(--pj-primary);
-
-    text-align: center;
-
-    font-size: 11px;
 
     font-weight: 800;
 }
 
 
-/* =========================================================
+.category-dropdown-header > div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.dropdown-header-icon {
+    color: var(--pj-accent);
+}
+
+
+.category-count {
+    min-width: 25px;
+
+    height: 25px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: var(--pj-accent-soft);
+
+    color: var(--pj-accent);
+
+    font-size: 11px;
+}
+
+
+/* ============================================================
    CATEGORY LIST
-========================================================= */
+============================================================ */
 
 .category-list {
-
-    max-height: 310px;
-
-    padding: 7px;
+    max-height: 330px;
 
     overflow-y: auto;
+
+    padding: 7px;
+}
+
+
+.category-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+
+.category-list::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+
+    border-radius: 999px;
 }
 
 
 .category-option {
+    width: 100%;
 
     display: flex;
 
     align-items: center;
 
-    width: 100%;
+    gap: 13px;
 
-    gap: 12px;
-
-    padding:
-        12px;
+    padding: 12px;
 
     border: 0;
 
-    border-radius: 12px;
+    border-radius: 13px;
 
     background: transparent;
 
@@ -915,134 +734,129 @@
 
 
 .category-option:hover {
+    background: #f8fafc;
 
+    transform: translateX(2px);
+}
+
+
+.category-option.is-selected {
     background:
-        #f5f8ff;
-
-    transform:
-        translateX(2px);
+        var(--pj-accent-soft);
 }
 
 
 .category-option-icon {
-
-    display: grid;
-
-    place-items: center;
+    width: 40px;
+    height: 40px;
 
     flex-shrink: 0;
-
-    width: 42px;
-
-    height: 42px;
-
-    border-radius: 11px;
-
-    background:
-        #eff6ff;
-
-    color:
-        var(--pj-primary);
-
-    font-size: 18px;
-}
-
-
-.category-option-content {
-
-    display: flex;
-
-    flex: 1;
-
-    min-width: 0;
-
-    flex-direction: column;
-
-    gap: 3px;
-}
-
-
-.category-option-content strong {
-
-    overflow: hidden;
-
-    color:
-        #101828;
-
-    font-size: 13px;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-}
-
-
-.category-option-content small {
-
-    overflow: hidden;
-
-    color:
-        #98a2b3;
-
-    font-size: 11px;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-}
-
-
-.category-option-arrow {
-
-    color:
-        #98a2b3;
-
-    font-weight: 800;
-
-    transition: .2s ease;
-}
-
-
-.category-option:hover
-.category-option-arrow {
-
-    color:
-        var(--pj-primary);
-
-    transform:
-        translateX(3px);
-}
-
-
-/* =========================================================
-   CUSTOM CATEGORY
-========================================================= */
-
-.custom-category-option {
 
     display: flex;
 
     align-items: center;
 
-    width: calc(100% - 14px);
-
-    gap: 12px;
-
-    margin:
-        0
-        7px
-        7px;
-
-    padding: 13px;
-
-    border:
-        1px dashed
-        #cbd5e1;
+    justify-content: center;
 
     border-radius: 12px;
 
-    background:
-        #f8fafc;
+    background: #f3f4f6;
+
+    font-size: 20px;
+}
+
+
+.category-option.is-selected
+.category-option-icon {
+    background: #dbeafe;
+}
+
+
+.category-option-content {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.category-option-content strong {
+    display: block;
+
+    color: #111827;
+
+    font-size: 13px;
+
+    margin-bottom: 3px;
+}
+
+
+.category-option-content small {
+    display: block;
+
+    color: #9ca3af;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.category-option-check {
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e5e7eb;
+
+    color: transparent;
+
+    font-size: 12px;
+}
+
+
+.category-option.is-selected
+.category-option-check {
+    background: var(--pj-accent);
+
+    color: #ffffff;
+}
+
+
+/* ============================================================
+   OTHER
+============================================================ */
+
+.other-category-option {
+    width: calc(100% - 14px);
+
+    margin: 0 7px 7px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px;
+
+    border: 1px dashed #bfdbfe;
+
+    border-radius: 14px;
+
+    background: #f8fbff;
+
+    color: var(--pj-text);
 
     text-align: left;
 
@@ -1052,42 +866,36 @@
 }
 
 
-.custom-category-option:hover {
+.other-category-option:hover {
+    background: #eff6ff;
 
-    border-color:
-        var(--pj-primary);
+    border-color: #60a5fa;
 
-    background:
-        #eff6ff;
+    transform: translateY(-1px);
 }
 
 
-.custom-category-icon {
-
-    display: grid;
-
-    place-items: center;
-
+.other-icon {
     width: 38px;
-
     height: 38px;
 
-    border-radius: 10px;
+    display: flex;
 
-    background:
-        #ffffff;
+    align-items: center;
 
-    color:
-        var(--pj-primary);
+    justify-content: center;
 
-    font-size: 21px;
+    border-radius: 11px;
 
-    font-weight: 700;
+    background: #dbeafe;
+
+    color: var(--pj-accent);
+
+    font-size: 20px;
 }
 
 
-.custom-category-content {
-
+.other-content {
     display: flex;
 
     flex-direction: column;
@@ -1096,78 +904,64 @@
 }
 
 
-.custom-category-content strong {
-
+.other-content strong {
     font-size: 12px;
 }
 
 
-.custom-category-content small {
+.other-content small {
+    color: #6b7280;
 
-    color:
-        #98a2b3;
-
-    font-size: 10px;
+    font-size: 11px;
 }
 
 
-/* =========================================================
+/* ============================================================
    LOADING
-========================================================= */
+============================================================ */
 
 .category-loading {
+    min-height: 150px;
 
     display: flex;
+
+    flex-direction: column;
 
     align-items: center;
 
     justify-content: center;
 
-    flex-direction: column;
+    gap: 7px;
 
-    gap: 6px;
-
-    min-height: 160px;
-
-    color:
-        #667085;
+    color: #6b7280;
 
     text-align: center;
 }
 
 
 .category-loading strong {
-
-    color:
-        #344054;
+    color: #374151;
 
     font-size: 13px;
 }
 
 
 .category-loading small {
-
-    color:
-        #98a2b3;
+    color: #9ca3af;
 
     font-size: 11px;
 }
 
 
 .category-spinner {
-
-    width: 28px;
-
-    height: 28px;
-
-    margin-bottom: 5px;
+    width: 27px;
+    height: 27px;
 
     border:
-        3px solid
-        #e5e7eb;
+        3px solid #e5e7eb;
 
     border-top-color:
-        var(--pj-primary);
+        var(--pj-accent);
 
     border-radius: 50%;
 
@@ -1181,15 +975,36 @@
     to {
         transform: rotate(360deg);
     }
+
 }
 
 
-/* =========================================================
+/* ============================================================
    EMPTY / ERROR
-========================================================= */
+============================================================ */
 
-.category-empty,
-.category-error {
+.category-empty {
+    min-height: 150px;
+
+    padding: 30px 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    gap: 7px;
+}
+
+
+.empty-icon {
+    width: 44px;
+    height: 44px;
 
     display: flex;
 
@@ -1197,353 +1012,259 @@
 
     justify-content: center;
 
-    flex-direction: column;
+    margin-bottom: 4px;
 
-    gap: 7px;
+    border-radius: 50%;
 
-    min-height: 170px;
+    background: #f3f4f6;
 
-    padding: 25px;
-
-    text-align: center;
-}
-
-
-.empty-icon,
-.category-error-icon {
-
-    display: grid;
-
-    place-items: center;
-
-    width: 45px;
-
-    height: 45px;
-
-    margin-bottom: 3px;
-
-    border-radius: 13px;
-
-    background:
-        #f2f4f7;
-
-    color:
-        #667085;
-
-    font-size: 19px;
+    color: #6b7280;
 
     font-weight: 800;
 }
 
 
-.category-error-icon {
-
-    background:
-        #fef2f2;
-
-    color:
-        var(--pj-danger);
-}
-
-
-.category-empty strong,
-.category-error strong {
-
+.category-empty strong {
     font-size: 13px;
 }
 
 
-.category-empty small,
-.category-error small {
-
-    max-width: 330px;
-
-    color:
-        #98a2b3;
+.category-empty small {
+    color: #9ca3af;
 
     font-size: 11px;
 }
 
 
 .retry-category-button {
-
     margin-top: 8px;
-
-    padding:
-        9px
-        15px;
 
     border: 0;
 
     border-radius: 9px;
 
-    background:
-        var(--pj-primary);
+    padding: 8px 12px;
 
-    color:
-        white;
+    background: var(--pj-accent);
 
-    cursor: pointer;
-
-    font-size: 12px;
-
-    font-weight: 700;
-}
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-.category-status {
-
-    min-height: 17px;
-
-    margin-top: 7px;
+    color: #ffffff;
 
     font-size: 11px;
 
-    font-weight: 600;
+    font-weight: 800;
+
+    cursor: pointer;
 }
 
 
-.category-status.success {
+/* ============================================================
+   CATEGORY STATUS
+============================================================ */
 
-    color:
-        var(--pj-success);
+.category-status {
+    min-height: 18px;
+
+    margin-top: 8px;
+
+    color: #9ca3af;
+
+    font-size: 11px;
 }
 
 
-.category-status.error {
-
-    color:
-        var(--pj-danger);
+.category-status.is-success {
+    color: var(--pj-success);
 }
 
 
-/* =========================================================
+.category-status.is-error {
+    color: var(--pj-danger);
+}
+
+
+/* ============================================================
    SECTION TITLE
-========================================================= */
+============================================================ */
 
 .form-section-title {
-
     display: flex;
 
     align-items: center;
 
-    gap: 12px;
+    gap: 13px;
 
     margin:
-        34px
-        0
-        22px;
+        38px 0 24px;
+}
+
+
+.form-section-title::before,
+.form-section-title::after {
+    content: "";
+
+    height: 1px;
+
+    flex: 1;
+
+    background:
+        var(--pj-border);
 }
 
 
 .form-section-title span {
+    color: #6b7280;
 
-    flex-shrink: 0;
-
-    color:
-        #98a2b3;
-
-    font-size: 10px;
+    font-size: 11px;
 
     font-weight: 850;
 
-    letter-spacing: 1.3px;
+    letter-spacing: .14em;
 
     text-transform: uppercase;
+
+    white-space: nowrap;
 }
 
 
-.section-line {
-
-    flex: 1;
-
-    height: 1px;
-
-    background:
-        #eaecf0;
-}
-
-
-/* =========================================================
+/* ============================================================
    GRID
-========================================================= */
+============================================================ */
 
 .form-grid {
-
     display: grid;
 
     grid-template-columns:
         repeat(2, minmax(0, 1fr));
 
-    gap: 18px;
+    gap: 20px;
 }
 
 
-/* =========================================================
+/* ============================================================
    CURRENCY
-========================================================= */
+============================================================ */
 
 .currency-input input {
-
-    padding-left: 47px;
+    padding-left: 48px;
 }
 
 
 .currency-symbol {
-
     position: absolute;
 
     left: 17px;
+    top: 50%;
+
+    transform: translateY(-50%);
 
     z-index: 2;
 
-    color:
-        #667085;
+    color: #6b7280;
 
-    font-weight: 750;
+    font-weight: 800;
 
     pointer-events: none;
 }
 
 
-/* =========================================================
+/* ============================================================
    SELECT
-========================================================= */
+============================================================ */
 
 .select-wrapper {
-
     position: relative;
 }
 
 
 .select-wrapper select {
-
-    width: 100%;
-
-    height: 54px;
+    height: 52px;
 
     padding:
-        0
-        43px
-        0
-        16px;
+        0 45px 0 15px;
 
     appearance: none;
-
-    border:
-        1px solid
-        var(--pj-border);
-
-    border-radius: 13px;
-
-    outline: none;
-
-    background:
-        #fff;
-
-    font-size: 14px;
 
     cursor: pointer;
 }
 
 
 .select-arrow {
-
     position: absolute;
 
-    right: 17px;
-
+    right: 16px;
     top: 50%;
 
-    transform:
-        translateY(-50%);
+    transform: translateY(-50%);
+
+    color: #6b7280;
 
     pointer-events: none;
-
-    color:
-        #667085;
 }
 
 
-/* =========================================================
+/* ============================================================
    FORM MESSAGE
-========================================================= */
+============================================================ */
 
 .form-message {
-
     display: none;
 
-    margin:
-        20px
-        0;
+    margin-top: 10px;
 
-    padding:
-        13px
-        15px;
+    padding: 13px 15px;
 
     border-radius: 12px;
 
     font-size: 13px;
 
-    font-weight: 650;
+    line-height: 1.5;
 }
 
 
-.form-message.error {
-
+.form-message.is-error {
     display: block;
 
+    background: #fef2f2;
+
+    color: #b91c1c;
+
     border:
-        1px solid
-        #fecaca;
-
-    background:
-        #fef2f2;
-
-    color:
-        #b91c1c;
+        1px solid #fecaca;
 }
 
 
-.form-message.success {
-
+.form-message.is-success {
     display: block;
 
+    background: #f0fdf4;
+
+    color: #15803d;
+
     border:
-        1px solid
-        #bbf7d0;
-
-    background:
-        #f0fdf4;
-
-    color:
-        #15803d;
+        1px solid #bbf7d0;
 }
 
 
-/* =========================================================
+/* ============================================================
    SUBMIT
-========================================================= */
+============================================================ */
 
 .form-submit-area {
+    margin-top: 32px;
 
-    margin-top: 30px;
-
-    padding-top: 25px;
+    padding-top: 28px;
 
     border-top:
-        1px solid
-        #eaecf0;
+        1px solid var(--pj-border);
+
+    text-align: center;
 }
 
 
 .post-job-button {
+    width: 100%;
 
-    position: relative;
+    min-height: 58px;
 
     display: flex;
 
@@ -1551,171 +1272,165 @@
 
     justify-content: center;
 
-    gap: 10px;
-
-    width: 100%;
-
-    min-height: 57px;
+    gap: 12px;
 
     border: 0;
 
-    border-radius: 14px;
+    border-radius: 15px;
 
     background:
         linear-gradient(
             135deg,
-            var(--pj-primary),
-            var(--pj-primary-dark)
+            #111827,
+            #1e3a8a
         );
 
     color: #ffffff;
 
-    box-shadow:
-        0 12px 25px
-        rgba(37,99,235,.24);
+    font-size: 14px;
+
+    font-weight: 850;
 
     cursor: pointer;
 
-    font-size: 14px;
-
-    font-weight: 800;
+    box-shadow:
+        0 12px 28px
+        rgba(30, 58, 138, 0.20);
 
     transition:
         transform .2s ease,
-        box-shadow .2s ease;
+        box-shadow .2s ease,
+        opacity .2s ease;
 }
 
 
-.post-job-button:hover {
-
-    transform:
-        translateY(-2px);
+.post-job-button:hover:not(:disabled) {
+    transform: translateY(-2px);
 
     box-shadow:
-        0 16px 32px
-        rgba(37,99,235,.30);
+        0 18px 36px
+        rgba(30, 58, 138, 0.28);
 }
 
 
 .post-job-button:disabled {
-
     opacity: .65;
 
     cursor: not-allowed;
-
-    transform: none;
 }
 
 
 .button-icon {
+    width: 28px;
+    height: 28px;
 
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    font-size: 19px;
+}
+
+
+.button-arrow {
     font-size: 20px;
-
-    font-weight: 400;
-}
-
-
-.button-arrow {
-
-    font-size: 18px;
-
-    transition: .2s ease;
-}
-
-
-.post-job-button:hover
-.button-arrow {
-
-    transform:
-        translateX(4px);
 }
 
 
 .post-job-button.is-loading
 .button-arrow {
-
     display: none;
 }
 
 
 .submit-note {
-
     margin:
-        12px
-        0
-        0;
+        13px 0 0;
 
-    color:
-        #98a2b3;
+    color: #9ca3af;
 
-    text-align: center;
-
-    font-size: 10px;
+    font-size: 11px;
 
     line-height: 1.5;
 }
 
 
-/* =========================================================
+/* ============================================================
    MOBILE
-========================================================= */
+============================================================ */
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
+
+    .post-job-container {
+        width:
+            min(
+                100% - 22px,
+                1120px
+            );
+    }
+
 
     .post-job-hero {
-
         padding:
-            48px
-            0
-            95px;
+            50px 0 48px;
     }
 
 
-    .hero-content h1 {
-
+    .post-job-hero h1 {
         font-size: 40px;
-
-        letter-spacing:
-            -1.7px;
     }
 
 
-    .hero-content p {
-
+    .post-job-hero p {
         font-size: 15px;
     }
 
 
     .hero-features {
-
         flex-direction: column;
 
-        align-items: flex-start;
+        align-items: stretch;
+    }
+
+
+    .hero-feature {
+        width: fit-content;
+    }
+
+
+    .post-job-section {
+        padding:
+            25px 0 60px;
     }
 
 
     .post-job-card {
+        padding: 20px 16px;
 
-        padding: 24px 18px;
-
-        border-radius: 18px;
+        border-radius: 21px;
     }
 
 
     .form-header {
-
         flex-direction: column;
+
+        gap: 15px;
     }
 
 
-    .secure-badge {
-
-        align-self: flex-start;
+    .form-header h2 {
+        font-size: 24px;
     }
 
 
     .form-grid {
-
         grid-template-columns: 1fr;
 
         gap: 0;
@@ -1723,82 +1438,61 @@
 
 
     .category-dropdown {
-
         position: fixed;
 
-        left: 16px;
+        left: 11px;
+        right: 11px;
 
-        right: 16px;
+        top: 50%;
 
-        top: auto;
+        max-height: 75vh;
 
-        bottom: 16px;
+        transform:
+            translateY(-45%)
+            scale(.98);
+    }
 
-        max-height:
-            min(70vh, 500px);
 
-        border-radius: 18px;
+    .category-dropdown.is-open {
+        transform:
+            translateY(-50%)
+            scale(1);
     }
 
 
     .category-list {
+        max-height: 45vh;
+    }
 
-        max-height:
-            55vh;
+
+    .textarea-footer {
+        flex-direction: column;
+
+        gap: 5px;
     }
 
 }
 
 
-@media (max-width: 480px) {
+/* ============================================================
+   VERY SMALL MOBILE
+============================================================ */
 
-    .post-job-container {
+@media (max-width: 390px) {
 
-        width:
-            calc(100% - 20px);
-    }
-
-
-    .post-job-hero {
-
-        padding:
-            38px
-            0
-            85px;
-    }
-
-
-    .hero-content h1 {
-
+    .post-job-hero h1 {
         font-size: 34px;
     }
 
 
-    .hero-content p {
-
-        font-size: 14px;
-
-        line-height: 1.6;
-    }
-
-
     .post-job-card {
-
         padding:
-            22px
-            14px;
+            18px 13px;
     }
 
 
-    .form-header h2 {
-
-        font-size: 22px;
-    }
-
-
-    .form-section-title {
-
-        margin-top: 28px;
+    .hero-feature {
+        font-size: 12px;
     }
 
    }
