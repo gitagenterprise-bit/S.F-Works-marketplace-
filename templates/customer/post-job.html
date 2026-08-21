@@ -81,7 +81,7 @@ Post a Job — S. F Works
             <div class="post-job-card">
 
                 <!-- =================================================
-                     FORM HEADER
+                     HEADER
                 ================================================== -->
 
                 <div class="form-header">
@@ -118,12 +118,13 @@ Post a Job — S. F Works
                 <form
                     id="postJobForm"
                     method="POST"
-                    action=""
                     novalidate
+                    data-category-url="{{ url_for('jobs.categories') }}"
+                    data-create-url="{{ url_for('jobs.create_job') }}"
                 >
 
                     <!-- =================================================
-                         JOB TITLE
+                         TITLE
                     ================================================== -->
 
                     <div class="form-group">
@@ -211,7 +212,7 @@ Post a Job — S. F Works
                             id="categoryPicker"
                         >
 
-                            <!-- INPUT -->
+                            <!-- SEARCH -->
 
                             <div class="category-input-wrapper">
 
@@ -223,7 +224,7 @@ Post a Job — S. F Works
                                     type="text"
                                     id="jobCategory"
                                     name="category_search"
-                                    placeholder="Search or choose a category..."
+                                    placeholder="Search or select a category..."
                                     autocomplete="off"
                                     maxlength="100"
                                     required
@@ -246,7 +247,7 @@ Post a Job — S. F Works
                             </div>
 
 
-                            <!-- REAL DATABASE CATEGORY ID -->
+                            <!-- ACTUAL DATABASE ID -->
 
                             <input
                                 type="hidden"
@@ -268,13 +269,13 @@ Post a Job — S. F Works
 
                                     <div class="category-header-title">
 
-                                        <span class="category-header-icon">
+                                        <span>
                                             ✦
                                         </span>
 
-                                        <span>
+                                        <strong>
                                             Choose a category
-                                        </span>
+                                        </strong>
 
                                     </div>
 
@@ -465,7 +466,7 @@ Post a Job — S. F Works
                     </div>
 
 
-                    <!-- CITY + STATE -->
+                    <!-- CITY / STATE -->
 
                     <div class="form-grid">
 
@@ -507,7 +508,7 @@ Post a Job — S. F Works
                     </div>
 
 
-                    <!-- PINCODE + PRIORITY -->
+                    <!-- PINCODE / PRIORITY -->
 
                     <div class="form-grid">
 
@@ -569,7 +570,7 @@ Post a Job — S. F Works
 
 
                     <!-- =================================================
-                         FORM MESSAGE
+                         MESSAGE
                     ================================================== -->
 
                     <div
