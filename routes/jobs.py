@@ -16,6 +16,9 @@ from models.user import User
 from models.job import Job, JobImage
 from models.category import Category
 
+from utils.default_categories import (
+    ensure_default_categories
+)
 from utils.decorators import role_required
 
 
@@ -669,39 +672,86 @@ def delete_job(job_id):
 
     }), 200
 
+# ============================================================
+# ACTIVE CATEGORIES
+# GET /categories
+# ============================================================
+
 @jobs_bp.route(
     "/categories",
     methods=["GET"]
 )
 def categories():
 
-    categories = (
-        Category.query
-        .filter(
-            Category.is_active.is_(True)
+    try:
+
+        # ----------------------------------------------------
+        # Make sure default categories exist
+        # ----------------------------------------------------
+
+        ensure_default_categories()
+
+        categories = (
+            Category.query
+            .filter(
+                Category.is_active.is_(True)
+            )
+            .order_by(
+                Category.name.asc()
+            )
+            .all()
         )
-        .order_by(
-            Category.name.asc()
-        )
-        .all()
-    )
 
-    data = []
+        data = []
 
-    for category in categories:
+        for category in categories:
 
-        data.append({
-            "id": category.id,
-            "name": category.name,
-            "slug": category.slug,
-            "description": category.description or "",
-            "icon": category.icon or "✦",
-            "image": category.image or ""
-        })
+            data.append({
 
-    return jsonify({
-        "status": "success",
-        "categories": data,
-        "count": len(data)
-    }), 200
-    
+                "id": category.id,
+
+                "name": category.name,
+
+                "slug": category.slug,
+
+                "description": (
+                    category.description
+                    or ""
+                ),
+
+                "icon": (
+                    category.icon
+                    or "✦"
+                ),
+
+                "image": (
+                    category.image
+                    or ""
+                )
+
+            })
+
+        return jsonify({
+
+            "status": "success",
+
+            "categories": data,
+
+            "count": len(data)
+
+        }), 200
+
+    except Exception as e:
+
+        db.session.rollback()
+
+        return jsonify({
+
+            "status": "error",
+
+            "message": (
+                "Unable to load categories"
+            )
+
+        }), 500
+
