@@ -8,11 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const form = document.getElementById("postJobForm");
 
+    const categoryPicker =
+        document.getElementById("categoryPicker");
+
     const categoryInput =
         document.getElementById("jobCategory");
 
-    const categoryPicker =
-        document.getElementById("categoryPicker");
+    const categoryIdInput =
+        document.getElementById("jobCategoryId");
 
     const categoryDropdown =
         document.getElementById("categoryDropdown");
@@ -46,26 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // HIDDEN CATEGORY ID
-    // =========================================================
-
-    let categoryIdInput =
-        document.getElementById("jobCategoryId");
-
-    if (!categoryIdInput) {
-
-        categoryIdInput =
-            document.createElement("input");
-
-        categoryIdInput.type = "hidden";
-        categoryIdInput.id = "jobCategoryId";
-        categoryIdInput.name = "category_id";
-
-        form.appendChild(categoryIdInput);
-    }
-
-
-    // =========================================================
     // STATE
     // =========================================================
 
@@ -73,19 +56,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let selectedCategory = null;
 
+    let categoriesLoaded = false;
+
+    let isLoadingCategories = false;
+
 
     // =========================================================
-    // CATEGORY DROPDOWN
+    // CATEGORY STATUS
+    // =========================================================
+
+    function setCategoryStatus(message, type = "") {
+
+        if (!categoryStatus) return;
+
+        categoryStatus.textContent = message;
+
+        categoryStatus.className =
+            `category-status ${type}`.trim();
+    }
+
+
+    // =========================================================
+    // OPEN DROPDOWN
     // =========================================================
 
     function openCategoryDropdown() {
 
-        if (!categoryDropdown) return;
+        if (!categoryPicker || !categoryDropdown) {
+            return;
+        }
 
-        categoryDropdown.classList.add("is-open");
+        categoryPicker.classList.add("is-open");
+
+        categoryDropdown.setAttribute(
+            "aria-hidden",
+            "false"
+        );
 
         if (categoryInput) {
+
             categoryInput.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+        }
+
+        if (categoryButton) {
+
+            categoryButton.setAttribute(
                 "aria-expanded",
                 "true"
             );
@@ -93,14 +111,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    // =========================================================
+    // CLOSE DROPDOWN
+    // =========================================================
+
     function closeCategoryDropdown() {
 
-        if (!categoryDropdown) return;
+        if (!categoryPicker || !categoryDropdown) {
+            return;
+        }
 
-        categoryDropdown.classList.remove("is-open");
+        categoryPicker.classList.remove("is-open");
+
+        categoryDropdown.setAttribute(
+            "aria-hidden",
+            "true"
+        );
 
         if (categoryInput) {
+
             categoryInput.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+        }
+
+        if (categoryButton) {
+
+            categoryButton.setAttribute(
                 "aria-expanded",
                 "false"
             );
@@ -108,28 +146,51 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    function toggleCategoryDropdown() {
+    // =========================================================
+    // TOGGLE DROPDOWN
+    // =========================================================
 
-        if (!categoryDropdown) return;
+    async function toggleCategoryDropdown() {
 
-        if (
-            categoryDropdown.classList.contains(
+        if (!categoryPicker) return;
+
+        const isOpen =
+            categoryPicker.classList.contains(
                 "is-open"
-            )
-        ) {
+            );
+
+        if (isOpen) {
 
             closeCategoryDropdown();
 
-        } else {
-
-            renderCategories(
-                categoryInput
-                    ? categoryInput.value
-                    : ""
-            );
-
-            openCategoryDropdown();
+            return;
         }
+
+        if (!categoriesLoaded) {
+
+            await loadCategories();
+        }
+
+        renderCategories(
+            categoryInput?.value || ""
+        );
+
+        openCategoryDropdown();
+    }
+
+
+    // =========================================================
+    // ESCAPE HTML
+    // =========================================================
+
+    function escapeHtml(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
 
@@ -141,12 +202,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!categoryList) return;
 
+        if (isLoadingCategories) {
+            return;
+        }
+
+        isLoadingCategories = true;
+
         categoryList.innerHTML = `
             <div class="category-loading">
                 <span class="category-spinner"></span>
-                Loading categories...
+                <strong>Loading categories...</strong>
+                <small>Please wait</small>
             </div>
         `;
+
+        setCategoryStatus(
+            "Loading categories...",
+            "loading"
+        );
 
         try {
 
@@ -154,35 +227,105 @@ document.addEventListener("DOMContentLoaded", () => {
                 "/api/jobs/categories",
                 {
                     method: "GET",
+
                     headers: {
                         "Accept": "application/json"
                     },
-                    credentials: "same-origin"
+
+                    credentials: "same-origin",
+
+                    cache: "no-store"
                 }
             );
+
 
             if (!response.ok) {
 
                 throw new Error(
-                    `Category request failed: ${response.status}`
+                    `Category API returned ${response.status}`
                 );
             }
+
 
             const result =
                 await response.json();
 
+
+            console.log(
+                "Categories API response:",
+                result
+            );
+
+
+            /*
+             * Expected:
+             *
+             * {
+             *     status: "success",
+             *     categories: [...]
+             * }
+             */
+
             if (
-                result.status !== "success" ||
-                !Array.isArray(result.categories)
+                !result ||
+                !Array.isArray(
+                    result.categories
+                )
             ) {
 
                 throw new Error(
-                    "Invalid category response"
+                    "Invalid category API response."
                 );
             }
 
+
             categories =
-                result.categories;
+                result.categories
+                    .filter(category => {
+
+                        return (
+                            category &&
+                            category.id !== undefined &&
+                            category.name
+                        );
+                    })
+                    .map(category => {
+
+                        return {
+                            id:
+                                Number(
+                                    category.id
+                                ),
+
+                            name:
+                                String(
+                                    category.name
+                                ),
+
+                            description:
+                                String(
+                                    category.description ||
+                                    ""
+                                ),
+
+                            icon:
+                                String(
+                                    category.icon ||
+                                    "✦"
+                                ),
+
+                            slug:
+                                String(
+                                    category.slug ||
+                                    ""
+                                )
+                        };
+
+                    });
+
+
+            categoriesLoaded = true;
+
 
             if (categoryCount) {
 
@@ -190,48 +333,91 @@ document.addEventListener("DOMContentLoaded", () => {
                     categories.length;
             }
 
-            renderCategories("");
 
-            if (categoryStatus) {
+            renderCategories(
+                categoryInput?.value || ""
+            );
 
-                categoryStatus.textContent =
-                    categories.length
-                        ? `${categories.length} categories available`
-                        : "No categories available";
 
-                categoryStatus.className =
-                    categories.length
-                        ? "category-status success"
-                        : "category-status warning";
+            if (categories.length) {
+
+                setCategoryStatus(
+                    `${categories.length} categories available`,
+                    "success"
+                );
+
+            } else {
+
+                setCategoryStatus(
+                    "No categories are currently available.",
+                    "warning"
+                );
             }
+
 
         } catch (error) {
 
             console.error(
-                "Category loading error:",
+                "CATEGORY LOAD ERROR:",
                 error
             );
 
             categories = [];
 
-            if (categoryList) {
+            categoriesLoaded = false;
 
-                categoryList.innerHTML = `
-                    <div class="category-empty">
-                        <strong>Unable to load categories</strong>
-                        <small>Please refresh the page and try again.</small>
-                    </div>
-                `;
+
+            categoryList.innerHTML = `
+                <div class="category-empty category-error">
+                    <strong>
+                        Unable to load categories
+                    </strong>
+
+                    <small>
+                        Please refresh the page and try again.
+                    </small>
+
+                    <button
+                        type="button"
+                        class="category-retry"
+                        id="categoryRetryButton"
+                    >
+                        Retry
+                    </button>
+                </div>
+            `;
+
+
+            setCategoryStatus(
+                "Unable to load categories.",
+                "error"
+            );
+
+
+            const retryButton =
+                document.getElementById(
+                    "categoryRetryButton"
+                );
+
+
+            if (retryButton) {
+
+                retryButton.addEventListener(
+                    "click",
+                    async () => {
+
+                        categoriesLoaded = false;
+
+                        await loadCategories();
+
+                    }
+                );
             }
 
-            if (categoryStatus) {
 
-                categoryStatus.textContent =
-                    "Unable to load categories.";
+        } finally {
 
-                categoryStatus.className =
-                    "category-status error";
-            }
+            isLoadingCategories = false;
         }
     }
 
@@ -240,14 +426,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // RENDER CATEGORIES
     // =========================================================
 
-    function renderCategories(searchText = "") {
+    function renderCategories(
+        searchText = ""
+    ) {
 
         if (!categoryList) return;
 
+
         const search =
-            searchText
+            String(searchText || "")
                 .trim()
                 .toLowerCase();
+
 
         const filtered =
             categories.filter(category => {
@@ -262,10 +452,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         category.description || ""
                     ).toLowerCase();
 
+                const slug =
+                    String(
+                        category.slug || ""
+                    ).toLowerCase();
+
+
                 return (
                     !search ||
                     name.includes(search) ||
-                    description.includes(search)
+                    description.includes(search) ||
+                    slug.includes(search)
                 );
             });
 
@@ -281,10 +478,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             categoryList.innerHTML = `
                 <div class="category-empty">
-                    <strong>No matching category</strong>
+
+                    <strong>
+                        No matching category
+                    </strong>
+
                     <small>
                         Try another search term.
                     </small>
+
                 </div>
             `;
 
@@ -295,25 +497,26 @@ document.addEventListener("DOMContentLoaded", () => {
         categoryList.innerHTML =
             filtered.map(category => {
 
-                const icon =
-                    category.icon ||
-                    "✦";
+                const isSelected =
+                    selectedCategory &&
+                    Number(
+                        selectedCategory.id
+                    ) === Number(
+                        category.id
+                    );
 
-                const description =
-                    category.description ||
-                    "Professional service category";
 
                 return `
                     <button
                         type="button"
-                        class="category-option"
-                        data-category-id="${category.id}"
-                        data-category-name="${escapeHtml(category.name)}"
+                        class="category-option ${isSelected ? "active" : ""}"
+                        data-category-id="${escapeHtml(category.id)}"
                     >
 
                         <span class="category-option-icon">
-                            ${escapeHtml(icon)}
+                            ${escapeHtml(category.icon)}
                         </span>
+
 
                         <span class="category-option-content">
 
@@ -321,11 +524,20 @@ document.addEventListener("DOMContentLoaded", () => {
                                 ${escapeHtml(category.name)}
                             </strong>
 
-                            <small>
-                                ${escapeHtml(description)}
-                            </small>
+                            ${
+                                category.description
+                                    ? `
+                                        <small>
+                                            ${escapeHtml(
+                                                category.description
+                                            )}
+                                        </small>
+                                      `
+                                    : ""
+                            }
 
                         </span>
+
 
                         <span class="category-option-arrow">
                             →
@@ -344,38 +556,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function selectCategory(category) {
 
-        if (!category) return;
+        if (!category) {
+            return;
+        }
+
 
         selectedCategory =
             category;
+
+
+        /*
+         * Visible field
+         */
 
         if (categoryInput) {
 
             categoryInput.value =
                 category.name;
+
+            categoryInput.classList.add(
+                "category-selected"
+            );
         }
+
+
+        /*
+         * REAL DATABASE ID
+         */
 
         if (categoryIdInput) {
 
             categoryIdInput.value =
-                category.id;
+                String(category.id);
         }
 
-        if (categoryStatus) {
 
-            categoryStatus.textContent =
-                `Selected: ${category.name}`;
+        setCategoryStatus(
+            `Selected: ${category.name}`,
+            "success"
+        );
 
-            categoryStatus.className =
-                "category-status success";
-        }
+
+        renderCategories(
+            categoryInput?.value || ""
+        );
+
 
         closeCategoryDropdown();
     }
 
 
     // =========================================================
-    // CATEGORY CLICK
+    // CATEGORY LIST CLICK
     // =========================================================
 
     if (categoryList) {
@@ -384,17 +616,32 @@ document.addEventListener("DOMContentLoaded", () => {
             "click",
             event => {
 
+                const retry =
+                    event.target.closest(
+                        "#categoryRetryButton"
+                    );
+
+                if (retry) {
+                    return;
+                }
+
+
                 const option =
                     event.target.closest(
                         ".category-option"
                     );
 
-                if (!option) return;
+
+                if (!option) {
+                    return;
+                }
+
 
                 const categoryId =
                     Number(
                         option.dataset.categoryId
                     );
+
 
                 const category =
                     categories.find(
@@ -403,17 +650,28 @@ document.addEventListener("DOMContentLoaded", () => {
                             categoryId
                     );
 
-                if (category) {
 
-                    selectCategory(category);
+                if (!category) {
+
+                    console.error(
+                        "Category not found:",
+                        categoryId
+                    );
+
+                    return;
                 }
+
+
+                selectCategory(
+                    category
+                );
             }
         );
     }
 
 
     // =========================================================
-    // SEARCH CATEGORY
+    // SEARCH INPUT
     // =========================================================
 
     if (categoryInput) {
@@ -422,37 +680,47 @@ document.addEventListener("DOMContentLoaded", () => {
             "input",
             () => {
 
-                const typedValue =
+                const value =
                     categoryInput.value.trim();
 
+
                 /*
-                 * User changed the selected category.
-                 * Clear the old category ID.
+                 * If user changes selected category
+                 * manually, remove old ID.
                  */
 
                 if (
                     selectedCategory &&
-                    typedValue !==
+                    value !==
                     selectedCategory.name
                 ) {
 
-                    selectedCategory = null;
+                    selectedCategory =
+                        null;
 
-                    categoryIdInput.value = "";
+                    if (categoryIdInput) {
 
-                    if (categoryStatus) {
-
-                        categoryStatus.textContent =
-                            "Please select a category from the list.";
-
-                        categoryStatus.className =
-                            "category-status warning";
+                        categoryIdInput.value =
+                            "";
                     }
+
+
+                    categoryInput.classList.remove(
+                        "category-selected"
+                    );
+
+
+                    setCategoryStatus(
+                        "Select a category from the list.",
+                        "warning"
+                    );
                 }
 
+
                 renderCategories(
-                    typedValue
+                    value
                 );
+
 
                 openCategoryDropdown();
             }
@@ -461,11 +729,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         categoryInput.addEventListener(
             "focus",
-            () => {
+            async () => {
+
+                if (!categoriesLoaded) {
+
+                    await loadCategories();
+                }
+
 
                 renderCategories(
                     categoryInput.value
                 );
+
 
                 openCategoryDropdown();
             }
@@ -476,10 +751,15 @@ document.addEventListener("DOMContentLoaded", () => {
             "keydown",
             event => {
 
-                if (event.key === "Escape") {
+                if (
+                    event.key === "Escape"
+                ) {
 
                     closeCategoryDropdown();
+
+                    return;
                 }
+
 
                 if (
                     event.key === "ArrowDown"
@@ -488,6 +768,35 @@ document.addEventListener("DOMContentLoaded", () => {
                     event.preventDefault();
 
                     openCategoryDropdown();
+
+                    return;
+                }
+
+
+                /*
+                 * Do NOT allow Enter to submit
+                 * the form while dropdown is open.
+                 */
+
+                if (
+                    event.key === "Enter" &&
+                    categoryPicker?.classList.contains(
+                        "is-open"
+                    )
+                ) {
+
+                    event.preventDefault();
+
+                    const firstOption =
+                        categoryList?.querySelector(
+                            ".category-option"
+                        );
+
+
+                    if (firstOption) {
+
+                        firstOption.click();
+                    }
                 }
             }
         );
@@ -502,13 +811,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         categoryButton.addEventListener(
             "click",
-            event => {
+            async event => {
 
                 event.preventDefault();
 
-                toggleCategoryDropdown();
+                event.stopPropagation();
+
+                await toggleCategoryDropdown();
+
 
                 if (categoryInput) {
+
                     categoryInput.focus();
                 }
             }
@@ -524,26 +837,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         customCategoryButton.addEventListener(
             "click",
-            () => {
+            event => {
 
-                /*
-                 * IMPORTANT:
-                 * Your database Job.category_id is a
-                 * foreign key and cannot accept arbitrary text.
-                 *
-                 * Therefore custom categories cannot be posted
-                 * directly unless the backend first creates a
-                 * Category record.
-                 */
+                event.preventDefault();
 
-                if (categoryStatus) {
+                event.stopPropagation();
 
-                    categoryStatus.textContent =
-                        "Please choose an existing category. Custom categories require admin approval.";
 
-                    categoryStatus.className =
-                        "category-status warning";
-                }
+                setCategoryStatus(
+                    "Only admin-approved categories can be used for jobs.",
+                    "warning"
+                );
+
 
                 if (categoryInput) {
 
@@ -552,6 +857,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     categoryInput.select();
                 }
 
+
                 openCategoryDropdown();
             }
         );
@@ -559,7 +865,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // CLOSE DROPDOWN OUTSIDE
+    // OUTSIDE CLICK
     // =========================================================
 
     document.addEventListener(
@@ -585,9 +891,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateDescriptionCounter() {
 
-        if (!descriptionCounter || !description) {
+        if (
+            !description ||
+            !descriptionCounter
+        ) {
             return;
         }
+
 
         descriptionCounter.textContent =
             `${description.value.length} / 5000`;
@@ -614,13 +924,18 @@ document.addEventListener("DOMContentLoaded", () => {
         type = "error"
     ) {
 
-        if (!formMessage) return;
+        if (!formMessage) {
+            return;
+        }
+
 
         formMessage.textContent =
             message;
 
+
         formMessage.className =
-            `form-message ${type}`;
+            `form-message ${type} show`;
+
 
         formMessage.scrollIntoView({
             behavior: "smooth",
@@ -631,7 +946,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function clearMessage() {
 
-        if (!formMessage) return;
+        if (!formMessage) {
+            return;
+        }
+
 
         formMessage.textContent = "";
 
@@ -655,56 +973,88 @@ document.addEventListener("DOMContentLoaded", () => {
                 clearMessage();
 
 
-                // ---------------------------------------------
-                // Basic validation
-                // ---------------------------------------------
-
                 const title =
                     document
-                        .getElementById("jobTitle")
-                        ?.value.trim();
+                        .getElementById(
+                            "jobTitle"
+                        )
+                        ?.value
+                        .trim();
+
 
                 const jobDescription =
                     document
-                        .getElementById("jobDescription")
-                        ?.value.trim();
+                        .getElementById(
+                            "jobDescription"
+                        )
+                        ?.value
+                        .trim();
+
 
                 const location =
                     document
-                        .getElementById("jobLocation")
-                        ?.value.trim();
+                        .getElementById(
+                            "jobLocation"
+                        )
+                        ?.value
+                        .trim();
+
 
                 const city =
                     document
-                        .getElementById("jobCity")
-                        ?.value.trim();
+                        .getElementById(
+                            "jobCity"
+                        )
+                        ?.value
+                        .trim();
+
 
                 const state =
                     document
-                        .getElementById("jobState")
-                        ?.value.trim();
+                        .getElementById(
+                            "jobState"
+                        )
+                        ?.value
+                        .trim();
+
 
                 const pincode =
                     document
-                        .getElementById("jobPincode")
-                        ?.value.trim();
+                        .getElementById(
+                            "jobPincode"
+                        )
+                        ?.value
+                        .trim();
+
 
                 const budgetMin =
                     document
-                        .getElementById("budgetMin")
+                        .getElementById(
+                            "budgetMin"
+                        )
                         ?.value;
+
 
                 const budgetMax =
                     document
-                        .getElementById("budgetMax")
+                        .getElementById(
+                            "budgetMax"
+                        )
                         ?.value;
+
 
                 const priority =
                     document
-                        .getElementById("jobPriority")
+                        .getElementById(
+                            "jobPriority"
+                        )
                         ?.value ||
                     "normal";
 
+
+                // =================================================
+                // VALIDATION
+                // =================================================
 
                 if (!title) {
 
@@ -726,18 +1076,33 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
+                const categoryId =
+                    Number(
+                        categoryIdInput?.value
+                    );
+
+
                 if (
-                    !categoryIdInput ||
-                    !categoryIdInput.value
+                    !categoryId ||
+                    !selectedCategory
                 ) {
 
                     showMessage(
-                        "Please select a category from the category list."
+                        "Please select a valid category from the category list."
                     );
 
+
                     if (categoryInput) {
+
                         categoryInput.focus();
                     }
+
+
+                    await loadCategories();
+
+                    renderCategories(
+                        categoryInput?.value || ""
+                    );
 
                     openCategoryDropdown();
 
@@ -770,21 +1135,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                // ---------------------------------------------
-                // Request body
-                // ---------------------------------------------
+                // =================================================
+                // PAYLOAD
+                // =================================================
 
                 const payload = {
 
-                    title: title,
+                    title,
 
                     description:
                         jobDescription,
 
                     category_id:
-                        Number(
-                            categoryIdInput.value
-                        ),
+                        categoryId,
 
                     budget_min:
                         budgetMin !== ""
@@ -796,7 +1159,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             ? Number(budgetMax)
                             : null,
 
-                    location: location,
+                    location,
 
                     city:
                         city || null,
@@ -807,19 +1170,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     pincode:
                         pincode || null,
 
-                    priority:
-                        priority
+                    priority
                 };
 
 
-                // ---------------------------------------------
-                // Button loading state
-                // ---------------------------------------------
+                console.log(
+                    "POST JOB PAYLOAD:",
+                    payload
+                );
+
+
+                // =================================================
+                // BUTTON LOADING
+                // =================================================
 
                 if (postJobButton) {
 
                     postJobButton.disabled =
                         true;
+
 
                     postJobButton.dataset.originalText =
                         postJobButton.querySelector(
@@ -827,10 +1196,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         )?.textContent ||
                         "Post Job";
 
+
                     const buttonText =
                         postJobButton.querySelector(
                             ".button-text"
                         );
+
 
                     if (buttonText) {
 
@@ -841,14 +1212,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 try {
-
-                    /*
-                     * IMPORTANT:
-                     *
-                     * Backend route:
-                     *
-                     * POST /api/jobs/create
-                     */
 
                     const response =
                         await fetch(
@@ -877,6 +1240,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     let result = {};
 
+
                     try {
 
                         result =
@@ -888,11 +1252,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
+                    console.log(
+                        "POST JOB RESPONSE:",
+                        result
+                    );
+
+
                     if (!response.ok) {
 
                         throw new Error(
                             result.message ||
                             `Unable to post job (${response.status})`
+                        );
+                    }
+
+
+                    if (
+                        result.status !==
+                        "success"
+                    ) {
+
+                        throw new Error(
+                            result.message ||
+                            "Job could not be posted."
                         );
                     }
 
@@ -904,64 +1286,65 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                    // -----------------------------------------
-                    // Success
-                    // -----------------------------------------
+                    // =================================================
+                    // SUCCESS
+                    // =================================================
 
-                    if (
-                        result.status ===
-                        "success"
-                    ) {
+                    form.reset();
 
-                        form.reset();
+
+                    if (categoryIdInput) {
 
                         categoryIdInput.value =
                             "";
-
-                        selectedCategory =
-                            null;
-
-                        if (categoryStatus) {
-
-                            categoryStatus.textContent =
-                                "Job posted successfully.";
-
-                            categoryStatus.className =
-                                "category-status success";
-                        }
-
-                        updateDescriptionCounter();
+                    }
 
 
-                        /*
-                         * Redirect to job details if
-                         * backend returned job ID.
-                         */
+                    selectedCategory =
+                        null;
 
-                        if (
-                            result.job &&
-                            result.job.id
-                        ) {
 
-                            setTimeout(
-                                () => {
+                    if (categoryInput) {
 
-                                    window.location.href =
-                                        `/jobs/${result.job.id}`;
+                        categoryInput.classList.remove(
+                            "category-selected"
+                        );
+                    }
 
-                                },
-                                1000
-                            );
-                        }
+
+                    setCategoryStatus(
+                        "Job posted successfully.",
+                        "success"
+                    );
+
+
+                    updateDescriptionCounter();
+
+
+                    if (
+                        result.job &&
+                        result.job.id
+                    ) {
+
+                        setTimeout(
+                            () => {
+
+                                window.location.href =
+                                    `/jobs/${result.job.id}`;
+
+                            },
+                            1000
+                        );
                     }
 
 
                 } catch (error) {
 
                     console.error(
-                        "Post job error:",
+                        "POST JOB ERROR:",
                         error
                     );
+
 
                     showMessage(
                         error.message ||
@@ -976,10 +1359,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         postJobButton.disabled =
                             false;
 
+
                         const buttonText =
                             postJobButton.querySelector(
                                 ".button-text"
                             );
+
 
                         if (buttonText) {
 
@@ -995,40 +1380,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // HTML ESCAPE
-    // =========================================================
-
-    function escapeHtml(value) {
-
-        return String(value ?? "")
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
-    }
-
-
-    // =========================================================
-    // INITIALIZE
+    // INITIAL STATE
     // =========================================================
 
     if (categoryInput) {
+
+        categoryInput.setAttribute(
+            "role",
+            "combobox"
+        );
 
         categoryInput.setAttribute(
             "aria-expanded",
@@ -1036,11 +1396,33 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         categoryInput.setAttribute(
-            "role",
-            "combobox"
+            "aria-autocomplete",
+            "list"
         );
     }
 
+
+    if (categoryDropdown) {
+
+        categoryDropdown.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+    }
+
+
+    if (categoryButton) {
+
+        categoryButton.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+    }
+
+
+    // =========================================================
+    // INITIAL CATEGORY LOAD
+    // =========================================================
 
     loadCategories();
 
