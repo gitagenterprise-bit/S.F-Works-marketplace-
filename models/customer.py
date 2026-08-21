@@ -3,68 +3,60 @@ from datetime import datetime
 from extensions import db
 
 
-class CustomerProfile(db.Model):
+class Category(db.Model):
 
-    __tablename__ = "customer_profiles"
+    __tablename__ = "categories"
 
     id = db.Column(
         db.Integer,
         primary_key=True
     )
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey(
-            "users.id",
-            ondelete="CASCADE"
-        ),
+    name = db.Column(
+        db.String(100),
         unique=True,
         nullable=False
     )
 
-    address = db.Column(
-        db.String(255)
+    slug = db.Column(
+        db.String(120),
+        unique=True,
+        nullable=False
     )
 
-    city = db.Column(
+    description = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    icon = db.Column(
         db.String(100),
+        nullable=True
+    )
+
+    image = db.Column(
+        db.String(255),
+        nullable=True
+    )
+
+    is_active = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True,
         index=True
-    )
-
-    state = db.Column(
-        db.String(100)
-    )
-
-    pincode = db.Column(
-        db.String(10)
-    )
-
-    latitude = db.Column(
-        db.Numeric(10, 7),
-        nullable=True
-    )
-
-    longitude = db.Column(
-        db.Numeric(10, 7),
-        nullable=True
-    )
-
-    bio = db.Column(
-        db.Text
     )
 
     created_at = db.Column(
         db.DateTime,
+        nullable=False,
         default=datetime.utcnow
     )
 
-    updated_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
+    jobs = db.relationship(
+        "Job",
+        back_populates="category"
     )
 
-    user = db.relationship(
-        "User",
-        back_populates="customer_profile"
-  )
+    def __repr__(self):
+
+        return f"<Category {self.name}>"
