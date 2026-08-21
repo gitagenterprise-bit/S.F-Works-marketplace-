@@ -675,38 +675,33 @@ def delete_job(job_id):
 )
 def categories():
 
-    categories = Category.query.filter_by(
-        is_active=True
-    ).order_by(
-        Category.name.asc()
-    ).all()
+    categories = (
+        Category.query
+        .filter(
+            Category.is_active.is_(True)
+        )
+        .order_by(
+            Category.name.asc()
+        )
+        .all()
+    )
 
     data = []
 
     for category in categories:
 
         data.append({
-
             "id": category.id,
-
             "name": category.name,
-
             "slug": category.slug,
-
-            "description":
-                category.description,
-
-            "icon":
-                category.icon,
-
-            "image":
-                category.image
+            "description": category.description or "",
+            "icon": category.icon or "✦",
+            "image": category.image or ""
         })
 
     return jsonify({
-
         "status": "success",
-
-        "categories": data
-
+        "categories": data,
+        "count": len(data)
     }), 200
+    
