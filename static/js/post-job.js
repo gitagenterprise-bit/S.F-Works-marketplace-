@@ -50,10 +50,18 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("postJobButton");
 
 
+    // =========================================================
+    // SAFETY CHECK
+    // =========================================================
+
     if (!page || !form) {
         return;
     }
 
+
+    // =========================================================
+    // URLS
+    // =========================================================
 
     const categoriesUrl =
         page.dataset.categoriesUrl;
@@ -68,49 +76,157 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // AUTH
+    // AUTHENTICATED REQUEST
+    //
+    // JWT IS STORED IN HTTPONLY COOKIE
+    //
+    // Access Cookie:
+    //     15 minutes
+    //
+    // Refresh Cookie:
+    //     30 days
+    //
+    // Flow:
+    //
+    // Request
+    //   ↓
+    // 401?
+    //   ↓
+    // /api/auth/refresh
+    //   ↓
+    // New Access Cookie
+    //   ↓
+    // Request again
     // =========================================================
 
-    function getAccessToken() {
+    async function apiRequest(
+        url,
+        options = {},
+        retryAfterRefresh = true
+    ) {
 
-        const possibleKeys = [
-            "access_token",
-            "accessToken",
-            "jwt_token",
-            "token"
-        ];
+        const requestOptions = {
+            ...options,
 
-        for (const key of possibleKeys) {
+            credentials: "include",
 
-            const value =
-                localStorage.getItem(key);
-
-            if (value) {
-                return value;
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                ...(options.headers || {})
             }
-        }
-
-        return null;
-    }
-
-
-    function buildHeaders() {
-
-        const headers = {
-            "Content-Type": "application/json"
         };
 
-        const token =
-            getAccessToken();
 
-        if (token) {
+        let response;
 
-            headers["Authorization"] =
-                `Bearer ${token}`;
+
+        try {
+
+            response =
+                await fetch(
+                    url,
+                    requestOptions
+                );
+
+        } catch (error) {
+
+            console.error(
+                "API request failed:",
+                error
+            );
+
+            throw new Error(
+                "Unable to connect to the server. Please check your internet connection."
+            );
 
         }
 
-        return headers;
+
+        // =====================================================
+        // ACCESS TOKEN EXPIRED / MISSING
+        // =====================================================
+
+        if (
+            response.status === 401 &&
+            retryAfterRefresh
+        ) {
+
+            let refreshResponse;
+
+
+            try {
+
+                refreshResponse =
+                    await fetch(
+                        "/api/auth/refresh",
+                        {
+                            method: "POST",
+
+                            credentials: "include",
+
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+            } catch (error) {
+
+                console.error(
+                    "Refresh request failed:",
+                    error
+                );
+
+                return response;
+
+            }
+
+
+            // =================================================
+            // REFRESH SUCCESS
+            // =================================================
+
+            if (refreshResponse.ok) {
+
+                /*
+                 * Server has now issued a new
+                 * Access JWT Cookie.
+                 *
+                 * Browser automatically stores
+                 * the HttpOnly cookie.
+                 *
+                 * Retry original request once.
+                 */
+
+                try {
+
+                    response =
+                        await fetch(
+                            url,
+                            requestOptions
+                        );
+
+                } catch (error) {
+
+                    console.error(
+                        "Retry request failed:",
+                        error
+                    );
+
+                    throw new Error(
+                        "Unable to connect to the server."
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        return response;
     }
 
 
@@ -127,11 +243,14 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+
         categoryStatus.textContent =
             message;
 
+
         categoryStatus.className =
             "category-status";
+
 
         if (type) {
 
@@ -140,6 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
         }
+
     }
 
 
@@ -153,15 +273,18 @@ document.addEventListener("DOMContentLoaded", () => {
             "is-open"
         );
 
+
         categoryDropdown.setAttribute(
             "aria-hidden",
             "false"
         );
 
+
         categoryInput.setAttribute(
             "aria-expanded",
             "true"
         );
+
 
         categoryButton.setAttribute(
             "aria-expanded",
@@ -177,15 +300,18 @@ document.addEventListener("DOMContentLoaded", () => {
             "is-open"
         );
 
+
         categoryDropdown.setAttribute(
             "aria-hidden",
             "true"
         );
 
+
         categoryInput.setAttribute(
             "aria-expanded",
             "false"
         );
+
 
         categoryButton.setAttribute(
             "aria-expanded",
@@ -219,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // LOADING
+    // CATEGORY LOADING
     // =========================================================
 
     function showCategoryLoading() {
@@ -246,7 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // EMPTY
+    // CATEGORY EMPTY
     // =========================================================
 
     function showCategoryEmpty() {
@@ -275,7 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // ERROR
+    // CATEGORY ERROR
     // =========================================================
 
     function showCategoryError() {
@@ -314,6 +440,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "retryCategories"
             );
 
+
         if (retry) {
 
             retry.addEventListener(
@@ -341,6 +468,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
+    // ESCAPE HTML
+    // =========================================================
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+
+        div.textContent =
+            value == null
+                ? ""
+                : String(value);
+
+
+        return div.innerHTML;
+
+    }
+
+
+    // =========================================================
     // RENDER CATEGORIES
     // =========================================================
 
@@ -360,6 +508,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!term) {
                     return true;
                 }
+
 
                 return (
 
@@ -387,6 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showCategoryEmpty();
 
             return;
+
         }
 
 
@@ -398,15 +548,20 @@ document.addEventListener("DOMContentLoaded", () => {
             const item =
                 document.createElement("button");
 
-            item.type = "button";
+
+            item.type =
+                "button";
+
 
             item.className =
                 "category-option";
+
 
             item.setAttribute(
                 "role",
                 "option"
             );
+
 
             item.dataset.categoryId =
                 category.id;
@@ -456,13 +611,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 "click",
                 () => {
 
-                    selectCategory(category);
+                    selectCategory(
+                        category
+                    );
 
                 }
             );
 
 
-            categoryList.appendChild(item);
+            categoryList.appendChild(
+                item
+            );
 
         });
 
@@ -478,22 +637,28 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedCategory =
             category;
 
+
         categoryInput.value =
             category.name;
 
+
         categoryIdInput.value =
             category.id;
+
 
         setCategoryStatus(
             `Selected: ${category.name}`,
             "success"
         );
 
+
         categoryInput.classList.add(
             "has-selection"
         );
 
+
         closeCategoryDropdown();
+
 
         renderCategories();
 
@@ -501,7 +666,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // OTHER
+    // OTHER CATEGORY
     // =========================================================
 
     function selectOther() {
@@ -521,10 +686,13 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return;
+
         }
 
 
-        selectCategory(other);
+        selectCategory(
+            other
+        );
 
     }
 
@@ -536,6 +704,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadCategories() {
 
         showCategoryLoading();
+
 
         setCategoryStatus(
             "Loading categories..."
@@ -549,18 +718,34 @@ document.addEventListener("DOMContentLoaded", () => {
                     categoriesUrl,
                     {
                         method: "GET",
+
                         credentials: "include",
+
                         headers: {
                             "Accept":
                                 "application/json"
                         },
+
                         cache: "no-store"
                     }
                 );
 
 
-            const data =
-                await response.json();
+            let data = {};
+
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch (error) {
+
+                throw new Error(
+                    "Invalid server response."
+                );
+
+            }
 
 
             if (
@@ -570,7 +755,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 throw new Error(
                     data.message ||
-                    "Failed to load categories"
+                    "Failed to load categories."
                 );
 
             }
@@ -584,9 +769,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     : [];
 
 
-            // -------------------------------------------------
+            // =================================================
             // OTHER MUST EXIST
-            // -------------------------------------------------
+            // =================================================
 
             if (
                 !categories.some(
@@ -596,13 +781,14 @@ document.addEventListener("DOMContentLoaded", () => {
             ) {
 
                 throw new Error(
-                    "Other category is missing"
+                    "Other category is missing."
                 );
 
             }
 
 
             renderCategories();
+
 
             setCategoryStatus(
                 `${categories.length} categories available`,
@@ -617,9 +803,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 error
             );
 
+
             categories = [];
 
+
             showCategoryError();
+
 
             setCategoryStatus(
                 "Could not load categories.",
@@ -628,24 +817,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-    }
-
-
-    // =========================================================
-    // ESCAPE HTML
-    // =========================================================
-
-    function escapeHtml(value) {
-
-        const div =
-            document.createElement("div");
-
-        div.textContent =
-            value == null
-                ? ""
-                : String(value);
-
-        return div.innerHTML;
     }
 
 
@@ -659,8 +830,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+
         const length =
             description.value.length;
+
 
         descriptionCounter.textContent =
             `${length} / 5000`;
@@ -680,8 +853,10 @@ document.addEventListener("DOMContentLoaded", () => {
         formMessage.textContent =
             message;
 
+
         formMessage.className =
             `form-message is-${type}`;
+
 
         formMessage.scrollIntoView({
             behavior: "smooth",
@@ -693,7 +868,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function clearMessage() {
 
-        formMessage.textContent = "";
+        formMessage.textContent =
+            "";
+
 
         formMessage.className =
             "form-message";
@@ -711,9 +888,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const title =
-            document.getElementById(
-                "jobTitle"
-            ).value.trim();
+            document
+                .getElementById("jobTitle")
+                .value
+                .trim();
 
 
         const descriptionValue =
@@ -721,22 +899,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const location =
-            document.getElementById(
-                "jobLocation"
-            ).value.trim();
+            document
+                .getElementById("jobLocation")
+                .value
+                .trim();
 
 
         const budgetMin =
-            document.getElementById(
-                "budgetMin"
-            ).value;
+            document
+                .getElementById("budgetMin")
+                .value;
 
 
         const budgetMax =
-            document.getElementById(
-                "budgetMax"
-            ).value;
+            document
+                .getElementById("budgetMax")
+                .value;
 
+
+        // -----------------------------------------------------
+        // TITLE
+        // -----------------------------------------------------
 
         if (!title) {
 
@@ -760,6 +943,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        if (title.length > 200) {
+
+            showMessage(
+                "Job title cannot exceed 200 characters."
+            );
+
+            return false;
+
+        }
+
+
+        // -----------------------------------------------------
+        // DESCRIPTION
+        // -----------------------------------------------------
+
         if (!descriptionValue) {
 
             showMessage(
@@ -771,6 +969,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        if (descriptionValue.length < 10) {
+
+            showMessage(
+                "Please provide a little more detail about the job."
+            );
+
+            return false;
+
+        }
+
+
+        if (descriptionValue.length > 5000) {
+
+            showMessage(
+                "Job description cannot exceed 5000 characters."
+            );
+
+            return false;
+
+        }
+
+
+        // -----------------------------------------------------
+        // CATEGORY
+        // -----------------------------------------------------
+
         if (
             !categoryIdInput.value ||
             !selectedCategory
@@ -780,17 +1004,55 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Please select a category."
             );
 
+
             categoryInput.focus();
+
 
             return false;
 
         }
 
 
+        // -----------------------------------------------------
+        // LOCATION
+        // -----------------------------------------------------
+
         if (!location) {
 
             showMessage(
                 "Please enter the work location."
+            );
+
+            return false;
+
+        }
+
+
+        // -----------------------------------------------------
+        // BUDGET
+        // -----------------------------------------------------
+
+        if (
+            budgetMin !== "" &&
+            Number(budgetMin) < 0
+        ) {
+
+            showMessage(
+                "Minimum budget cannot be negative."
+            );
+
+            return false;
+
+        }
+
+
+        if (
+            budgetMax !== "" &&
+            Number(budgetMax) < 0
+        ) {
+
+            showMessage(
+                "Maximum budget cannot be negative."
             );
 
             return false;
@@ -820,7 +1082,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // SUBMIT
+    // SUBMIT JOB
     // =========================================================
 
     async function submitJob(event) {
@@ -828,10 +1090,18 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
 
 
+        // -----------------------------------------------------
+        // CLIENT VALIDATION
+        // -----------------------------------------------------
+
         if (!validateForm()) {
             return;
         }
 
+
+        // -----------------------------------------------------
+        // DISABLE BUTTON
+        // -----------------------------------------------------
 
         submitButton.disabled =
             true;
@@ -842,11 +1112,23 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        submitButton.querySelector(
-            ".button-text"
-        ).textContent =
-            "Posting...";
+        const buttonText =
+            submitButton.querySelector(
+                ".button-text"
+            );
 
+
+        if (buttonText) {
+
+            buttonText.textContent =
+                "Posting...";
+
+        }
+
+
+        // -----------------------------------------------------
+        // PAYLOAD
+        // -----------------------------------------------------
 
         const payload = {
 
@@ -856,15 +1138,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     .value
                     .trim(),
 
+
             description:
                 description
                     .value
                     .trim(),
 
+
             category_id:
                 Number(
                     categoryIdInput.value
                 ),
+
 
             budget_min:
                 document
@@ -877,6 +1162,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     )
                     : null,
 
+
             budget_max:
                 document
                     .getElementById("budgetMax")
@@ -888,11 +1174,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     )
                     : null,
 
+
             location:
                 document
                     .getElementById("jobLocation")
                     .value
                     .trim(),
+
 
             city:
                 document
@@ -900,17 +1188,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     .value
                     .trim(),
 
+
             state:
                 document
                     .getElementById("jobState")
                     .value
                     .trim(),
 
+
             pincode:
                 document
                     .getElementById("jobPincode")
                     .value
                     .trim(),
+
 
             priority:
                 document
@@ -920,30 +1211,126 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
 
+        // =====================================================
+        // API REQUEST
+        //
+        // IMPORTANT:
+        //
+        // No Authorization header.
+        //
+        // JWT is HttpOnly Cookie.
+        //
+        // apiRequest() handles:
+        //
+        // Access valid
+        //      ↓
+        // Create Job
+        //
+        // Access expired
+        //      ↓
+        // 401
+        //      ↓
+        // Refresh
+        //      ↓
+        // New Access Cookie
+        //      ↓
+        // Create Job again
+        // =====================================================
+
         try {
 
             const response =
-                await fetch(
+                await apiRequest(
                     createJobUrl,
                     {
                         method: "POST",
-
-                        credentials: "include",
-
-                        headers:
-                            buildHeaders(),
 
                         body:
                             JSON.stringify(
                                 payload
                             )
-                    }
+                    },
+                    true
                 );
 
 
-            const data =
-                await response.json();
+            // -------------------------------------------------
+            // READ RESPONSE SAFELY
+            // -------------------------------------------------
 
+            let data = {};
+
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch (error) {
+
+                console.warn(
+                    "Server returned non-JSON response."
+                );
+
+            }
+
+
+            // =================================================
+            // NOT AUTHENTICATED
+            // =================================================
+
+            if (
+                response.status === 401
+            ) {
+
+                showMessage(
+                    "Please sign up or login to create a job post.",
+                    "error"
+                );
+
+
+                setTimeout(() => {
+
+                    const goLogin =
+                        confirm(
+                            "You need to login or sign up before posting a job.\n\nOK = Login\nCancel = Stay here"
+                        );
+
+
+                    if (goLogin) {
+
+                        window.location.href =
+                            "/login";
+
+                    }
+
+                }, 100);
+
+
+                return;
+
+            }
+
+
+            // =================================================
+            // FORBIDDEN
+            // =================================================
+
+            if (
+                response.status === 403
+            ) {
+
+                throw new Error(
+                    data.message ||
+                    "You do not have permission to post a job."
+                );
+
+            }
+
+
+            // =================================================
+            // OTHER HTTP ERRORS
+            // =================================================
 
             if (!response.ok) {
 
@@ -955,6 +1342,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
+            // =================================================
+            // SUCCESS
+            // =================================================
+
             showMessage(
                 data.message ||
                 "Job posted successfully!",
@@ -962,11 +1353,16 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
+            // -------------------------------------------------
+            // RESET FORM
+            // -------------------------------------------------
+
             form.reset();
 
 
             categoryIdInput.value =
                 "";
+
 
             categoryInput.classList.remove(
                 "has-selection"
@@ -983,19 +1379,28 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            setTimeout(() => {
+            updateDescriptionCounter();
 
-                if (
-                    data.job &&
-                    data.job.id
-                ) {
+
+            // =================================================
+            // REDIRECT TO JOB
+            // =================================================
+
+            if (
+                data.job &&
+                data.job.id
+            ) {
+
+                setTimeout(() => {
 
                     window.location.href =
-                        `/jobs/${data.job.id}`;
+                        `/jobs/${encodeURIComponent(
+                            data.job.id
+                        )}`;
 
-                }
+                }, 1200);
 
-            }, 1200);
+            }
 
 
         } catch (error) {
@@ -1008,7 +1413,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             showMessage(
                 error.message ||
-                "Something went wrong. Please try again."
+                "Something went wrong. Please try again.",
+                "error"
             );
 
 
@@ -1017,14 +1423,18 @@ document.addEventListener("DOMContentLoaded", () => {
             submitButton.disabled =
                 false;
 
+
             submitButton.classList.remove(
                 "is-loading"
             );
 
-            submitButton.querySelector(
-                ".button-text"
-            ).textContent =
-                "Post Job";
+
+            if (buttonText) {
+
+                buttonText.textContent =
+                    "Post Job";
+
+            }
 
         }
 
@@ -1032,7 +1442,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // EVENTS
+    // CATEGORY INPUT — FOCUS
     // =========================================================
 
     categoryInput.addEventListener(
@@ -1040,6 +1450,7 @@ document.addEventListener("DOMContentLoaded", () => {
         () => {
 
             openCategoryDropdown();
+
 
             renderCategories(
                 categoryInput.value
@@ -1049,12 +1460,18 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    // =========================================================
+    // CATEGORY INPUT — SEARCH
+    // =========================================================
+
     categoryInput.addEventListener(
         "input",
         () => {
 
-            // typing means previous selection
-            // is no longer guaranteed
+            /*
+             * If user changes the category text manually,
+             * the previous category ID is no longer trusted.
+             */
 
             if (
                 selectedCategory &&
@@ -1065,12 +1482,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 selectedCategory =
                     null;
 
+
                 categoryIdInput.value =
                     "";
+
 
                 categoryInput.classList.remove(
                     "has-selection"
                 );
+
 
                 setCategoryStatus(
                     "Please select a category from the list."
@@ -1081,6 +1501,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             openCategoryDropdown();
 
+
             renderCategories(
                 categoryInput.value
             );
@@ -1089,17 +1510,29 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    // =========================================================
+    // CATEGORY BUTTON
+    // =========================================================
+
     categoryButton.addEventListener(
         "click",
         toggleCategoryDropdown
     );
 
 
+    // =========================================================
+    // OTHER BUTTON
+    // =========================================================
+
     otherButton.addEventListener(
         "click",
         selectOther
     );
 
+
+    // =========================================================
+    // CLOSE DROPDOWN OUTSIDE
+    // =========================================================
 
     document.addEventListener(
         "click",
@@ -1119,11 +1552,17 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    // =========================================================
+    // ESC KEY
+    // =========================================================
+
     document.addEventListener(
         "keydown",
         event => {
 
-            if (event.key === "Escape") {
+            if (
+                event.key === "Escape"
+            ) {
 
                 closeCategoryDropdown();
 
@@ -1133,11 +1572,19 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    // =========================================================
+    // DESCRIPTION COUNTER
+    // =========================================================
+
     description.addEventListener(
         "input",
         updateDescriptionCounter
     );
 
+
+    // =========================================================
+    // FORM SUBMIT
+    // =========================================================
 
     form.addEventListener(
         "submit",
