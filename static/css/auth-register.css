@@ -1,0 +1,1446 @@
+/* =========================================================
+   S. F WORKS — PREMIUM REGISTER PAGE
+========================================================= */
+
+:root {
+
+    --register-primary: #2563eb;
+    --register-primary-dark: #1d4ed8;
+
+    --register-purple: #7c3aed;
+
+    --register-text: #111827;
+    --register-muted: #64748b;
+
+    --register-border: #e2e8f0;
+
+    --register-card: rgba(255, 255, 255, 0.92);
+
+    --register-success: #059669;
+    --register-danger: #dc2626;
+
+    --register-radius: 24px;
+
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.register-page {
+
+    min-height: calc(100vh - 70px);
+
+    width: 100%;
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 50px 20px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 10% 20%,
+            rgba(37, 99, 235, 0.12),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(124, 58, 237, 0.12),
+            transparent 35%
+        ),
+        #f8fafc;
+
+}
+
+
+/* =========================================================
+   BACKGROUND ORBS
+========================================================= */
+
+.register-bg {
+
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+}
+
+
+.bg-orb {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter: blur(2px);
+
+    opacity: 0.55;
+
+    animation:
+        floatOrb 10s ease-in-out infinite;
+
+}
+
+
+.orb-one {
+
+    width: 280px;
+
+    height: 280px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37, 99, 235, 0.18),
+            rgba(96, 165, 250, 0.05)
+        );
+
+    top: -100px;
+
+    left: -80px;
+
+}
+
+
+.orb-two {
+
+    width: 350px;
+
+    height: 350px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124, 58, 237, 0.15),
+            rgba(196, 181, 253, 0.04)
+        );
+
+    right: -130px;
+
+    bottom: -120px;
+
+    animation-delay: -4s;
+
+}
+
+
+.orb-three {
+
+    width: 160px;
+
+    height: 160px;
+
+    background:
+        rgba(14, 165, 233, 0.10);
+
+    right: 15%;
+
+    top: 10%;
+
+    animation-delay: -7s;
+
+}
+
+
+@keyframes floatOrb {
+
+    0%,
+    100% {
+
+        transform:
+            translate3d(0, 0, 0)
+            scale(1);
+
+    }
+
+    50% {
+
+        transform:
+            translate3d(0, -20px, 0)
+            scale(1.05);
+
+    }
+
+}
+
+
+/* =========================================================
+   REGISTER CARD
+========================================================= */
+
+.register-card {
+
+    width: 100%;
+
+    max-width: 540px;
+
+    position: relative;
+
+    z-index: 2;
+
+    background:
+        var(--register-card);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.8);
+
+    border-radius:
+        var(--register-radius);
+
+    padding:
+        42px;
+
+    box-shadow:
+        0 25px 70px rgba(15, 23, 42, 0.10),
+        0 8px 30px rgba(15, 23, 42, 0.05);
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    animation:
+        cardAppear 0.55s ease both;
+
+}
+
+
+@keyframes cardAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(18px)
+            scale(0.98);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.register-header {
+
+    text-align: center;
+
+    margin-bottom: 32px;
+
+}
+
+
+.brand-mark {
+
+    width: 58px;
+
+    height: 58px;
+
+    margin:
+        0 auto 10px;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--register-primary),
+            var(--register-purple)
+        );
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 900;
+
+    letter-spacing: -0.5px;
+
+    box-shadow:
+        0 12px 28px rgba(37, 99, 235, 0.25);
+
+}
+
+
+.brand-name {
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    color:
+        var(--register-text);
+
+    margin-bottom: 12px;
+
+}
+
+
+.register-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        6px 12px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(37, 99, 235, 0.08);
+
+    color:
+        var(--register-primary);
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.6px;
+
+}
+
+
+.badge-dot {
+
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background:
+        #22c55e;
+
+    box-shadow:
+        0 0 0 4px rgba(34, 197, 94, 0.12);
+
+}
+
+
+.register-header h1 {
+
+    margin:
+        18px 0 8px;
+
+    color:
+        var(--register-text);
+
+    font-size:
+        clamp(26px, 5vw, 34px);
+
+    line-height: 1.15;
+
+    font-weight: 850;
+
+    letter-spacing: -1px;
+
+}
+
+
+.register-header p {
+
+    max-width: 430px;
+
+    margin:
+        0 auto;
+
+    color:
+        var(--register-muted);
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.register-form {
+
+    width: 100%;
+
+}
+
+
+.form-group {
+
+    margin-bottom: 20px;
+
+}
+
+
+.form-group label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color:
+        #334155;
+
+    font-size: 13px;
+
+    font-weight: 750;
+
+}
+
+
+.label-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+}
+
+
+.password-rule {
+
+    font-size: 10px;
+
+    color:
+        #94a3b8;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.input-wrapper {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+}
+
+
+.input-icon {
+
+    position: absolute;
+
+    left: 15px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 19px;
+
+    height: 19px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color:
+        #94a3b8;
+
+    pointer-events: none;
+
+    z-index: 2;
+
+}
+
+
+.input-icon svg {
+
+    width: 18px;
+
+    height: 18px;
+
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
+
+}
+
+
+.input-wrapper input,
+.input-wrapper select {
+
+    width: 100%;
+
+    height: 52px;
+
+    border:
+        1px solid
+        var(--register-border);
+
+    border-radius: 14px;
+
+    background:
+        rgba(248, 250, 252, 0.8);
+
+    color:
+        var(--register-text);
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 550;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+.input-wrapper input {
+
+    padding:
+        0 16px 0 47px;
+
+}
+
+
+.input-wrapper select {
+
+    padding:
+        0 42px 0 47px;
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    cursor: pointer;
+
+}
+
+
+.select-wrapper::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: 17px;
+
+    top: 50%;
+
+    width: 8px;
+
+    height: 8px;
+
+    border-right:
+        2px solid #64748b;
+
+    border-bottom:
+        2px solid #64748b;
+
+    transform:
+        translateY(-65%)
+        rotate(45deg);
+
+    pointer-events: none;
+
+}
+
+
+.input-wrapper input::placeholder {
+
+    color:
+        #a1aabd;
+
+    font-weight: 450;
+
+}
+
+
+.input-wrapper input:focus,
+.input-wrapper select:focus {
+
+    border-color:
+        rgba(37, 99, 235, 0.75);
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(37, 99, 235, 0.09);
+
+}
+
+
+.input-wrapper:focus-within .input-icon {
+
+    color:
+        var(--register-primary);
+
+}
+
+
+/* =========================================================
+   PROFESSION
+========================================================= */
+
+.profession-group {
+
+    display: none;
+
+    opacity: 0;
+
+    transform:
+        translateY(-8px);
+
+}
+
+
+.profession-group.show {
+
+    display: block;
+
+    animation:
+        professionIn 0.28s ease forwards;
+
+}
+
+
+@keyframes professionIn {
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+.field-hint {
+
+    display: block;
+
+    margin-top: 7px;
+
+    color:
+        #94a3b8;
+
+    font-size: 11px;
+
+}
+
+
+/* =========================================================
+   PASSWORD
+========================================================= */
+
+.password-wrapper input {
+
+    padding-right: 52px;
+
+}
+
+
+.password-toggle {
+
+    position: absolute;
+
+    right: 8px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 38px;
+
+    height: 38px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color:
+        #94a3b8;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+
+}
+
+
+.password-toggle:hover {
+
+    background:
+        #f1f5f9;
+
+    color:
+        var(--register-primary);
+
+}
+
+
+.password-toggle svg {
+
+    width: 19px;
+
+    height: 19px;
+
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
+
+}
+
+
+/* =========================================================
+   PASSWORD STRENGTH
+========================================================= */
+
+.password-strength {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 9px;
+
+}
+
+
+.strength-bars {
+
+    display: flex;
+
+    gap: 4px;
+
+    flex: 1;
+
+}
+
+
+.strength-bars span {
+
+    height: 4px;
+
+    flex: 1;
+
+    border-radius: 10px;
+
+    background:
+        #e2e8f0;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease;
+
+}
+
+
+.strength-bars span.active {
+
+    background:
+        var(--register-primary);
+
+    transform:
+        scaleY(1.4);
+
+}
+
+
+.strength-text {
+
+    min-width: 105px;
+
+    text-align: right;
+
+    color:
+        #94a3b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+}
+
+
+.strength-text.weak {
+
+    color:
+        #ef4444;
+
+}
+
+
+.strength-text.fair {
+
+    color:
+        #f59e0b;
+
+}
+
+
+.strength-text.good {
+
+    color:
+        #2563eb;
+
+}
+
+
+.strength-text.strong {
+
+    color:
+        #059669;
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.register-message {
+
+    display: none;
+
+    align-items: center;
+
+    min-height: 44px;
+
+    margin:
+        4px 0 16px;
+
+    padding:
+        11px 14px;
+
+    border-radius: 12px;
+
+    font-size: 13px;
+
+    font-weight: 650;
+
+    line-height: 1.5;
+
+}
+
+
+.register-message.success {
+
+    color:
+        #047857;
+
+    background:
+        #ecfdf5;
+
+    border:
+        1px solid #a7f3d0;
+
+}
+
+
+.register-message.error {
+
+    color:
+        #b91c1c;
+
+    background:
+        #fef2f2;
+
+    border:
+        1px solid #fecaca;
+
+}
+
+
+/* =========================================================
+   REGISTER BUTTON
+========================================================= */
+
+.register-button {
+
+    width: 100%;
+
+    min-height: 54px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    cursor: pointer;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--register-primary),
+            var(--register-purple)
+        );
+
+    box-shadow:
+        0 12px 25px
+        rgba(37, 99, 235, 0.22);
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+
+}
+
+
+.register-button::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            110deg,
+            transparent 30%,
+            rgba(255,255,255,0.22) 50%,
+            transparent 70%
+        );
+
+    transform:
+        translateX(-120%);
+
+    transition:
+        transform 0.6s ease;
+
+}
+
+
+.register-button:hover::before {
+
+    transform:
+        translateX(120%);
+
+}
+
+
+.register-button:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 16px 32px
+        rgba(37, 99, 235, 0.28);
+
+}
+
+
+.register-button:active {
+
+    transform:
+        translateY(0);
+
+}
+
+
+.register-button:disabled {
+
+    cursor:
+        not-allowed;
+
+    opacity:
+        0.75;
+
+    transform:
+        none;
+
+}
+
+
+.button-content {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+}
+
+
+.button-icon {
+
+    width: 18px;
+
+    height: 18px;
+
+    display: flex;
+
+}
+
+
+.button-icon svg {
+
+    width: 18px;
+
+    height: 18px;
+
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 2;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
+
+}
+
+
+.button-loader {
+
+    display: none;
+
+    width: 18px;
+
+    height: 18px;
+
+    border:
+        2px solid
+        rgba(255,255,255,0.35);
+
+    border-top-color:
+        #ffffff;
+
+    border-radius: 50%;
+
+    animation:
+        buttonSpin 0.7s linear infinite;
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+}
+
+
+.register-button.loading
+.button-content {
+
+    opacity:
+        0;
+
+}
+
+
+.register-button.loading
+.button-loader {
+
+    display:
+        block !important;
+
+}
+
+
+@keyframes buttonSpin {
+
+    to {
+
+        transform:
+            translate(-50%, -50%)
+            rotate(360deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   TERMS
+========================================================= */
+
+.terms-text {
+
+    margin:
+        16px 10px 0;
+
+    text-align: center;
+
+    color:
+        #94a3b8;
+
+    font-size: 10.5px;
+
+    line-height: 1.6;
+
+}
+
+
+.terms-text a {
+
+    color:
+        var(--register-primary);
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+}
+
+
+.terms-text a:hover {
+
+    text-decoration:
+        underline;
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.auth-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+
+    margin-top: 27px;
+
+    padding-top: 22px;
+
+    border-top:
+        1px solid #eef2f7;
+
+    color:
+        #64748b;
+
+    font-size: 13px;
+
+}
+
+
+.auth-footer a {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color:
+        var(--register-primary);
+
+    font-weight: 800;
+
+    text-decoration: none;
+
+    transition:
+        gap 0.2s ease;
+
+}
+
+
+.auth-footer a:hover {
+
+    gap: 9px;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .register-page {
+
+        min-height:
+            calc(100vh - 60px);
+
+        padding:
+            22px 12px;
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .register-card {
+
+        margin-top:
+            8px;
+
+        padding:
+            28px 20px 24px;
+
+        border-radius:
+            20px;
+
+    }
+
+
+    .register-header {
+
+        margin-bottom:
+            26px;
+
+    }
+
+
+    .brand-mark {
+
+        width: 52px;
+
+        height: 52px;
+
+        border-radius: 16px;
+
+    }
+
+
+    .register-header h1 {
+
+        font-size:
+            27px;
+
+    }
+
+
+    .register-header p {
+
+        font-size:
+            13px;
+
+    }
+
+
+    .form-group {
+
+        margin-bottom:
+            17px;
+
+    }
+
+
+    .input-wrapper input,
+    .input-wrapper select {
+
+        height:
+            51px;
+
+    }
+
+
+    .register-button {
+
+        min-height:
+            53px;
+
+    }
+
+
+    .orb-one {
+
+        width:
+            200px;
+
+        height:
+            200px;
+
+    }
+
+
+    .orb-two {
+
+        width:
+            240px;
+
+        height:
+            240px;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .register-page {
+
+        padding:
+            15px 8px;
+
+    }
+
+
+    .register-card {
+
+        padding:
+            24px 16px 21px;
+
+    }
+
+
+    .register-header h1 {
+
+        font-size:
+            24px;
+
+    }
+
+
+    .register-header p {
+
+        font-size:
+            12px;
+
+    }
+
+
+    .password-rule {
+
+        display:
+            none;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+
+        animation-duration:
+            0.01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+
+        transition-duration:
+            0.01ms !important;
+
+    }
+
+  }
