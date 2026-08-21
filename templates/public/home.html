@@ -1680,16 +1680,8 @@ S. F Works — Find Trusted Workers & Local Jobs
                                 <!-- =================================================
                                      APPLY JOB
                                 ================================================== -->
-
-                                <a
-                                    href="{{ url_for(
-                                        'jobs.apply_for_job',
-                                        job_id=job.id
-                                    ) }}"
-                                    class="job-apply-btn"
-                                >
+                                <a href="{{ url_for('job_pages.apply_job_page', job_id=job.id) }}">
                                     Apply Now
-                                <span>→</span>
                                 </a>
 
                             </div>
