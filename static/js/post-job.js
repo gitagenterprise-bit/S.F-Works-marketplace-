@@ -2,9 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     "use strict";
 
-    // =========================================================
-    // ELEMENTS
-    // =========================================================
+
+    /* =========================================================
+       ELEMENTS
+    ========================================================= */
 
     const form = document.getElementById("postJobForm");
 
@@ -14,17 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const categoryInput =
         document.getElementById("jobCategory");
 
-    const categoryIdInput =
+    const categoryId =
         document.getElementById("jobCategoryId");
 
     const categoryDropdown =
         document.getElementById("categoryDropdown");
 
-    const categoryList =
-        document.getElementById("categoryList");
-
     const categoryButton =
         document.getElementById("categoryDropdownButton");
+
+    const categoryList =
+        document.getElementById("categoryList");
 
     const categoryCount =
         document.getElementById("categoryCount");
@@ -35,155 +36,61 @@ document.addEventListener("DOMContentLoaded", () => {
     const customCategoryButton =
         document.getElementById("customCategoryButton");
 
-    const formMessage =
-        document.getElementById("formMessage");
-
-    const postJobButton =
-        document.getElementById("postJobButton");
-
     const description =
         document.getElementById("jobDescription");
 
     const descriptionCounter =
         document.getElementById("descriptionCounter");
 
+    const formMessage =
+        document.getElementById("formMessage");
 
-    // =========================================================
-    // STATE
-    // =========================================================
+    const submitButton =
+        document.getElementById("postJobButton");
+
+
+    if (!form) {
+        return;
+    }
+
+
+    /* =========================================================
+       STATE
+    ========================================================= */
 
     let categories = [];
 
-    let selectedCategory = null;
-
-    let categoriesLoaded = false;
-
-    let isLoadingCategories = false;
+    let activeIndex = -1;
 
 
-    // =========================================================
-    // CATEGORY STATUS
-    // =========================================================
+    /* =========================================================
+       CATEGORY API
+       
+       IMPORTANT:
+       Backend should return:
+       
+       [
+           {
+               "id": 1,
+               "name": "Electrician"
+           }
+       ]
+       
+       OR:
+       
+       {
+           "categories": [...]
+       }
+    ========================================================= */
 
-    function setCategoryStatus(message, type = "") {
-
-        if (!categoryStatus) return;
-
-        categoryStatus.textContent = message;
-
-        categoryStatus.className =
-            `category-status ${type}`.trim();
-    }
-
-
-    // =========================================================
-    // OPEN DROPDOWN
-    // =========================================================
-
-    function openCategoryDropdown() {
-
-        if (!categoryPicker || !categoryDropdown) {
-            return;
-        }
-
-        categoryPicker.classList.add("is-open");
-
-        categoryDropdown.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-        if (categoryInput) {
-
-            categoryInput.setAttribute(
-                "aria-expanded",
-                "true"
-            );
-        }
-
-        if (categoryButton) {
-
-            categoryButton.setAttribute(
-                "aria-expanded",
-                "true"
-            );
-        }
-    }
+    const CATEGORY_API = "/api/categories";
 
 
-    // =========================================================
-    // CLOSE DROPDOWN
-    // =========================================================
+    /* =========================================================
+       HELPERS
+    ========================================================= */
 
-    function closeCategoryDropdown() {
-
-        if (!categoryPicker || !categoryDropdown) {
-            return;
-        }
-
-        categoryPicker.classList.remove("is-open");
-
-        categoryDropdown.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-        if (categoryInput) {
-
-            categoryInput.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-        }
-
-        if (categoryButton) {
-
-            categoryButton.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-        }
-    }
-
-
-    // =========================================================
-    // TOGGLE DROPDOWN
-    // =========================================================
-
-    async function toggleCategoryDropdown() {
-
-        if (!categoryPicker) return;
-
-        const isOpen =
-            categoryPicker.classList.contains(
-                "is-open"
-            );
-
-        if (isOpen) {
-
-            closeCategoryDropdown();
-
-            return;
-        }
-
-        if (!categoriesLoaded) {
-
-            await loadCategories();
-        }
-
-        renderCategories(
-            categoryInput?.value || ""
-        );
-
-        openCategoryDropdown();
-    }
-
-
-    // =========================================================
-    // ESCAPE HTML
-    // =========================================================
-
-    function escapeHtml(value) {
+    function escapeHTML(value) {
 
         return String(value ?? "")
             .replace(/&/g, "&amp;")
@@ -191,184 +98,158 @@ document.addEventListener("DOMContentLoaded", () => {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
+
     }
 
 
-    // =========================================================
-    // LOAD CATEGORIES
-    // =========================================================
+    function setCategoryStatus(message, type = "") {
 
-    async function loadCategories() {
-
-        if (!categoryList) return;
-
-        if (isLoadingCategories) {
+        if (!categoryStatus) {
             return;
         }
 
-        isLoadingCategories = true;
+        categoryStatus.textContent = message;
+
+        categoryStatus.className =
+            "category-status";
+
+        if (type) {
+            categoryStatus.classList.add(type);
+        }
+
+    }
+
+
+    function openCategoryDropdown() {
+
+        if (!categoryPicker) {
+            return;
+        }
+
+        categoryPicker.classList.add("open");
+
+        categoryInput.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+        categoryButton.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+        categoryDropdown.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+    }
+
+
+    function closeCategoryDropdown() {
+
+        if (!categoryPicker) {
+            return;
+        }
+
+        categoryPicker.classList.remove("open");
+
+        categoryInput.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        categoryButton.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        categoryDropdown.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        activeIndex = -1;
+
+    }
+
+
+    /* =========================================================
+       LOAD CATEGORIES
+    ========================================================= */
+
+    async function loadCategories() {
 
         categoryList.innerHTML = `
             <div class="category-loading">
+
                 <span class="category-spinner"></span>
-                <strong>Loading categories...</strong>
-                <small>Please wait</small>
+
+                <strong>
+                    Loading categories...
+                </strong>
+
+                <small>
+                    Please wait
+                </small>
+
             </div>
         `;
 
-        setCategoryStatus(
-            "Loading categories...",
-            "loading"
-        );
-
         try {
 
-            const response = await fetch(
-                "/api/jobs/categories",
-                {
+            const response =
+                await fetch(CATEGORY_API, {
                     method: "GET",
-
                     headers: {
                         "Accept": "application/json"
                     },
-
-                    credentials: "same-origin",
-
-                    cache: "no-store"
-                }
-            );
+                    credentials: "same-origin"
+                });
 
 
             if (!response.ok) {
-
                 throw new Error(
-                    `Category API returned ${response.status}`
+                    `Category request failed: ${response.status}`
                 );
             }
 
 
-            const result =
+            const data =
                 await response.json();
 
 
-            console.log(
-                "Categories API response:",
-                result
-            );
+            if (Array.isArray(data)) {
 
+                categories = data;
 
-            /*
-             * Expected:
-             *
-             * {
-             *     status: "success",
-             *     categories: [...]
-             * }
-             */
-
-            if (
-                !result ||
-                !Array.isArray(
-                    result.categories
-                )
+            } else if (
+                data &&
+                Array.isArray(data.categories)
             ) {
 
-                throw new Error(
-                    "Invalid category API response."
-                );
-            }
-
-
-            categories =
-                result.categories
-                    .filter(category => {
-
-                        return (
-                            category &&
-                            category.id !== undefined &&
-                            category.name
-                        );
-                    })
-                    .map(category => {
-
-                        return {
-                            id:
-                                Number(
-                                    category.id
-                                ),
-
-                            name:
-                                String(
-                                    category.name
-                                ),
-
-                            description:
-                                String(
-                                    category.description ||
-                                    ""
-                                ),
-
-                            icon:
-                                String(
-                                    category.icon ||
-                                    "✦"
-                                ),
-
-                            slug:
-                                String(
-                                    category.slug ||
-                                    ""
-                                )
-                        };
-
-                    });
-
-
-            categoriesLoaded = true;
-
-
-            if (categoryCount) {
-
-                categoryCount.textContent =
-                    categories.length;
-            }
-
-
-            renderCategories(
-                categoryInput?.value || ""
-            );
-
-
-            if (categories.length) {
-
-                setCategoryStatus(
-                    `${categories.length} categories available`,
-                    "success"
-                );
+                categories = data.categories;
 
             } else {
 
-                setCategoryStatus(
-                    "No categories are currently available.",
-                    "warning"
-                );
+                categories = [];
+
             }
 
+
+            renderCategories(categories);
 
         } catch (error) {
 
             console.error(
-                "CATEGORY LOAD ERROR:",
+                "Category loading error:",
                 error
             );
 
-            categories = [];
-
-            categoriesLoaded = false;
-
 
             categoryList.innerHTML = `
-                <div class="category-empty category-error">
+                <div class="category-loading">
+
                     <strong>
                         Unable to load categories
                     </strong>
@@ -377,114 +258,42 @@ document.addEventListener("DOMContentLoaded", () => {
                         Please refresh the page and try again.
                     </small>
 
-                    <button
-                        type="button"
-                        class="category-retry"
-                        id="categoryRetryButton"
-                    >
-                        Retry
-                    </button>
                 </div>
             `;
 
+            categoryCount.textContent = "0";
 
             setCategoryStatus(
-                "Unable to load categories.",
+                "Categories could not be loaded.",
                 "error"
             );
 
-
-            const retryButton =
-                document.getElementById(
-                    "categoryRetryButton"
-                );
-
-
-            if (retryButton) {
-
-                retryButton.addEventListener(
-                    "click",
-                    async () => {
-
-                        categoriesLoaded = false;
-
-                        await loadCategories();
-
-                    }
-                );
-            }
-
-
-        } finally {
-
-            isLoadingCategories = false;
         }
+
     }
 
 
-    // =========================================================
-    // RENDER CATEGORIES
-    // =========================================================
+    /* =========================================================
+       RENDER CATEGORIES
+    ========================================================= */
 
-    function renderCategories(
-        searchText = ""
-    ) {
+    function renderCategories(list) {
 
-        if (!categoryList) return;
-
-
-        const search =
-            String(searchText || "")
-                .trim()
-                .toLowerCase();
+        categoryCount.textContent =
+            String(list.length);
 
 
-        const filtered =
-            categories.filter(category => {
-
-                const name =
-                    String(
-                        category.name || ""
-                    ).toLowerCase();
-
-                const description =
-                    String(
-                        category.description || ""
-                    ).toLowerCase();
-
-                const slug =
-                    String(
-                        category.slug || ""
-                    ).toLowerCase();
-
-
-                return (
-                    !search ||
-                    name.includes(search) ||
-                    description.includes(search) ||
-                    slug.includes(search)
-                );
-            });
-
-
-        if (categoryCount) {
-
-            categoryCount.textContent =
-                filtered.length;
-        }
-
-
-        if (!filtered.length) {
+        if (!list.length) {
 
             categoryList.innerHTML = `
-                <div class="category-empty">
+                <div class="category-loading">
 
                     <strong>
-                        No matching category
+                        No categories found
                     </strong>
 
                     <small>
-                        Try another search term.
+                        Try another search.
                     </small>
 
                 </div>
@@ -495,378 +304,371 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         categoryList.innerHTML =
-            filtered.map(category => {
+            list.map((category, index) => {
 
-                const isSelected =
-                    selectedCategory &&
-                    Number(
-                        selectedCategory.id
-                    ) === Number(
-                        category.id
-                    );
+                const id =
+                    category.id ??
+                    category.category_id;
+
+                const name =
+                    category.name ??
+                    category.title ??
+                    category.category_name ??
+                    "Unnamed Category";
+
+                const description =
+                    category.description ??
+                    "Approved marketplace category";
 
 
                 return `
                     <button
                         type="button"
-                        class="category-option ${isSelected ? "active" : ""}"
-                        data-category-id="${escapeHtml(category.id)}"
+                        class="category-option"
+                        data-category-id="${escapeHTML(id)}"
+                        data-index="${index}"
+                        role="option"
                     >
 
                         <span class="category-option-icon">
-                            ${escapeHtml(category.icon)}
+                            ✦
                         </span>
-
 
                         <span class="category-option-content">
 
                             <strong>
-                                ${escapeHtml(category.name)}
+                                ${escapeHTML(name)}
                             </strong>
 
-                            ${
-                                category.description
-                                    ? `
-                                        <small>
-                                            ${escapeHtml(
-                                                category.description
-                                            )}
-                                        </small>
-                                      `
-                                    : ""
-                            }
+                            <small>
+                                ${escapeHTML(description)}
+                            </small>
 
-                        </span>
-
-
-                        <span class="category-option-arrow">
-                            →
                         </span>
 
                     </button>
                 `;
 
             }).join("");
+
+
+        categoryList
+            .querySelectorAll(".category-option")
+            .forEach(option => {
+
+                option.addEventListener(
+                    "click",
+                    () => {
+
+                        selectCategory(
+                            option.dataset.categoryId,
+                            option
+                        );
+
+                    }
+                );
+
+            });
+
     }
 
 
-    // =========================================================
-    // SELECT CATEGORY
-    // =========================================================
+    /* =========================================================
+       SELECT CATEGORY
+    ========================================================= */
 
-    function selectCategory(category) {
+    function selectCategory(id, option) {
 
-        if (!category) {
+        const selected =
+            categories.find(category =>
+                String(
+                    category.id ??
+                    category.category_id
+                ) === String(id)
+            );
+
+
+        if (!selected) {
             return;
         }
 
 
-        selectedCategory =
-            category;
+        const name =
+            selected.name ??
+            selected.title ??
+            selected.category_name ??
+            "";
 
 
-        /*
-         * Visible field
-         */
+        categoryInput.value = name;
 
-        if (categoryInput) {
-
-            categoryInput.value =
-                category.name;
-
-            categoryInput.classList.add(
-                "category-selected"
-            );
-        }
-
-
-        /*
-         * REAL DATABASE ID
-         */
-
-        if (categoryIdInput) {
-
-            categoryIdInput.value =
-                String(category.id);
-        }
-
+        categoryId.value = id;
 
         setCategoryStatus(
-            `Selected: ${category.name}`,
+            `Selected: ${name}`,
             "success"
         );
 
 
-        renderCategories(
-            categoryInput?.value || ""
-        );
+        categoryList
+            .querySelectorAll(".category-option")
+            .forEach(item => {
+
+                item.classList.remove("active");
+
+            });
+
+
+        if (option) {
+            option.classList.add("active");
+        }
 
 
         closeCategoryDropdown();
+
     }
 
 
-    // =========================================================
-    // CATEGORY LIST CLICK
-    // =========================================================
+    /* =========================================================
+       FILTER CATEGORIES
+    ========================================================= */
 
-    if (categoryList) {
+    function filterCategories(search) {
 
-        categoryList.addEventListener(
-            "click",
-            event => {
+        const query =
+            search.trim().toLowerCase();
 
-                const retry =
-                    event.target.closest(
-                        "#categoryRetryButton"
-                    );
 
-                if (retry) {
-                    return;
+        if (!query) {
+
+            renderCategories(categories);
+
+            return;
+
+        }
+
+
+        const filtered =
+            categories.filter(category => {
+
+                const name =
+                    String(
+                        category.name ??
+                        category.title ??
+                        category.category_name ??
+                        ""
+                    ).toLowerCase();
+
+
+                const description =
+                    String(
+                        category.description ?? ""
+                    ).toLowerCase();
+
+
+                return (
+                    name.includes(query) ||
+                    description.includes(query)
+                );
+
+            });
+
+
+        renderCategories(filtered);
+
+    }
+
+
+    /* =========================================================
+       OPEN BUTTON
+    ========================================================= */
+
+    categoryButton.addEventListener(
+        "click",
+        () => {
+
+            if (
+                categoryPicker.classList.contains("open")
+            ) {
+
+                closeCategoryDropdown();
+
+            } else {
+
+                openCategoryDropdown();
+
+                if (!categories.length) {
+                    loadCategories();
                 }
 
+            }
 
-                const option =
-                    event.target.closest(
+        }
+    );
+
+
+    /* =========================================================
+       INPUT FOCUS
+    ========================================================= */
+
+    categoryInput.addEventListener(
+        "focus",
+        () => {
+
+            openCategoryDropdown();
+
+            if (!categories.length) {
+                loadCategories();
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       SEARCH
+    ========================================================= */
+
+    categoryInput.addEventListener(
+        "input",
+        () => {
+
+            /*
+             * User changed category manually.
+             * Therefore old database ID is no longer valid.
+             */
+
+            categoryId.value = "";
+
+            setCategoryStatus("");
+
+            openCategoryDropdown();
+
+            filterCategories(
+                categoryInput.value
+            );
+
+        }
+    );
+
+
+    /* =========================================================
+       KEYBOARD NAVIGATION
+    ========================================================= */
+
+    categoryInput.addEventListener(
+        "keydown",
+        event => {
+
+            const options =
+                Array.from(
+                    categoryList.querySelectorAll(
                         ".category-option"
-                    );
-
-
-                if (!option) {
-                    return;
-                }
-
-
-                const categoryId =
-                    Number(
-                        option.dataset.categoryId
-                    );
-
-
-                const category =
-                    categories.find(
-                        item =>
-                            Number(item.id) ===
-                            categoryId
-                    );
-
-
-                if (!category) {
-
-                    console.error(
-                        "Category not found:",
-                        categoryId
-                    );
-
-                    return;
-                }
-
-
-                selectCategory(
-                    category
-                );
-            }
-        );
-    }
-
-
-    // =========================================================
-    // SEARCH INPUT
-    // =========================================================
-
-    if (categoryInput) {
-
-        categoryInput.addEventListener(
-            "input",
-            () => {
-
-                const value =
-                    categoryInput.value.trim();
-
-
-                /*
-                 * If user changes selected category
-                 * manually, remove old ID.
-                 */
-
-                if (
-                    selectedCategory &&
-                    value !==
-                    selectedCategory.name
-                ) {
-
-                    selectedCategory =
-                        null;
-
-                    if (categoryIdInput) {
-
-                        categoryIdInput.value =
-                            "";
-                    }
-
-
-                    categoryInput.classList.remove(
-                        "category-selected"
-                    );
-
-
-                    setCategoryStatus(
-                        "Select a category from the list.",
-                        "warning"
-                    );
-                }
-
-
-                renderCategories(
-                    value
-                );
-
-
-                openCategoryDropdown();
-            }
-        );
-
-
-        categoryInput.addEventListener(
-            "focus",
-            async () => {
-
-                if (!categoriesLoaded) {
-
-                    await loadCategories();
-                }
-
-
-                renderCategories(
-                    categoryInput.value
-                );
-
-
-                openCategoryDropdown();
-            }
-        );
-
-
-        categoryInput.addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key === "Escape"
-                ) {
-
-                    closeCategoryDropdown();
-
-                    return;
-                }
-
-
-                if (
-                    event.key === "ArrowDown"
-                ) {
-
-                    event.preventDefault();
-
-                    openCategoryDropdown();
-
-                    return;
-                }
-
-
-                /*
-                 * Do NOT allow Enter to submit
-                 * the form while dropdown is open.
-                 */
-
-                if (
-                    event.key === "Enter" &&
-                    categoryPicker?.classList.contains(
-                        "is-open"
                     )
-                ) {
-
-                    event.preventDefault();
-
-                    const firstOption =
-                        categoryList?.querySelector(
-                            ".category-option"
-                        );
-
-
-                    if (firstOption) {
-
-                        firstOption.click();
-                    }
-                }
-            }
-        );
-    }
-
-
-    // =========================================================
-    // DROPDOWN BUTTON
-    // =========================================================
-
-    if (categoryButton) {
-
-        categoryButton.addEventListener(
-            "click",
-            async event => {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                await toggleCategoryDropdown();
-
-
-                if (categoryInput) {
-
-                    categoryInput.focus();
-                }
-            }
-        );
-    }
-
-
-    // =========================================================
-    // CUSTOM CATEGORY
-    // =========================================================
-
-    if (customCategoryButton) {
-
-        customCategoryButton.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-
-                setCategoryStatus(
-                    "Only admin-approved categories can be used for jobs.",
-                    "warning"
                 );
 
 
-                if (categoryInput) {
+            if (!options.length) {
+                return;
+            }
 
-                    categoryInput.focus();
 
-                    categoryInput.select();
+            if (event.key === "ArrowDown") {
+
+                event.preventDefault();
+
+                activeIndex =
+                    Math.min(
+                        activeIndex + 1,
+                        options.length - 1
+                    );
+
+            }
+
+
+            else if (event.key === "ArrowUp") {
+
+                event.preventDefault();
+
+                activeIndex =
+                    Math.max(
+                        activeIndex - 1,
+                        0
+                    );
+
+            }
+
+
+            else if (event.key === "Enter") {
+
+                if (activeIndex >= 0) {
+
+                    event.preventDefault();
+
+                    options[activeIndex].click();
+
                 }
 
+                return;
 
-                openCategoryDropdown();
             }
-        );
-    }
 
 
-    // =========================================================
-    // OUTSIDE CLICK
-    // =========================================================
+            else if (event.key === "Escape") {
+
+                closeCategoryDropdown();
+
+                return;
+
+            }
+
+
+            options.forEach(
+                option =>
+                    option.classList.remove("active")
+            );
+
+
+            if (options[activeIndex]) {
+
+                options[activeIndex]
+                    .classList.add("active");
+
+                options[activeIndex]
+                    .scrollIntoView({
+                        block: "nearest"
+                    });
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       CUSTOM CATEGORY BUTTON
+    ========================================================= */
+
+    customCategoryButton.addEventListener(
+        "click",
+        () => {
+
+            categoryInput.focus();
+
+            categoryInput.select();
+
+            setCategoryStatus(
+                "Search from the approved categories above.",
+                ""
+            );
+
+        }
+    );
+
+
+    /* =========================================================
+       OUTSIDE CLICK
+    ========================================================= */
 
     document.addEventListener(
         "click",
@@ -874,33 +676,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (
                 categoryPicker &&
-                !categoryPicker.contains(
-                    event.target
-                )
+                !categoryPicker.contains(event.target)
             ) {
 
                 closeCategoryDropdown();
+
             }
+
         }
     );
 
 
-    // =========================================================
-    // DESCRIPTION COUNTER
-    // =========================================================
+    /* =========================================================
+       DESCRIPTION COUNTER
+    ========================================================= */
 
     function updateDescriptionCounter() {
 
-        if (
-            !description ||
-            !descriptionCounter
-        ) {
+        if (!description || !descriptionCounter) {
             return;
         }
 
 
+        const length =
+            description.value.length;
+
+
         descriptionCounter.textContent =
-            `${description.value.length} / 5000`;
+            `${length} / 5000`;
+
     }
 
 
@@ -912,517 +716,209 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         updateDescriptionCounter();
+
     }
 
 
-    // =========================================================
-    // FORM MESSAGE
-    // =========================================================
+    /* =========================================================
+       FIELD VALIDATION
+    ========================================================= */
 
-    function showMessage(
-        message,
-        type = "error"
-    ) {
+    function markInvalid(element) {
 
-        if (!formMessage) {
+        if (!element) {
             return;
         }
 
+        element.classList.add("invalid");
 
-        formMessage.textContent =
-            message;
-
-
-        formMessage.className =
-            `form-message ${type} show`;
+    }
 
 
-        formMessage.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest"
+    function clearInvalid(element) {
+
+        if (!element) {
+            return;
+        }
+
+        element.classList.remove("invalid");
+
+    }
+
+
+    function validateForm() {
+
+        let valid = true;
+
+
+        const requiredFields = [
+            document.getElementById("jobTitle"),
+            document.getElementById("jobDescription"),
+            categoryInput,
+            document.getElementById("jobLocation")
+        ];
+
+
+        requiredFields.forEach(field => {
+
+            if (!field) {
+                return;
+            }
+
+
+            if (!field.value.trim()) {
+
+                markInvalid(field);
+
+                valid = false;
+
+            } else {
+
+                clearInvalid(field);
+
+            }
+
         });
-    }
 
 
-    function clearMessage() {
+        /*
+         * Category must have a real database ID.
+         */
 
-        if (!formMessage) {
-            return;
+        if (!categoryId.value) {
+
+            markInvalid(categoryInput);
+
+            setCategoryStatus(
+                "Please select an approved category from the list.",
+                "error"
+            );
+
+            valid = false;
+
         }
 
 
-        formMessage.textContent = "";
+        const min =
+            parseFloat(
+                document.getElementById("budgetMin")?.value
+            );
 
-        formMessage.className =
-            "form-message";
+
+        const max =
+            parseFloat(
+                document.getElementById("budgetMax")?.value
+            );
+
+
+        if (
+            Number.isFinite(min) &&
+            Number.isFinite(max) &&
+            max < min
+        ) {
+
+            formMessage.textContent =
+                "Maximum budget cannot be lower than minimum budget.";
+
+            formMessage.className =
+                "form-message show error";
+
+            valid = false;
+
+        }
+
+
+        return valid;
+
     }
 
 
-    // =========================================================
-    // FORM SUBMIT
-    // =========================================================
+    /* =========================================================
+       REMOVE INVALID STATE
+    ========================================================= */
 
-    if (form) {
+    form.querySelectorAll(
+        "input, textarea, select"
+    ).forEach(field => {
 
-        form.addEventListener(
-            "submit",
-            async event => {
+        field.addEventListener(
+            "input",
+            () => clearInvalid(field)
+        );
+
+        field.addEventListener(
+            "change",
+            () => clearInvalid(field)
+        );
+
+    });
+
+
+    /* =========================================================
+       FORM SUBMIT
+    ========================================================= */
+
+    form.addEventListener(
+        "submit",
+        event => {
+
+            formMessage.className =
+                "form-message";
+
+            formMessage.textContent = "";
+
+
+            if (!validateForm()) {
 
                 event.preventDefault();
 
-                clearMessage();
+                formMessage.textContent =
+                    "Please check the highlighted fields and try again.";
+
+                formMessage.className =
+                    "form-message show error";
+
+                window.scrollTo({
+                    top:
+                        form.getBoundingClientRect().top +
+                        window.scrollY -
+                        100,
+                    behavior: "smooth"
+                });
+
+                return;
+
+            }
 
 
-                const title =
-                    document
-                        .getElementById(
-                            "jobTitle"
-                        )
-                        ?.value
-                        .trim();
+            /*
+             * Important:
+             * Do NOT preventDefault here.
+             *
+             * Flask will receive the normal POST request.
+             */
+
+            submitButton.disabled = true;
 
 
-                const jobDescription =
-                    document
-                        .getElementById(
-                            "jobDescription"
-                        )
-                        ?.value
-                        .trim();
-
-
-                const location =
-                    document
-                        .getElementById(
-                            "jobLocation"
-                        )
-                        ?.value
-                        .trim();
-
-
-                const city =
-                    document
-                        .getElementById(
-                            "jobCity"
-                        )
-                        ?.value
-                        .trim();
-
-
-                const state =
-                    document
-                        .getElementById(
-                            "jobState"
-                        )
-                        ?.value
-                        .trim();
-
-
-                const pincode =
-                    document
-                        .getElementById(
-                            "jobPincode"
-                        )
-                        ?.value
-                        .trim();
-
-
-                const budgetMin =
-                    document
-                        .getElementById(
-                            "budgetMin"
-                        )
-                        ?.value;
-
-
-                const budgetMax =
-                    document
-                        .getElementById(
-                            "budgetMax"
-                        )
-                        ?.value;
-
-
-                const priority =
-                    document
-                        .getElementById(
-                            "jobPriority"
-                        )
-                        ?.value ||
-                    "normal";
-
-
-                // =================================================
-                // VALIDATION
-                // =================================================
-
-                if (!title) {
-
-                    showMessage(
-                        "Please enter a job title."
-                    );
-
-                    return;
-                }
-
-
-                if (!jobDescription) {
-
-                    showMessage(
-                        "Please describe the job."
-                    );
-
-                    return;
-                }
-
-
-                const categoryId =
-                    Number(
-                        categoryIdInput?.value
-                    );
-
-
-                if (
-                    !categoryId ||
-                    !selectedCategory
-                ) {
-
-                    showMessage(
-                        "Please select a valid category from the category list."
-                    );
-
-
-                    if (categoryInput) {
-
-                        categoryInput.focus();
-                    }
-
-
-                    await loadCategories();
-
-                    renderCategories(
-                        categoryInput?.value || ""
-                    );
-
-                    openCategoryDropdown();
-
-                    return;
-                }
-
-
-                if (!location) {
-
-                    showMessage(
-                        "Please enter the work location."
-                    );
-
-                    return;
-                }
-
-
-                if (
-                    budgetMin !== "" &&
-                    budgetMax !== "" &&
-                    Number(budgetMin) >
-                    Number(budgetMax)
-                ) {
-
-                    showMessage(
-                        "Minimum budget cannot exceed maximum budget."
-                    );
-
-                    return;
-                }
-
-
-                // =================================================
-                // PAYLOAD
-                // =================================================
-
-                const payload = {
-
-                    title,
-
-                    description:
-                        jobDescription,
-
-                    category_id:
-                        categoryId,
-
-                    budget_min:
-                        budgetMin !== ""
-                            ? Number(budgetMin)
-                            : null,
-
-                    budget_max:
-                        budgetMax !== ""
-                            ? Number(budgetMax)
-                            : null,
-
-                    location,
-
-                    city:
-                        city || null,
-
-                    state:
-                        state || null,
-
-                    pincode:
-                        pincode || null,
-
-                    priority
-                };
-
-
-                console.log(
-                    "POST JOB PAYLOAD:",
-                    payload
+            const buttonText =
+                submitButton.querySelector(
+                    ".button-text"
                 );
 
 
-                // =================================================
-                // BUTTON LOADING
-                // =================================================
-
-                if (postJobButton) {
-
-                    postJobButton.disabled =
-                        true;
-
-
-                    postJobButton.dataset.originalText =
-                        postJobButton.querySelector(
-                            ".button-text"
-                        )?.textContent ||
-                        "Post Job";
-
-
-                    const buttonText =
-                        postJobButton.querySelector(
-                            ".button-text"
-                        );
-
-
-                    if (buttonText) {
-
-                        buttonText.textContent =
-                            "Posting...";
-                    }
-                }
-
-
-                try {
-
-                    const response =
-                        await fetch(
-                            "/api/jobs/create",
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json",
-
-                                    "Accept":
-                                        "application/json"
-                                },
-
-                                credentials:
-                                    "same-origin",
-
-                                body:
-                                    JSON.stringify(
-                                        payload
-                                    )
-                            }
-                        );
-
-
-                    let result = {};
-
-
-                    try {
-
-                        result =
-                            await response.json();
-
-                    } catch (_) {
-
-                        result = {};
-                    }
-
-
-                    console.log(
-                        "POST JOB RESPONSE:",
-                        result
-                    );
-
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            result.message ||
-                            `Unable to post job (${response.status})`
-                        );
-                    }
-
-
-                    if (
-                        result.status !==
-                        "success"
-                    ) {
-
-                        throw new Error(
-                            result.message ||
-                            "Job could not be posted."
-                        );
-                    }
-
-
-                    showMessage(
-                        result.message ||
-                        "Job posted successfully!",
-                        "success"
-                    );
-
-
-                    // =================================================
-                    // SUCCESS
-                    // =================================================
-
-                    form.reset();
-
-
-                    if (categoryIdInput) {
-
-                        categoryIdInput.value =
-                            "";
-                    }
-
-
-                    selectedCategory =
-                        null;
-
-
-                    if (categoryInput) {
-
-                        categoryInput.classList.remove(
-                            "category-selected"
-                        );
-                    }
-
-
-                    setCategoryStatus(
-                        "Job posted successfully.",
-                        "success"
-                    );
-
-
-                    updateDescriptionCounter();
-
-
-                    if (
-                        result.job &&
-                        result.job.id
-                    ) {
-
-                        setTimeout(
-                            () => {
-
-                                window.location.href =
-                                    `/jobs/${result.job.id}`;
-
-                            },
-                            1000
-                        );
-                    }
-
-
-                } catch (error) {
-
-                    console.error(
-                        "POST JOB ERROR:",
-                        error
-                    );
-
-
-                    showMessage(
-                        error.message ||
-                        "Something went wrong. Please try again."
-                    );
-
-
-                } finally {
-
-                    if (postJobButton) {
-
-                        postJobButton.disabled =
-                            false;
-
-
-                        const buttonText =
-                            postJobButton.querySelector(
-                                ".button-text"
-                            );
-
-
-                        if (buttonText) {
-
-                            buttonText.textContent =
-                                postJobButton.dataset.originalText ||
-                                "Post Job";
-                        }
-                    }
-                }
+            if (buttonText) {
+                buttonText.textContent =
+                    "Posting Job...";
             }
-        );
-    }
+
+        }
+    );
 
 
-    // =========================================================
-    // INITIAL STATE
-    // =========================================================
-
-    if (categoryInput) {
-
-        categoryInput.setAttribute(
-            "role",
-            "combobox"
-        );
-
-        categoryInput.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-
-        categoryInput.setAttribute(
-            "aria-autocomplete",
-            "list"
-        );
-    }
-
-
-    if (categoryDropdown) {
-
-        categoryDropdown.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-    }
-
-
-    if (categoryButton) {
-
-        categoryButton.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-    }
-
-
-    // =========================================================
-    // INITIAL CATEGORY LOAD
-    // =========================================================
+    /* =========================================================
+       INITIAL LOAD
+    ========================================================= */
 
     loadCategories();
 
