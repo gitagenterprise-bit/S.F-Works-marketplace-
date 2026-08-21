@@ -48,26 +48,28 @@ Job Details — S. F Works
         <!-- =================================================
              BACK BUTTON
         ================================================== -->
-
         <div class="job-details-topbar">
 
-            <a
-                href="{{ url_for('home.home') if 'home.home' in current_app.view_functions else '/' }}"
-                class="back-to-jobs"
-            >
+    <a
+        href="{{ url_for('job_pages.jobs_page') }}"
+        class="back-to-jobs"
+        aria-label="Back to jobs"
+    >
 
-                <span class="back-icon">
-                    ←
-                </span>
+        <span
+            class="back-icon"
+            aria-hidden="true"
+        >
+            ←
+        </span>
 
-                <span>
-                    Back to Jobs
-                </span>
+        <span>
+            Back to Jobs
+        </span>
 
-            </a>
+    </a>
 
         </div>
-
 
         <!-- =================================================
              LOADING
