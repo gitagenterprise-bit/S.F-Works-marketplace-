@@ -412,31 +412,296 @@ def create_job():
         return jsonify({
             "status": "error",
             "message": "This category is currently unavailable"
+@jobs_bp.route(
+    "/create",
+    methods=["POST"]
+)
+@jwt_required()
+def create_job():
+
+    # =========================================================
+    # CURRENT USER
+    # =========================================================
+
+    user_id = get_jwt_identity()
+
+    try:
+        user_id = int(user_id)
+
+    except (TypeError, ValueError):
+
+        return jsonify({
+            "status": "error",
+            "message": "Invalid user identity"
+        }), 401
+
+
+    user = db.session.get(
+        User,
+        user_id
+    )
+
+
+    if not user:
+
+        return jsonify({
+            "status": "error",
+            "message": "User not found"
+        }), 401
+
+
+    # =========================================================
+    # ACTIVE ACCOUNT CHECK
+    # =========================================================
+
+    if not user.is_active:
+
+        return jsonify({
+            "status": "error",
+            "message": "Your account has been disabled"
+        }), 403
+
+
+    # =========================================================
+    # ALL AUTHENTICATED USERS CAN POST
+    # =========================================================
+
+    if user.role not in {
+        "customer",
+        "worker",
+        "admin"
+    }:
+
+        return jsonify({
+            "status": "error",
+            "message": "Your account is not allowed to post jobs"
+        }), 403
+
+
+    # =========================================================
+    # REQUEST BODY
+    # =========================================================
+
+    data = request.get_json(
+        silent=True
+    )
+
+
+    if not data:
+
+        return jsonify({
+            "status": "error",
+            "message": "Request body is required"
         }), 400
 
-    # -------------------------------
-    # Budget Validation
-    # -------------------------------
+
+    # =========================================================
+    # INPUTS
+    # =========================================================
+
+    title = data.get("title")
+    description = data.get("description")
+    category_id = data.get("category_id")
+    location = data.get("location")
+
+    budget_min = data.get(
+        "budget_min"
+    )
+
+    budget_max = data.get(
+        "budget_max"
+    )
+
+    city = data.get("city")
+    state = data.get("state")
+    pincode = data.get("pincode")
+
+    latitude = data.get(
+        "latitude"
+    )
+
+    longitude = data.get(
+        "longitude"
+    )
+
+    priority = data.get(
+        "priority",
+        "normal"
+    )
+
+
+    # =========================================================
+    # VALIDATE PRIORITY
+    # =========================================================
+
+    allowed_priorities = {
+        "normal",
+        "high",
+        "urgent"
+    }
+
+
+    if priority not in allowed_priorities:
+
+        return jsonify({
+            "status": "error",
+            "message": "Invalid priority"
+        }), 400
+
+
+    # =========================================================
+    # BASIC VALIDATION
+    # =========================================================
+
+    if not isinstance(title, str) or not title.strip():
+
+        return jsonify({
+            "status": "error",
+            "message": "Job title is required"
+        }), 400
+
+
+    if len(title.strip()) < 3:
+
+        return jsonify({
+            "status": "error",
+            "message": "Job title must contain at least 3 characters"
+        }), 400
+
+
+    if len(title.strip()) > 200:
+
+        return jsonify({
+            "status": "error",
+            "message": "Job title cannot exceed 200 characters"
+        }), 400
+
+
+    if not isinstance(description, str) or not description.strip():
+
+        return jsonify({
+            "status": "error",
+            "message": "Job description is required"
+        }), 400
+
+
+    if len(description.strip()) > 5000:
+
+        return jsonify({
+            "status": "error",
+            "message": "Job description cannot exceed 5000 characters"
+        }), 400
+
+
+    if not category_id:
+
+        return jsonify({
+            "status": "error",
+            "message": "Category is required"
+        }), 400
+
+
+    if not location:
+
+        return jsonify({
+            "status": "error",
+            "message": "Location is required"
+        }), 400
+
+
+    # =========================================================
+    # CATEGORY
+    # =========================================================
+
+    try:
+
+        category_id = int(category_id)
+
+    except (TypeError, ValueError):
+
+        return jsonify({
+            "status": "error",
+            "message": "Invalid category"
+        }), 400
+
+
+    category = db.session.get(
+        Category,
+        category_id
+    )
+
+
+    if not category:
+
+        return jsonify({
+            "status": "error",
+            "message": "Invalid category"
+        }), 400
+
+
+    if not category.is_active:
+
+        return jsonify({
+            "status": "error",
+            "message": "This category is currently unavailable"
+        }), 400
+
+
+    # =========================================================
+    # BUDGET VALIDATION
+    # =========================================================
+
+    try:
+
+        if budget_min is not None:
+            budget_min = float(budget_min)
+
+        if budget_max is not None:
+            budget_max = float(budget_max)
+
+    except (TypeError, ValueError):
+
+        return jsonify({
+            "status": "error",
+            "message": "Invalid budget amount"
+        }), 400
+
+
+    if budget_min is not None and budget_min < 0:
+
+        return jsonify({
+            "status": "error",
+            "message": "Minimum budget cannot be negative"
+        }), 400
+
+
+    if budget_max is not None and budget_max < 0:
+
+        return jsonify({
+            "status": "error",
+            "message": "Maximum budget cannot be negative"
+        }), 400
+
 
     if (
         budget_min is not None
         and budget_max is not None
+        and budget_min > budget_max
     ):
 
-        if float(budget_min) > float(budget_max):
+        return jsonify({
+            "status": "error",
+            "message": "Minimum budget cannot exceed maximum budget"
+        }), 400
 
-            return jsonify({
-                "status": "error",
-                "message": "Minimum budget cannot exceed maximum budget"
-            }), 400
 
-    # -------------------------------
-    # Create Job
-    # -------------------------------
+    # =========================================================
+    # CREATE JOB
+    # =========================================================
 
     job = Job(
 
-        customer_id=int(user_id),
+        customer_id=user.id,
 
         category_id=category.id,
 
@@ -451,13 +716,16 @@ def create_job():
         location=location.strip(),
 
         city=city.strip()
-        if city else None,
+        if isinstance(city, str) and city.strip()
+        else None,
 
         state=state.strip()
-        if state else None,
+        if isinstance(state, str) and state.strip()
+        else None,
 
         pincode=pincode.strip()
-        if pincode else None,
+        if isinstance(pincode, str) and pincode.strip()
+        else None,
 
         latitude=latitude,
 
@@ -468,9 +736,26 @@ def create_job():
         status="open"
     )
 
-    db.session.add(job)
 
-    db.session.commit()
+    try:
+
+        db.session.add(job)
+
+        db.session.commit()
+
+    except Exception:
+
+        db.session.rollback()
+
+        return jsonify({
+            "status": "error",
+            "message": "Unable to create job. Please try again."
+        }), 500
+
+
+    # =========================================================
+    # SUCCESS
+    # =========================================================
 
     return jsonify({
 
@@ -479,14 +764,36 @@ def create_job():
         "message": "Job posted successfully",
 
         "job": {
+
             "id": job.id,
+
             "title": job.title,
+
             "status": job.status,
-            "category": category.name
+
+            "category": category.name,
+
+            "posted_by": {
+
+                "id": user.id,
+
+                "name": user.full_name,
+
+                "phone": user.phone,
+
+                "role": user.role
+            },
+
+            "location": job.location,
+
+            "city": job.city,
+
+            "state": job.state,
+
+            "pincode": job.pincode
         }
 
     }), 201
-
 @jobs_bp.route(
     "/<int:job_id>",
     methods=["PUT"]
