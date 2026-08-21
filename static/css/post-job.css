@@ -1145,3 +1145,373 @@
     }
 
 }
+/* =========================================================
+   PREMIUM CATEGORY PICKER
+========================================================= */
+
+.category-picker {
+    position: relative;
+    width: 100%;
+    z-index: 50;
+}
+
+.category-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.category-input-wrapper input {
+    width: 100%;
+    min-height: 58px;
+    padding: 0 58px 0 50px;
+    border: 1px solid #dfe5ec;
+    border-radius: 16px;
+    background: #ffffff;
+    color: #172033;
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.category-input-wrapper input::placeholder {
+    color: #98a2b3;
+}
+
+.category-input-wrapper input:focus {
+    border-color: #4f46e5;
+    background: #ffffff;
+    box-shadow:
+        0 0 0 4px rgba(79, 70, 229, .10);
+}
+
+.category-input-wrapper .input-icon {
+    position: absolute;
+    left: 18px;
+    z-index: 2;
+    font-size: 19px;
+    color: #4f46e5;
+    pointer-events: none;
+}
+
+.category-dropdown-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 12px;
+    background: #f4f6fb;
+    color: #344054;
+    cursor: pointer;
+    font-size: 20px;
+    transition: .2s ease;
+}
+
+.category-dropdown-button:hover {
+    background: #e9ecf8;
+}
+
+.category-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 10px);
+
+    display: none;
+
+    background: #ffffff;
+    border: 1px solid #e4e7ec;
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 50px rgba(16, 24, 40, .14);
+
+    overflow: hidden;
+
+    max-height: 430px;
+}
+
+.category-dropdown.is-open {
+    display: block;
+    animation: categoryDropdownIn .18s ease;
+}
+
+@keyframes categoryDropdownIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.category-dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid #eef0f4;
+
+    font-size: 13px;
+    font-weight: 700;
+    color: #344054;
+
+    background: #fafbfc;
+}
+
+.category-dropdown-header span:last-child {
+    min-width: 28px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    background: #eef2ff;
+    color: #4f46e5;
+    text-align: center;
+    font-size: 12px;
+}
+
+.category-list {
+    max-height: 310px;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.category-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px;
+
+    border: 0;
+    border-radius: 13px;
+
+    background: transparent;
+
+    text-align: left;
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        transform .18s ease;
+}
+
+.category-option:hover {
+    background: #f5f7ff;
+    transform: translateX(2px);
+}
+
+.category-option-icon {
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #eef2ff;
+    color: #4f46e5;
+
+    font-size: 18px;
+}
+
+.category-option-content {
+    min-width: 0;
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.category-option-content strong {
+    color: #172033;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.category-option-content small {
+    color: #98a2b3;
+    font-size: 12px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.category-option-arrow {
+    color: #98a2b3;
+    font-size: 17px;
+}
+
+.custom-category-option {
+    width: calc(100% - 16px);
+    margin: 8px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 13px;
+
+    border: 1px dashed #cfd4dc;
+    border-radius: 14px;
+
+    background: #fafbff;
+
+    text-align: left;
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.custom-category-option:hover {
+    border-color: #4f46e5;
+    background: #f5f7ff;
+}
+
+.custom-category-icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #eef2ff;
+    color: #4f46e5;
+
+    font-size: 22px;
+}
+
+.custom-category-option span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.custom-category-option strong {
+    font-size: 13px;
+    color: #172033;
+}
+
+.custom-category-option small {
+    font-size: 11px;
+    color: #98a2b3;
+}
+
+.category-loading,
+.category-empty {
+    padding: 30px 18px;
+
+    text-align: center;
+    color: #667085;
+}
+
+.category-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.category-empty strong {
+    color: #344054;
+}
+
+.category-empty small {
+    color: #98a2b3;
+}
+
+.category-spinner {
+    width: 24px;
+    height: 24px;
+
+    display: inline-block;
+
+    border: 3px solid #e4e7ec;
+    border-top-color: #4f46e5;
+
+    border-radius: 50%;
+
+    animation:
+        categorySpin .7s linear infinite;
+}
+
+@keyframes categorySpin {
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.category-status {
+    min-height: 20px;
+    margin-top: 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.category-status.success {
+    color: #079455;
+}
+
+.category-status.warning {
+    color: #b54708;
+}
+
+.category-status.error {
+    color: #d92d20;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .category-input-wrapper input {
+        min-height: 54px;
+        font-size: 14px;
+        border-radius: 14px;
+    }
+
+    .category-dropdown {
+        top: calc(100% + 7px);
+        border-radius: 15px;
+        max-height: 390px;
+    }
+
+    .category-list {
+        max-height: 270px;
+    }
+
+    .category-option {
+        padding: 10px;
+    }
+
+    .category-option-icon {
+        width: 38px;
+        height: 38px;
+    }
+   }
