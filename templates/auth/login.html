@@ -4,11 +4,27 @@
 Login | S. F Works Marketplace
 {% endblock %}
 
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/auth-login.css') }}"
+>
+{% endblock %}
+
 {% block content %}
 
 <main class="sf-login-page">
 
+    <!-- Premium Background -->
+    <div class="sf-login-bg" aria-hidden="true">
+        <div class="sf-login-orb sf-orb-one"></div>
+        <div class="sf-login-orb sf-orb-two"></div>
+        <div class="sf-login-grid"></div>
+    </div>
+
+
     <div class="sf-login-shell">
+
 
         <!-- =====================================================
              LOGIN CARD
@@ -19,12 +35,12 @@ Login | S. F Works Marketplace
             aria-labelledby="loginTitle"
         >
 
-            <!-- BRAND -->
+            <!-- TOP BRAND -->
 
             <div class="sf-login-brand">
 
                 <div class="sf-brand-logo">
-                    SF
+                    <span>SF</span>
                 </div>
 
                 <div class="sf-brand-text">
@@ -46,17 +62,21 @@ Login | S. F Works Marketplace
 
             <header class="sf-login-header">
 
-                <span class="sf-login-badge">
+                <div class="sf-login-badge">
+
+                    <span class="sf-badge-dot"></span>
+
                     Secure Member Login
-                </span>
+
+                </div>
 
                 <h1 id="loginTitle">
                     Welcome back
                 </h1>
 
                 <p>
-                    Sign in to manage your profile,
-                    jobs, applications and marketplace activity.
+                    Sign in to manage your profile, jobs,
+                    applications and marketplace activity.
                 </p>
 
             </header>
@@ -84,6 +104,7 @@ Login | S. F Works Marketplace
                 novalidate
             >
 
+
                 <!-- EMAIL -->
 
                 <div class="sf-form-group">
@@ -98,7 +119,19 @@ Login | S. F Works Marketplace
                             class="sf-input-icon"
                             aria-hidden="true"
                         >
-                            @
+                            <svg viewBox="0 0 24 24">
+                                <rect
+                                    x="3"
+                                    y="5"
+                                    width="18"
+                                    height="14"
+                                    rx="2"
+                                ></rect>
+
+                                <path
+                                    d="m3 7 9 6 9-6"
+                                ></path>
+                            </svg>
                         </span>
 
                         <input
@@ -149,8 +182,23 @@ Login | S. F Works Marketplace
                             class="sf-input-icon"
                             aria-hidden="true"
                         >
-                            •
+                            <svg viewBox="0 0 24 24">
+
+                                <rect
+                                    x="4"
+                                    y="10"
+                                    width="16"
+                                    height="11"
+                                    rx="2"
+                                ></rect>
+
+                                <path
+                                    d="M8 10V7a4 4 0 0 1 8 0v3"
+                                ></path>
+
+                            </svg>
                         </span>
+
 
                         <input
                             type="password"
@@ -161,6 +209,7 @@ Login | S. F Works Marketplace
                             required
                         >
 
+
                         <button
                             type="button"
                             id="passwordToggle"
@@ -168,13 +217,31 @@ Login | S. F Works Marketplace
                             aria-label="Show password"
                             aria-pressed="false"
                         >
-                            Show
+
+                            <svg
+                                id="eyeIcon"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+
+                                <path
+                                    d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"
+                                ></path>
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="3"
+                                ></circle>
+
+                            </svg>
+
                         </button>
 
                     </div>
 
                     <small>
-                        Your password is protected.
+                        Your password is securely protected.
                     </small>
 
                 </div>
@@ -189,6 +256,14 @@ Login | S. F Works Marketplace
                         id="rememberDevice"
                         name="remember_device"
                     >
+
+                    <span class="sf-custom-check">
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="m5 12 4 4L19 6"></path>
+                        </svg>
+
+                    </span>
 
                     <span>
                         Keep me signed in
@@ -211,8 +286,17 @@ Login | S. F Works Marketplace
                         aria-hidden="true"
                     ></span>
 
-                    <span id="loginButtonText">
+                    <span
+                        id="loginButtonText"
+                    >
                         Sign in securely
+                    </span>
+
+                    <span
+                        class="sf-button-arrow"
+                        aria-hidden="true"
+                    >
+                        →
                     </span>
 
                 </button>
@@ -223,11 +307,24 @@ Login | S. F Works Marketplace
                 <div class="sf-security-note">
 
                     <span class="sf-security-icon">
-                        ✓
+
+                        <svg viewBox="0 0 24 24">
+
+                            <path
+                                d="M12 3 20 6v5c0 5-3.2 8.5-8 10-4.8-1.5-8-5-8-10V6l8-3Z"
+                            ></path>
+
+                            <path
+                                d="m8.5 12 2.2 2.2 4.8-5"
+                            ></path>
+
+                        </svg>
+
                     </span>
 
                     <span>
-                        Secure authentication with protected session cookies.
+                        Secure authentication with protected
+                        session cookies.
                     </span>
 
                 </div>
@@ -247,6 +344,9 @@ Login | S. F Works Marketplace
                     href="{{ url_for('auth_pages.register_page') }}"
                 >
                     Create your account
+                    <span class="footer-arrow">
+                        →
+                    </span>
                 </a>
 
             </footer>
@@ -254,23 +354,50 @@ Login | S. F Works Marketplace
         </section>
 
 
+
         <!-- =====================================================
              PREMIUM TRUST PANEL
         ====================================================== -->
 
-        <aside class="sf-login-trust">
+        <aside
+            class="sf-login-trust"
+            aria-label="S. F Works benefits"
+        >
+
+            <div class="sf-trust-decoration">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
 
             <div class="sf-trust-content">
+
+                <div class="sf-trust-logo">
+
+                    <span>
+                        SF
+                    </span>
+
+                </div>
+
 
                 <span class="sf-trust-eyebrow">
                     S. F WORKS MARKETPLACE
                 </span>
 
+
                 <h2>
                     Your work.
                     <br>
-                    Your opportunities.
+
+                    <span>
+                        Your opportunities.
+                    </span>
                 </h2>
+
 
                 <p>
                     Connect with customers, showcase your skills
@@ -283,10 +410,23 @@ Login | S. F Works Marketplace
 
                 <div class="sf-trust-list">
 
+
                     <div class="sf-trust-item">
 
                         <span class="sf-trust-icon">
-                            ✓
+
+                            <svg viewBox="0 0 24 24">
+
+                                <path
+                                    d="M12 3 20 6v5c0 5-3.2 8.5-8 10-4.8-1.5-8-5-8-10V6l8-3Z"
+                                ></path>
+
+                                <path
+                                    d="m8.5 12 2.2 2.2 4.8-5"
+                                ></path>
+
+                            </svg>
+
                         </span>
 
                         <div>
@@ -296,7 +436,8 @@ Login | S. F Works Marketplace
                             </strong>
 
                             <span>
-                                Protected authentication for every session.
+                                Protected authentication for
+                                every session.
                             </span>
 
                         </div>
@@ -304,10 +445,19 @@ Login | S. F Works Marketplace
                     </div>
 
 
+
                     <div class="sf-trust-item">
 
                         <span class="sf-trust-icon">
-                            ★
+
+                            <svg viewBox="0 0 24 24">
+
+                                <path
+                                    d="M12 3 14.8 8.7 21 9.6l-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"
+                                ></path>
+
+                            </svg>
+
                         </span>
 
                         <div>
@@ -317,7 +467,8 @@ Login | S. F Works Marketplace
                             </strong>
 
                             <span>
-                                Showcase your skills, experience and portfolio.
+                                Showcase your skills, experience
+                                and portfolio.
                             </span>
 
                         </div>
@@ -325,10 +476,23 @@ Login | S. F Works Marketplace
                     </div>
 
 
+
                     <div class="sf-trust-item">
 
                         <span class="sf-trust-icon">
-                            →
+
+                            <svg viewBox="0 0 24 24">
+
+                                <path
+                                    d="M5 12h13"
+                                ></path>
+
+                                <path
+                                    d="m13 6 6 6-6 6"
+                                ></path>
+
+                            </svg>
+
                         </span>
 
                         <div>
@@ -338,7 +502,8 @@ Login | S. F Works Marketplace
                             </strong>
 
                             <span>
-                                Find jobs and manage applications in one place.
+                                Find jobs and manage applications
+                                in one place.
                             </span>
 
                         </div>
@@ -352,9 +517,13 @@ Login | S. F Works Marketplace
 
                 <div class="sf-trust-status">
 
-                    <span></span>
+                    <span class="sf-status-dot"></span>
 
-                    Secure marketplace environment
+                    <span>
+                        Secure marketplace environment
+                    </span>
+
+                    <span class="sf-status-line"></span>
 
                 </div>
 
@@ -366,1159 +535,6 @@ Login | S. F Works Marketplace
 
 </main>
 
-
-<!-- =========================================================
-     PREMIUM LOGIN CSS
-========================================================== -->
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-
-/* =========================================================
-   PAGE
-========================================================= */
-
-.sf-login-page {
-
-    min-height: calc(100vh - 80px);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 50px 20px;
-
-    background:
-        radial-gradient(
-            circle at 0% 0%,
-            rgba(37, 99, 235, 0.08),
-            transparent 32%
-        ),
-        radial-gradient(
-            circle at 100% 100%,
-            rgba(15, 23, 42, 0.07),
-            transparent 35%
-        ),
-        #f8fafc;
-}
-
-
-/* =========================================================
-   MAIN GRID
-========================================================= */
-
-.sf-login-shell {
-
-    width: 100%;
-    max-width: 1120px;
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 470px)
-        minmax(0, 1fr);
-
-    gap: 28px;
-
-    align-items: stretch;
-}
-
-
-/* =========================================================
-   LOGIN CARD
-========================================================= */
-
-.sf-login-card {
-
-    width: 100%;
-
-    padding: 40px;
-
-    border: 1px solid rgba(15, 23, 42, 0.08);
-
-    border-radius: 26px;
-
-    background:
-        rgba(255, 255, 255, 0.97);
-
-    box-shadow:
-        0 30px 80px rgba(15, 23, 42, 0.12),
-        0 6px 20px rgba(15, 23, 42, 0.05);
-
-    backdrop-filter: blur(18px);
-
-    animation:
-        sfLoginCardIn
-        0.45s
-        ease
-        both;
-}
-
-
-@keyframes sfLoginCardIn {
-
-    from {
-
-        opacity: 0;
-
-        transform:
-            translateY(12px);
-
-    }
-
-    to {
-
-        opacity: 1;
-
-        transform:
-            translateY(0);
-
-    }
-
-}
-
-
-/* =========================================================
-   BRAND
-========================================================= */
-
-.sf-login-brand {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-    margin-bottom: 30px;
-}
-
-
-.sf-brand-logo {
-
-    width: 46px;
-    height: 46px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            145deg,
-            #111827,
-            #1e293b
-        );
-
-    color: #ffffff;
-
-    font-size: 14px;
-    font-weight: 800;
-
-    letter-spacing: -0.04em;
-
-    box-shadow:
-        0 10px 24px rgba(15, 23, 42, 0.18);
-}
-
-
-.sf-brand-text {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 3px;
-}
-
-
-.sf-brand-text strong {
-
-    color: #0f172a;
-
-    font-size: 15px;
-
-    font-weight: 800;
-}
-
-
-.sf-brand-text span {
-
-    color: #64748b;
-
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.sf-login-header {
-
-    margin-bottom: 28px;
-}
-
-
-.sf-login-badge {
-
-    display: inline-flex;
-
-    align-items: center;
-
-    min-height: 28px;
-
-    padding: 5px 11px;
-
-    border-radius: 999px;
-
-    background: #eff6ff;
-
-    color: #2563eb;
-
-    font-size: 10px;
-
-    font-weight: 800;
-
-    letter-spacing: 0.08em;
-
-    text-transform: uppercase;
-}
-
-
-.sf-login-header h1 {
-
-    margin: 16px 0 9px;
-
-    color: #0f172a;
-
-    font-size:
-        clamp(30px, 5vw, 39px);
-
-    line-height: 1.05;
-
-    letter-spacing: -0.045em;
-}
-
-
-.sf-login-header p {
-
-    max-width: 410px;
-
-    margin: 0;
-
-    color: #64748b;
-
-    font-size: 14px;
-
-    line-height: 1.7;
-}
-
-
-/* =========================================================
-   MESSAGE
-========================================================= */
-
-.sf-login-message {
-
-    margin-bottom: 20px;
-
-    padding: 13px 14px;
-
-    border-radius: 12px;
-
-    font-size: 13px;
-
-    line-height: 1.5;
-}
-
-
-.sf-login-message.error {
-
-    border: 1px solid #fecaca;
-
-    background: #fef2f2;
-
-    color: #b91c1c;
-}
-
-
-.sf-login-message.success {
-
-    border: 1px solid #bbf7d0;
-
-    background: #f0fdf4;
-
-    color: #15803d;
-}
-
-
-/* =========================================================
-   FORM
-========================================================= */
-
-.sf-login-form {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 20px;
-}
-
-
-.sf-form-group {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-}
-
-
-.sf-form-group label {
-
-    color: #1e293b;
-
-    font-size: 13px;
-
-    font-weight: 750;
-}
-
-
-.sf-form-group small {
-
-    color: #94a3b8;
-
-    font-size: 11px;
-
-    line-height: 1.5;
-}
-
-
-/* =========================================================
-   LABEL ROW
-========================================================= */
-
-.sf-label-row {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 12px;
-}
-
-
-.sf-forgot-link {
-
-    color: #2563eb;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    text-decoration: none;
-}
-
-
-.sf-forgot-link:hover {
-
-    text-decoration: underline;
-}
-
-
-/* =========================================================
-   INPUT
-========================================================= */
-
-.sf-input-box {
-
-    position: relative;
-
-    display: flex;
-
-    align-items: center;
-}
-
-
-.sf-input-icon {
-
-    position: absolute;
-
-    left: 15px;
-
-    z-index: 2;
-
-    width: 18px;
-
-    color: #94a3b8;
-
-    font-size: 15px;
-
-    font-weight: 700;
-
-    text-align: center;
-
-    pointer-events: none;
-}
-
-
-.sf-input-box input {
-
-    width: 100%;
-
-    min-height: 53px;
-
-    padding:
-        0 50px;
-
-    border:
-        1px solid #dbe2ea;
-
-    border-radius: 14px;
-
-    outline: none;
-
-    background: #ffffff;
-
-    color: #0f172a;
-
-    font-size: 14px;
-
-    transition:
-        border-color .2s ease,
-        box-shadow .2s ease,
-        transform .2s ease;
-}
-
-
-.sf-input-box input::placeholder {
-
-    color: #a1acba;
-}
-
-
-.sf-input-box input:hover {
-
-    border-color: #cbd5e1;
-}
-
-
-.sf-input-box input:focus {
-
-    border-color: #2563eb;
-
-    box-shadow:
-        0 0 0 4px
-        rgba(37, 99, 235, 0.10);
-}
-
-
-/* =========================================================
-   PASSWORD BUTTON
-========================================================= */
-
-.sf-password-toggle {
-
-    position: absolute;
-
-    right: 9px;
-
-    height: 35px;
-
-    min-width: 44px;
-
-    padding: 0 9px;
-
-    border: 0;
-
-    border-radius: 9px;
-
-    background: #f8fafc;
-
-    color: #475569;
-
-    font-size: 11px;
-
-    font-weight: 750;
-
-    cursor: pointer;
-
-    transition:
-        background .2s ease,
-        color .2s ease;
-}
-
-
-.sf-password-toggle:hover {
-
-    background: #eff6ff;
-
-    color: #2563eb;
-}
-
-
-/* =========================================================
-   REMEMBER
-========================================================= */
-
-.sf-remember {
-
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 9px;
-
-    width: fit-content;
-
-    color: #64748b;
-
-    font-size: 12px;
-
-    cursor: pointer;
-}
-
-
-.sf-remember input {
-
-    width: 15px;
-    height: 15px;
-
-    margin: 0;
-
-    accent-color: #2563eb;
-}
-
-
-/* =========================================================
-   LOGIN BUTTON
-========================================================= */
-
-.sf-login-button {
-
-    position: relative;
-
-    width: 100%;
-
-    min-height: 53px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border: 0;
-
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #1d4ed8
-        );
-
-    color: #ffffff;
-
-    font-size: 14px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 10px 25px
-        rgba(37, 99, 235, 0.20);
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        opacity .2s ease;
-}
-
-
-.sf-login-button:hover:not(:disabled) {
-
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 15px 32px
-        rgba(37, 99, 235, 0.28);
-}
-
-
-.sf-login-button:active:not(:disabled) {
-
-    transform: translateY(0);
-}
-
-
-.sf-login-button:disabled {
-
-    cursor: not-allowed;
-
-    opacity: .70;
-}
-
-
-/* =========================================================
-   LOADER
-========================================================= */
-
-.sf-button-loader {
-
-    display: none;
-
-    width: 16px;
-    height: 16px;
-
-    margin-right: 8px;
-
-    border:
-        2px solid
-        rgba(255,255,255,.45);
-
-    border-top-color:
-        #ffffff;
-
-    border-radius: 50%;
-
-    animation:
-        sfLoginSpin
-        .7s
-        linear
-        infinite;
-}
-
-
-.sf-login-button.is-loading
-.sf-button-loader {
-
-    display: inline-block;
-}
-
-
-@keyframes sfLoginSpin {
-
-    to {
-        transform: rotate(360deg);
-    }
-
-}
-
-
-/* =========================================================
-   SECURITY NOTE
-========================================================= */
-
-.sf-security-note {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 9px;
-
-    padding: 12px 13px;
-
-    border:
-        1px solid #e2e8f0;
-
-    border-radius: 11px;
-
-    background: #f8fafc;
-
-    color: #64748b;
-
-    font-size: 11px;
-
-    line-height: 1.5;
-}
-
-
-.sf-security-icon {
-
-    flex: 0 0 auto;
-
-    width: 18px;
-    height: 18px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background: #dcfce7;
-
-    color: #15803d;
-
-    font-size: 11px;
-
-    font-weight: 800;
-}
-
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.sf-login-footer {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    flex-wrap: wrap;
-
-    gap: 5px;
-
-    margin-top: 28px;
-
-    padding-top: 22px;
-
-    border-top:
-        1px solid #eef2f7;
-
-    color: #64748b;
-
-    font-size: 12px;
-}
-
-
-.sf-login-footer a {
-
-    color: #2563eb;
-
-    font-weight: 800;
-
-    text-decoration: none;
-}
-
-
-.sf-login-footer a:hover {
-
-    text-decoration: underline;
-}
-
-
-/* =========================================================
-   TRUST PANEL
-========================================================= */
-
-.sf-login-trust {
-
-    position: relative;
-
-    overflow: hidden;
-
-    min-height: 600px;
-
-    display: flex;
-
-    align-items: center;
-
-    padding: 52px;
-
-    border-radius: 26px;
-
-    background:
-        radial-gradient(
-            circle at 85% 10%,
-            rgba(59,130,246,.22),
-            transparent 28%
-        ),
-        radial-gradient(
-            circle at 10% 90%,
-            rgba(37,99,235,.10),
-            transparent 28%
-        ),
-        linear-gradient(
-            145deg,
-            #0f172a,
-            #111827 58%,
-            #172554
-        );
-
-    color: #ffffff;
-
-    box-shadow:
-        0 30px 80px
-        rgba(15,23,42,.18);
-}
-
-
-.sf-login-trust::before {
-
-    content: "";
-
-    position: absolute;
-
-    width: 330px;
-    height: 330px;
-
-    right: -170px;
-    bottom: -170px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
-
-    border-radius: 50%;
-}
-
-
-.sf-login-trust::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 210px;
-    height: 210px;
-
-    right: -105px;
-    bottom: -105px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.06);
-
-    border-radius: 50%;
-}
-
-
-.sf-trust-content {
-
-    position: relative;
-
-    z-index: 2;
-
-    width: 100%;
-}
-
-
-/* =========================================================
-   TRUST HEADER
-========================================================= */
-
-.sf-trust-eyebrow {
-
-    display: inline-block;
-
-    margin-bottom: 18px;
-
-    color: #93c5fd;
-
-    font-size: 10px;
-
-    font-weight: 800;
-
-    letter-spacing: .15em;
-}
-
-
-.sf-login-trust h2 {
-
-    margin: 0 0 18px;
-
-    color: #ffffff;
-
-    font-size:
-        clamp(32px, 4vw, 48px);
-
-    line-height: 1.04;
-
-    letter-spacing: -.05em;
-}
-
-
-.sf-login-trust > .sf-trust-content > p {
-
-    max-width: 480px;
-
-    margin: 0 0 34px;
-
-    color: #cbd5e1;
-
-    font-size: 14px;
-
-    line-height: 1.8;
-}
-
-
-/* =========================================================
-   TRUST ITEMS
-========================================================= */
-
-.sf-trust-list {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 22px;
-}
-
-
-.sf-trust-item {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 13px;
-}
-
-
-.sf-trust-icon {
-
-    flex: 0 0 auto;
-
-    width: 34px;
-    height: 34px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border:
-        1px solid
-        rgba(147,197,253,.20);
-
-    border-radius: 10px;
-
-    background:
-        rgba(255,255,255,.06);
-
-    color: #93c5fd;
-
-    font-size: 13px;
-
-    font-weight: 800;
-}
-
-
-.sf-trust-item div {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 4px;
-}
-
-
-.sf-trust-item strong {
-
-    color: #ffffff;
-
-    font-size: 13px;
-}
-
-
-.sf-trust-item div span {
-
-    color: #94a3b8;
-
-    font-size: 11px;
-
-    line-height: 1.5;
-}
-
-
-/* =========================================================
-   TRUST STATUS
-========================================================= */
-
-.sf-trust-status {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 9px;
-
-    margin-top: 40px;
-
-    padding-top: 21px;
-
-    border-top:
-        1px solid
-        rgba(255,255,255,.08);
-
-    color: #94a3b8;
-
-    font-size: 11px;
-}
-
-
-.sf-trust-status > span {
-
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: #4ade80;
-
-    box-shadow:
-        0 0 0 4px
-        rgba(74,222,128,.10);
-}
-
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 900px) {
-
-    .sf-login-shell {
-
-        max-width: 560px;
-
-        grid-template-columns: 1fr;
-    }
-
-
-    .sf-login-trust {
-
-        display: none;
-    }
-
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 560px) {
-
-    .sf-login-page {
-
-        min-height:
-            calc(100vh - 60px);
-
-        align-items: flex-start;
-
-        padding:
-            24px 13px;
-    }
-
-
-    .sf-login-shell {
-
-        margin-top: 10px;
-    }
-
-
-    .sf-login-card {
-
-        padding:
-            27px 20px;
-
-        border-radius: 21px;
-    }
-
-
-    .sf-login-brand {
-
-        margin-bottom: 24px;
-    }
-
-
-    .sf-brand-logo {
-
-        width: 43px;
-        height: 43px;
-    }
-
-
-    .sf-login-header {
-
-        margin-bottom: 24px;
-    }
-
-
-    .sf-login-header h1 {
-
-        font-size: 30px;
-    }
-
-
-    .sf-login-header p {
-
-        font-size: 13px;
-
-        line-height: 1.65;
-    }
-
-
-    .sf-input-box input {
-
-        min-height: 51px;
-    }
-
-
-    .sf-login-form {
-
-        gap: 18px;
-    }
-
-
-    .sf-login-footer {
-
-        text-align: center;
-    }
-
-}
-
-
-/* =========================================================
-   ACCESSIBILITY
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .sf-login-card {
-
-        animation: none;
-    }
-
-
-    .sf-button-loader {
-
-        animation: none;
-    }
-
-
-    .sf-login-button {
-
-        transition: none;
-    }
-
-}
-
-</style>
 
 
 <!-- =========================================================
@@ -1597,7 +613,9 @@ document.addEventListener(
                 "sf-login-message " +
                 type;
 
-            message.hidden = false;
+            message.hidden =
+                false;
+
         }
 
 
@@ -1607,12 +625,15 @@ document.addEventListener(
                 return;
             }
 
-            message.hidden = true;
+            message.hidden =
+                true;
 
-            message.textContent = "";
+            message.textContent =
+                "";
 
             message.className =
                 "sf-login-message";
+
         }
 
 
@@ -1626,26 +647,20 @@ document.addEventListener(
                 "click",
                 function () {
 
-                    const showingPassword =
+                    const isHidden =
                         passwordInput.type ===
                         "password";
 
 
                     passwordInput.type =
-                        showingPassword
+                        isHidden
                             ? "text"
                             : "password";
 
 
-                    passwordToggle.textContent =
-                        showingPassword
-                            ? "Hide"
-                            : "Show";
-
-
                     passwordToggle.setAttribute(
                         "aria-label",
-                        showingPassword
+                        isHidden
                             ? "Hide password"
                             : "Show password"
                     );
@@ -1653,9 +668,15 @@ document.addEventListener(
 
                     passwordToggle.setAttribute(
                         "aria-pressed",
-                        showingPassword
+                        isHidden
                             ? "true"
                             : "false"
+                    );
+
+
+                    passwordToggle.classList.toggle(
+                        "is-visible",
+                        isHidden
                     );
 
                 }
@@ -1665,7 +686,24 @@ document.addEventListener(
 
 
         /* =====================================================
-           LOGIN SUBMIT
+           EMAIL NORMALIZATION
+        ===================================================== */
+
+        emailInput.addEventListener(
+            "blur",
+            function () {
+
+                emailInput.value =
+                    emailInput.value
+                        .trim()
+                        .toLowerCase();
+
+            }
+        );
+
+
+        /* =====================================================
+           SUBMIT
         ===================================================== */
 
         form.addEventListener(
@@ -1681,6 +719,7 @@ document.addEventListener(
                     emailInput.value
                         .trim()
                         .toLowerCase();
+
 
                 const password =
                     passwordInput.value;
@@ -1702,7 +741,10 @@ document.addEventListener(
                 }
 
 
-                if (!email.includes("@")) {
+                if (
+                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                        .test(email)
+                ) {
 
                     showMessage(
                         "Please enter a valid email address."
@@ -1730,7 +772,8 @@ document.addEventListener(
                    LOADING
                 --------------------------------------------- */
 
-                loginButton.disabled = true;
+                loginButton.disabled =
+                    true;
 
                 loginButton.classList.add(
                     "is-loading"
@@ -1748,20 +791,26 @@ document.addEventListener(
                             {
                                 method: "POST",
 
-                                credentials: "include",
+                                credentials:
+                                    "include",
 
                                 headers: {
+
                                     "Content-Type":
                                         "application/json",
 
                                     "Accept":
                                         "application/json"
+
                                 },
 
                                 body:
                                     JSON.stringify({
-                                        email: email,
-                                        password: password
+                                        email:
+                                            email,
+
+                                        password:
+                                            password
                                     })
                             }
                         );
@@ -1775,9 +824,10 @@ document.addEventListener(
                         result =
                             await response.json();
 
-                    } catch (error) {
+                    } catch (jsonError) {
 
-                        result = null;
+                        result =
+                            null;
 
                     }
 
@@ -1789,7 +839,8 @@ document.addEventListener(
                     if (
                         response.ok &&
                         result &&
-                        result.status === "success"
+                        result.status ===
+                            "success"
                     ) {
 
                         showMessage(
@@ -1807,14 +858,12 @@ document.addEventListener(
                                 : "";
 
 
-                        /*
-                         * MEMBER LOGIN
-                         *
-                         * Admin is intentionally NOT handled
-                         * by this login page.
-                         */
+                        /* WORKER */
 
-                        if (role === "worker") {
+                        if (
+                            role ===
+                            "worker"
+                        ) {
 
                             window.location.replace(
                                 "/worker/dashboard"
@@ -1824,7 +873,12 @@ document.addEventListener(
                         }
 
 
-                        if (role === "customer") {
+                        /* CUSTOMER */
+
+                        if (
+                            role ===
+                            "customer"
+                        ) {
 
                             window.location.replace(
                                 "/customer/dashboard"
@@ -1834,13 +888,12 @@ document.addEventListener(
                         }
 
 
-                        /*
-                         * If an admin account accidentally
-                         * uses member login, do not expose
-                         * the admin dashboard here.
-                         */
+                        /* ADMIN */
 
-                        if (role === "admin") {
+                        if (
+                            role ===
+                            "admin"
+                        ) {
 
                             showMessage(
                                 "Please use the Admin Login page to access the administration panel.",
@@ -1851,18 +904,18 @@ document.addEventListener(
                         }
 
 
-                        /*
-                         * Unknown authenticated role
-                         */
+                        /* UNKNOWN ROLE */
 
-                        window.location.replace("/");
+                        window.location.replace(
+                            "/"
+                        );
 
                         return;
                     }
 
 
                     /* -----------------------------------------
-                       SERVER ERROR
+                       ERROR
                     ----------------------------------------- */
 
                     showMessage(
@@ -1884,7 +937,6 @@ document.addEventListener(
                     showMessage(
                         "Unable to connect to the server. Please try again."
                     );
-
 
                 } finally {
 
