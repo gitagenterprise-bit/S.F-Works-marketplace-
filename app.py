@@ -27,44 +27,69 @@ from utils.cloudinary_config import (
 # ============================================================
 
 def sync_worker_profiles_columns():
+    """
+    Add missing worker_profiles columns to an existing database.
+
+    This is a compatibility helper for deployments where the
+    database already exists but the WorkerProfile model has
+    newer fields.
+    """
 
     required_columns = {
 
-        "headline": "VARCHAR(255)",
+        "headline":
+            "VARCHAR(255)",
 
-        "about": "TEXT",
+        "about":
+            "TEXT",
 
-        "profile_image": "VARCHAR(500)",
+        "profile_image":
+            "VARCHAR(500)",
 
-        "cover_image": "VARCHAR(500)",
+        "cover_image":
+            "VARCHAR(500)",
 
-        "experience_years": "INTEGER DEFAULT 0",
+        "experience_years":
+            "INTEGER DEFAULT 0",
 
-        "service_area": "VARCHAR(255)",
+        "service_area":
+            "VARCHAR(255)",
 
-        "service_radius_km": "INTEGER",
+        "service_radius_km":
+            "INTEGER",
 
-        "address": "VARCHAR(255)",
+        "address":
+            "VARCHAR(255)",
 
-        "city": "VARCHAR(100)",
+        "city":
+            "VARCHAR(100)",
 
-        "state": "VARCHAR(100)",
+        "state":
+            "VARCHAR(100)",
 
-        "pincode": "VARCHAR(10)",
+        "pincode":
+            "VARCHAR(10)",
 
-        "latitude": "NUMERIC(10,7)",
+        "latitude":
+            "NUMERIC(10,7)",
 
-        "longitude": "NUMERIC(10,7)",
+        "longitude":
+            "NUMERIC(10,7)",
 
-        "hourly_rate": "NUMERIC(10,2)",
+        "hourly_rate":
+            "NUMERIC(10,2)",
 
-        "minimum_charge": "NUMERIC(10,2)",
+        "minimum_charge":
+            "NUMERIC(10,2)",
 
-        "availability": "VARCHAR(100)",
+        "availability":
+            "VARCHAR(100)",
 
-        "is_available": "BOOLEAN DEFAULT TRUE",
+        "is_available":
+            "BOOLEAN DEFAULT TRUE",
 
-        "is_verified": "BOOLEAN DEFAULT FALSE",
+        "is_verified":
+            "BOOLEAN DEFAULT FALSE",
 
         "verification_status":
             "VARCHAR(30) DEFAULT 'pending'",
@@ -91,15 +116,35 @@ def sync_worker_profiles_columns():
             "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
     }
 
+
+    # ========================================================
+    # DATABASE INSPECTOR
+    # ========================================================
+
     inspector = inspect(
         db.engine
     )
+
+
+    # ========================================================
+    # CHECK TABLE
+    # ========================================================
 
     if "worker_profiles" not in (
         inspector.get_table_names()
     ):
 
+        print(
+            "[DB SYNC] worker_profiles table "
+            "does not exist. Skipping sync."
+        )
+
         return
+
+
+    # ========================================================
+    # EXISTING COLUMNS
+    # ========================================================
 
     existing_columns = {
 
@@ -110,7 +155,13 @@ def sync_worker_profiles_columns():
         )
     }
 
+
     changed = False
+
+
+    # ========================================================
+    # ADD MISSING COLUMNS
+    # ========================================================
 
     for (
         column_name,
@@ -118,8 +169,8 @@ def sync_worker_profiles_columns():
     ) in required_columns.items():
 
         if column_name in existing_columns:
-
             continue
+
 
         try:
 
@@ -133,27 +184,50 @@ def sync_worker_profiles_columns():
                 )
             )
 
+
             changed = True
+
 
             print(
                 f"[DB SYNC] Added column: "
                 f"worker_profiles.{column_name}"
             )
 
+
         except Exception as exc:
 
             db.session.rollback()
 
+
             print(
                 f"[DB SYNC ERROR] "
-                f"{column_name}: {exc}"
+                f"worker_profiles.{column_name}: "
+                f"{exc}"
             )
 
+
             raise
+
+
+    # ========================================================
+    # COMMIT CHANGES
+    # ========================================================
 
     if changed:
 
         db.session.commit()
+
+        print(
+            "[DB SYNC] worker_profiles "
+            "schema synchronization completed."
+        )
+
+    else:
+
+        print(
+            "[DB SYNC] worker_profiles "
+            "schema is already up to date."
+        )
 
 
 # ============================================================
@@ -162,34 +236,51 @@ def sync_worker_profiles_columns():
 
 def create_app():
 
+    # ========================================================
+    # CREATE FLASK APPLICATION
+    # ========================================================
+
     app = Flask(
         __name__
     )
 
+
     # ========================================================
-    # CONFIG
+    # CONFIGURATION
     # ========================================================
 
     app.config.from_object(
         Config
     )
 
+
     # ========================================================
-    # EXTENSIONS
+    # INITIALIZE DATABASE
     # ========================================================
 
     db.init_app(
         app
     )
 
+
+    # ========================================================
+    # FLASK-MIGRATE
+    # ========================================================
+
     migrate.init_app(
         app,
         db
     )
 
+
+    # ========================================================
+    # JWT
+    # ========================================================
+
     jwt.init_app(
         app
     )
+
 
     # ========================================================
     # CLOUDINARY
@@ -197,11 +288,12 @@ def create_app():
 
     init_cloudinary()
 
+
     # ========================================================
-    # MODELS
+    # IMPORT ALL MODELS
     #
     # IMPORTANT:
-    # Import every model before create_all / migrations.
+    # Import models before db.create_all() and migrations.
     # ========================================================
 
     from models import (
@@ -223,18 +315,22 @@ def create_app():
         JobApplication
     )
 
+
     # ========================================================
     # DATABASE INITIALIZATION
     # ========================================================
 
     with app.app_context():
 
+        # Create missing tables
         db.create_all()
 
+        # Synchronize WorkerProfile columns
         sync_worker_profiles_columns()
 
+
     # ========================================================
-    # AUTH
+    # AUTH ROUTES
     # ========================================================
 
     from routes.auth import (
@@ -244,6 +340,7 @@ def create_app():
         auth_pages_bp
     )
 
+
     app.register_blueprint(
 
         auth_bp,
@@ -251,17 +348,20 @@ def create_app():
         url_prefix="/api/auth"
     )
 
+
     app.register_blueprint(
         auth_pages_bp
     )
 
+
     # ========================================================
-    # CUSTOMER
+    # CUSTOMER API
     # ========================================================
 
     from routes.customer import (
         customer_bp
     )
+
 
     app.register_blueprint(
 
@@ -269,6 +369,7 @@ def create_app():
 
         url_prefix="/api/customer"
     )
+
 
     # ========================================================
     # WORKER API
@@ -278,12 +379,14 @@ def create_app():
         worker_bp
     )
 
+
     app.register_blueprint(
 
         worker_bp,
 
         url_prefix="/api/worker"
     )
+
 
     # ========================================================
     # WORKER PAGES
@@ -293,9 +396,11 @@ def create_app():
         worker_pages_bp
     )
 
+
     app.register_blueprint(
         worker_pages_bp
     )
+
 
     # ========================================================
     # JOB API
@@ -305,6 +410,7 @@ def create_app():
         jobs_bp
     )
 
+
     app.register_blueprint(
 
         jobs_bp,
@@ -312,17 +418,15 @@ def create_app():
         url_prefix="/api/jobs"
     )
 
+
     # ========================================================
-    # ADMIN
+    # ADMIN API
     # ========================================================
 
     from routes.admin import (
         admin_bp
     )
 
-    from routes.admin_pages import (
-        admin_pages_bp
-    )
 
     app.register_blueprint(
 
@@ -331,9 +435,20 @@ def create_app():
         url_prefix="/api/admin"
     )
 
+
+    # ========================================================
+    # ADMIN PAGES
+    # ========================================================
+
+    from routes.admin_pages import (
+        admin_pages_bp
+    )
+
+
     app.register_blueprint(
         admin_pages_bp
     )
+
 
     # ========================================================
     # JOB PAGES
@@ -343,9 +458,11 @@ def create_app():
         job_pages_bp
     )
 
+
     app.register_blueprint(
         job_pages_bp
     )
+
 
     # ========================================================
     # PUBLIC WORKERS
@@ -355,11 +472,11 @@ def create_app():
         worker_public_bp
     )
 
+
     app.register_blueprint(
         worker_public_bp
     )
 
- 
 
     # ============================================================
     # HOME PAGE
@@ -368,76 +485,83 @@ def create_app():
     @app.route("/")
     def home():
 
-    # ========================================================
-    # FEATURED WORKERS
-    # ========================================================
+        # ====================================================
+        # FEATURED WORKERS
+        # ====================================================
 
-    workers = (
+        workers = (
 
-        WorkerProfile.query
+            WorkerProfile.query
 
-        .filter(
-            WorkerProfile.profile_completed.is_(True)
+            .filter(
+                WorkerProfile.profile_completed.is_(True)
+            )
+
+            .order_by(
+
+                WorkerProfile.is_verified.desc(),
+
+                WorkerProfile.is_available.desc(),
+
+                WorkerProfile.rating.desc(),
+
+                WorkerProfile.total_reviews.desc(),
+
+                WorkerProfile.created_at.desc()
+            )
+
+            .limit(8)
+
+            .all()
         )
 
-        .order_by(
 
-            WorkerProfile.is_verified.desc(),
+        # ====================================================
+        # LATEST JOBS
+        #
+        # Only open / active jobs are displayed.
+        # ====================================================
 
-            WorkerProfile.is_available.desc(),
+        jobs = (
 
-            WorkerProfile.rating.desc(),
+            Job.query
 
-            WorkerProfile.total_reviews.desc(),
+            .filter(
 
-            WorkerProfile.created_at.desc()
+                Job.status.in_([
+                    "open",
+                    "OPEN",
+                    "active",
+                    "ACTIVE"
+                ])
+
+            )
+
+            .order_by(
+
+                Job.created_at.desc()
+            )
+
+            .limit(8)
+
+            .all()
         )
 
-        .limit(8)
 
-        .all()
-    )
+        # ====================================================
+        # RENDER HOME PAGE
+        # ====================================================
 
+        return render_template(
 
-    # ========================================================
-    # LATEST JOBS
-    # ========================================================
+            "public/home.html",
 
-    jobs = (
+            workers=workers,
 
-        Job.query
-
-        .filter(
-            Job.status.in_([
-                "open",
-                "OPEN",
-                "active",
-                "ACTIVE"
-            ])
+            jobs=jobs
         )
 
-        .order_by(
-            Job.created_at.desc()
-        )
 
-        .limit(8)
-
-        .all()
-    )
-
-
-    # ========================================================
-    # HOME TEMPLATE
-    # ========================================================
-
-    return render_template(
-
-        "public/home.html",
-
-        workers=workers,
-
-        jobs=jobs
-        )
     # ========================================================
     # HEALTH CHECK
     # ========================================================
@@ -449,14 +573,17 @@ def create_app():
 
         return jsonify({
 
-            "status": "success",
+            "status":
+                "success",
 
             "message":
                 "S. F Works Marketplace API is running",
 
             "service":
                 "sf-works-marketplace"
+
         }), 200
+
 
     # ========================================================
     # API ROOT
@@ -477,6 +604,12 @@ def create_app():
 
             "status":
                 "online"
+
         }), 200
+
+
+    # ========================================================
+    # RETURN APPLICATION
+    # ========================================================
 
     return app
