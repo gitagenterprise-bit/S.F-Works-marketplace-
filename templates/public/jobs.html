@@ -4,101 +4,604 @@
 Find Jobs — S. F Works
 {% endblock %}
 
+
 {% block extra_css %}
 
 <link
     rel="stylesheet"
-    href="{{ url_for(
-        'static',
-        filename='css/jobs.css'
-    ) }}"
+    href="{{ url_for('static', filename='css/jobs.css') }}"
 >
 
 {% endblock %}
 
+
 {% block content %}
 
-<main class="jobs-page">
+<main
+    class="jobs-page"
+    id="jobsPage"
+    data-api-url="/api/jobs"
+>
+
+    <!-- =====================================================
+         PREMIUM HERO
+    ====================================================== -->
 
     <section class="jobs-hero">
 
-        <div class="container">
+        <div class="jobs-hero-glow jobs-hero-glow-one"></div>
+        <div class="jobs-hero-glow jobs-hero-glow-two"></div>
 
-            <span class="hero-badge">
-                S. F Works Marketplace
-            </span>
+        <div class="jobs-container">
 
-            <h1>
-                Find Local Jobs
-            </h1>
+            <div class="jobs-hero-content">
 
-            <p>
-                Discover work opportunities from customers
-                looking for trusted and skilled workers.
-            </p>
+                <span class="jobs-eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    S. F Works Marketplace
+                </span>
+
+                <h1>
+                    Find Work.
+                    <span>Build Your Future.</span>
+                </h1>
+
+                <p>
+                    Discover trusted local job opportunities
+                    from customers looking for skilled and
+                    reliable professionals.
+                </p>
+
+                <div class="hero-stats">
+
+                    <div class="hero-stat">
+                        <strong id="heroJobCount">—</strong>
+                        <span>Available Jobs</span>
+                    </div>
+
+                    <div class="hero-stat-divider"></div>
+
+                    <div class="hero-stat">
+                        <strong>15+</strong>
+                        <span>Popular Categories</span>
+                    </div>
+
+                    <div class="hero-stat-divider"></div>
+
+                    <div class="hero-stat">
+                        <strong>100%</strong>
+                        <span>Local Focus</span>
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
     </section>
 
 
-    <section class="jobs-section">
+    <!-- =====================================================
+         SEARCH AREA
+    ====================================================== -->
 
-        <div class="container">
+    <section class="jobs-search-section">
 
-            <div class="jobs-toolbar">
+        <div class="jobs-container">
 
-                <input
-                    type="search"
-                    id="jobSearch"
-                    placeholder="Search jobs..."
-                    autocomplete="off"
-                >
+            <div class="jobs-search-card">
 
-                <input
-                    type="text"
-                    id="jobCity"
-                    placeholder="City"
-                    autocomplete="off"
-                >
+                <div class="search-card-heading">
 
-                <button
-                    type="button"
-                    id="searchJobsBtn"
-                    class="btn btn-primary"
-                >
-                    Search
-                </button>
+                    <div class="search-heading-icon">
+                        ⌕
+                    </div>
+
+                    <div>
+                        <h2>Find the right opportunity</h2>
+
+                        <p>
+                            Search jobs by title, location or category.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="jobs-search-grid">
+
+                    <!-- SEARCH -->
+
+                    <div class="search-field search-field-large">
+
+                        <label for="jobSearch">
+                            What are you looking for?
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                ⌕
+                            </span>
+
+                            <input
+                                type="search"
+                                id="jobSearch"
+                                placeholder="e.g. Electrician, Plumber..."
+                                autocomplete="off"
+                            >
+
+                            <button
+                                type="button"
+                                class="clear-search"
+                                id="clearSearchBtn"
+                                aria-label="Clear search"
+                                hidden
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CITY -->
+
+                    <div class="search-field">
+
+                        <label for="jobCity">
+                            Location
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                ⌖
+                            </span>
+
+                            <input
+                                type="text"
+                                id="jobCity"
+                                placeholder="City"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="search-field">
+
+                        <label for="jobCategory">
+                            Category
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                ◈
+                            </span>
+
+                            <select id="jobCategory">
+
+                                <option value="">
+                                    All Categories
+                                </option>
+
+                                <option value="electrical">
+                                    Electrical
+                                </option>
+
+                                <option value="plumbing">
+                                    Plumbing
+                                </option>
+
+                                <option value="carpentry">
+                                    Carpentry
+                                </option>
+
+                                <option value="painting">
+                                    Painting
+                                </option>
+
+                                <option value="cleaning">
+                                    Cleaning
+                                </option>
+
+                                <option value="ac_repair">
+                                    AC & Appliance Repair
+                                </option>
+
+                                <option value="construction">
+                                    Construction
+                                </option>
+
+                                <option value="computer">
+                                    Computer & IT
+                                </option>
+
+                                <option value="beauty">
+                                    Beauty & Salon
+                                </option>
+
+                                <option value="driving">
+                                    Driving
+                                </option>
+
+                                <option value="moving">
+                                    Moving & Shifting
+                                </option>
+
+                                <option value="gardening">
+                                    Gardening
+                                </option>
+
+                                <option value="security">
+                                    Security
+                                </option>
+
+                                <option value="tutoring">
+                                    Tutoring
+                                </option>
+
+                                <option value="other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BUTTON -->
+
+                    <button
+                        type="button"
+                        id="searchJobsBtn"
+                        class="jobs-search-button"
+                    >
+                        <span class="search-button-icon">
+                            ⌕
+                        </span>
+
+                        <span>
+                            Search Jobs
+                        </span>
+                    </button>
+
+                </div>
+
+
+                <!-- QUICK FILTERS -->
+
+                <div class="quick-filters">
+
+                    <span class="quick-label">
+                        Popular:
+                    </span>
+
+                    <button
+                        type="button"
+                        class="quick-filter"
+                        data-category="electrical"
+                    >
+                        Electrical
+                    </button>
+
+                    <button
+                        type="button"
+                        class="quick-filter"
+                        data-category="plumbing"
+                    >
+                        Plumbing
+                    </button>
+
+                    <button
+                        type="button"
+                        class="quick-filter"
+                        data-category="painting"
+                    >
+                        Painting
+                    </button>
+
+                    <button
+                        type="button"
+                        class="quick-filter"
+                        data-category="cleaning"
+                    >
+                        Cleaning
+                    </button>
+
+                    <button
+                        type="button"
+                        class="quick-filter"
+                        data-category="carpentry"
+                    >
+                        Carpentry
+                    </button>
+
+                </div>
 
             </div>
 
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         JOBS CONTENT
+    ====================================================== -->
+
+    <section class="jobs-content-section">
+
+        <div class="jobs-container">
+
+
+            <!-- HEADER -->
+
+            <div class="jobs-results-header">
+
+                <div>
+
+                    <span class="results-eyebrow">
+                        Marketplace
+                    </span>
+
+                    <h2>
+                        Latest Opportunities
+                    </h2>
+
+                    <p id="jobsResultText">
+                        Discover the latest jobs near you.
+                    </p>
+
+                </div>
+
+
+                <div class="jobs-sort">
+
+                    <label for="jobSort">
+                        Sort by
+                    </label>
+
+                    <select id="jobSort">
+
+                        <option value="newest">
+                            Newest
+                        </option>
+
+                        <option value="budget_high">
+                            Highest Budget
+                        </option>
+
+                        <option value="budget_low">
+                            Lowest Budget
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVE FILTERS -->
+
+            <div
+                class="active-filters"
+                id="activeFilters"
+                hidden
+            ></div>
+
+
+            <!-- =================================================
+                 LOADING
+            ================================================== -->
 
             <div
                 id="jobsLoading"
                 class="jobs-loading"
             >
-                Loading jobs...
+
+                <div class="job-skeleton-grid">
+
+                    {% for i in range(6) %}
+
+                    <div class="job-skeleton-card">
+
+                        <div class="skeleton skeleton-icon"></div>
+
+                        <div class="skeleton-content">
+
+                            <div class="skeleton skeleton-line large"></div>
+
+                            <div class="skeleton skeleton-line medium"></div>
+
+                            <div class="skeleton skeleton-line small"></div>
+
+                        </div>
+
+                        <div class="skeleton skeleton-block"></div>
+
+                        <div class="skeleton skeleton-footer"></div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
             </div>
 
+
+            <!-- =================================================
+                 JOB GRID
+            ================================================== -->
 
             <div
                 id="jobsGrid"
                 class="jobs-grid"
+                hidden
             ></div>
 
 
-            <div
+            <!-- =================================================
+                 EMPTY
+            ================================================== -->
+
+            <section
                 id="jobsEmpty"
                 class="jobs-empty"
                 hidden
             >
+
+                <div class="empty-icon">
+                    ⌕
+                </div>
+
+                <span class="empty-badge">
+                    No matching opportunities
+                </span>
+
                 <h3>
-                    No jobs found
+                    We couldn't find any jobs
                 </h3>
 
                 <p>
-                    Try changing your search or city.
+                    Try another keyword, city or category.
+                    New opportunities are added regularly.
                 </p>
+
+                <button
+                    type="button"
+                    id="resetJobsBtn"
+                    class="empty-reset-button"
+                >
+                    Clear All Filters
+                </button>
+
+            </section>
+
+
+            <!-- =================================================
+                 ERROR
+            ================================================== -->
+
+            <section
+                id="jobsError"
+                class="jobs-error"
+                hidden
+            >
+
+                <div class="error-icon">
+                    !
+                </div>
+
+                <h3>
+                    Something went wrong
+                </h3>
+
+                <p id="jobsErrorMessage">
+                    We couldn't load the jobs right now.
+                </p>
+
+                <button
+                    type="button"
+                    id="retryJobsBtn"
+                    class="error-retry-button"
+                >
+                    Try Again
+                </button>
+
+            </section>
+
+
+            <!-- =================================================
+                 PAGINATION
+            ================================================== -->
+
+            <div
+                class="jobs-pagination"
+                id="jobsPagination"
+                hidden
+            >
+
+                <button
+                    type="button"
+                    id="jobsPrevBtn"
+                    class="pagination-button"
+                    disabled
+                >
+                    ← Previous
+                </button>
+
+                <div
+                    id="jobsPageInfo"
+                    class="pagination-info"
+                >
+                    Page 1
+                </div>
+
+                <button
+                    type="button"
+                    id="jobsNextBtn"
+                    class="pagination-button"
+                >
+                    Next →
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CTA
+    ====================================================== -->
+
+    <section class="jobs-bottom-cta">
+
+        <div class="jobs-container">
+
+            <div class="bottom-cta-card">
+
+                <div class="cta-glow"></div>
+
+                <div class="cta-content">
+
+                    <span class="cta-badge">
+                        For Customers
+                    </span>
+
+                    <h2>
+                        Need a skilled professional?
+                    </h2>
+
+                    <p>
+                        Post your job and connect with
+                        trusted workers in your area.
+                    </p>
+
+                    <a
+                        href="/post-job"
+                        class="cta-button"
+                    >
+                        Post a Job
+                        <span>→</span>
+                    </a>
+
+                </div>
+
             </div>
 
         </div>
@@ -113,10 +616,8 @@ Find Jobs — S. F Works
 {% block extra_js %}
 
 <script
-    src="{{ url_for(
-        'static',
-        filename='js/jobs.js'
-    ) }}"
+    src="{{ url_for('static', filename='js/jobs.js') }}"
+    defer
 ></script>
 
 {% endblock %}
