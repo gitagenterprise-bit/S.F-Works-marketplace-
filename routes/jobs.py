@@ -346,11 +346,22 @@ def create_job():
     longitude = data.get(
         "longitude"
     )
+    allowed_priorities = {
+        "normal",
+        "high",
+        "urgent"
+    }
 
     priority = data.get(
         "priority",
         "normal"
     )
+    if priority not in allowed_priorities:
+
+        return jsonify({
+            "status": "error",
+            "message": "Invalid priority"
+        }), 400
 
     # -------------------------------
     # Validation
@@ -394,6 +405,13 @@ def create_job():
         return jsonify({
             "status": "error",
             "message": "Invalid category"
+        }), 400
+
+    if not category.is_active:
+
+        return jsonify({
+            "status": "error",
+            "message": "This category is currently unavailable"
         }), 400
 
     # -------------------------------
