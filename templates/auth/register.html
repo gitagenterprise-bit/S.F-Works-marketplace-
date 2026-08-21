@@ -4,438 +4,905 @@
 Create Account | S. F Works Marketplace
 {% endblock %}
 
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/auth-register.css') }}"
+>
+{% endblock %}
+
 {% block content %}
 
-<div class="auth-page"><div class="auth-card">
+<main class="register-page">
 
-    <div class="auth-header">
-
-        <span class="auth-badge">
-            S. F Works
-        </span>
-
-        <h1>
-            Create Your Account
-        </h1>
-
-        <p>
-            Join the S. F Works Marketplace.
-        </p>
-
+    <!-- Premium Background -->
+    <div class="register-bg">
+        <div class="bg-orb orb-one"></div>
+        <div class="bg-orb orb-two"></div>
+        <div class="bg-orb orb-three"></div>
     </div>
 
 
-    <form
-        method="POST"
-        id="registerForm"
-    >
+    <!-- Register Card -->
+    <section class="register-card">
 
-        <div class="form-group">
+        <!-- Header -->
+        <div class="register-header">
 
-            <label for="full_name">
-                Full Name
-            </label>
+            <div class="brand-mark">
+                <span>SF</span>
+            </div>
 
-            <input
-                type="text"
-                id="full_name"
-                name="full_name"
-                placeholder="Your full name"
-                required
-            >
+            <div class="brand-name">
+                S. F Works
+            </div>
 
-        </div>
+            <span class="register-badge">
+                <span class="badge-dot"></span>
+                Marketplace
+            </span>
 
+            <h1>
+                Create Your Account
+            </h1>
 
-        <div class="form-group">
-
-            <label for="email">
-                Email Address
-            </label>
-
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="you@example.com"
-                required
-            >
+            <p>
+                Join thousands of people finding trusted local services
+                and opportunities.
+            </p>
 
         </div>
 
 
-        <div class="form-group">
-
-            <label for="phone">
-                Phone Number
-            </label>
-
-            <input
-                type="tel"
-                id="phone"
-                name="phone"
-                placeholder="Your phone number"
-                required
-            >
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="role">
-                Account Type
-            </label>
-
-            <select
-                id="role"
-                name="role"
-                required
-            >
-
-                <option value="customer">
-                    Customer — Post Jobs
-                </option>
-
-                <option value="worker">
-                    Worker — Find Jobs
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div
-            class="form-group"
-            id="professionGroup"
-            style="display: none;"
+        <!-- Form -->
+        <form
+            method="POST"
+            id="registerForm"
+            class="register-form"
+            novalidate
         >
 
-            <label for="profession">
-                Profession
-            </label>
+            <!-- Full Name -->
+            <div class="form-group">
 
-            <input
-                type="text"
-                id="profession"
-                name="profession"
-                placeholder="Example: Electrician, Plumber, Designer"
+                <label for="full_name">
+                    Full Name
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M20 21a8 8 0 0 0-16 0"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </span>
+
+                    <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Email -->
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="2"/>
+                            <path d="m3 7 9 6 9-6"/>
+                        </svg>
+                    </span>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Phone -->
+            <div class="form-group">
+
+                <label for="phone">
+                    Phone Number
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6.5 2h3l1.5 5-2 1.5a16 16 0 0 0 6.5 6.5l1.5-2 5 1.5v3c0 1.1-.9 2-2 2C11.2 19.5 4.5 12.8 4.5 4c0-1.1.9-2 2-2Z"/>
+                        </svg>
+                    </span>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        autocomplete="tel"
+                        inputmode="tel"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Account Type -->
+            <div class="form-group">
+
+                <label for="role">
+                    Account Type
+                </label>
+
+                <div class="input-wrapper select-wrapper">
+
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M19 8v6M22 11h-6"/>
+                        </svg>
+                    </span>
+
+                    <select
+                        id="role"
+                        name="role"
+                        required
+                    >
+
+                        <option value="customer">
+                            Customer — Post Jobs
+                        </option>
+
+                        <option value="worker">
+                            Worker — Find Jobs
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- Profession -->
+            <div
+                class="form-group profession-group"
+                id="professionGroup"
             >
+
+                <label for="profession">
+                    Profession
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="7" width="18" height="13" rx="2"/>
+                            <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            <path d="M3 12h18"/>
+                        </svg>
+                    </span>
+
+                    <input
+                        type="text"
+                        id="profession"
+                        name="profession"
+                        placeholder="Electrician, Plumber, Designer..."
+                        autocomplete="organization-title"
+                    >
+
+                </div>
+
+                <small class="field-hint">
+                    Tell customers what service you provide.
+                </small>
+
+            </div>
+
+
+            <!-- Password -->
+            <div class="form-group">
+
+                <div class="label-row">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <span class="password-rule">
+                        Minimum 8 characters
+                    </span>
+
+                </div>
+
+                <div class="input-wrapper password-wrapper">
+
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="4" y="10" width="16" height="11" rx="2"/>
+                            <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                        </svg>
+                    </span>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a strong password"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="passwordToggle"
+                        aria-label="Show password"
+                    >
+                        <svg
+                            id="eyeIcon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+
+                </div>
+
+
+                <!-- Password Strength -->
+                <div
+                    class="password-strength"
+                    id="passwordStrength"
+                >
+
+                    <div class="strength-bars">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                    <span
+                        class="strength-text"
+                        id="strengthText"
+                    >
+                        Password strength
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Message -->
+            <div
+                id="registerMessage"
+                class="register-message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+
+            <!-- Submit -->
+            <button
+                type="submit"
+                class="register-button"
+                id="registerButton"
+            >
+
+                <span class="button-content">
+
+                    <span class="button-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 3v12"/>
+                            <path d="m7 10 5 5 5-5"/>
+                            <path d="M5 21h14"/>
+                        </svg>
+                    </span>
+
+                    <span id="buttonText">
+                        Create Account
+                    </span>
+
+                </span>
+
+                <span
+                    class="button-loader"
+                    id="buttonLoader"
+                ></span>
+
+            </button>
+
+
+            <!-- Terms -->
+            <p class="terms-text">
+                By creating an account, you agree to our
+                <a href="#" aria-label="Terms of Service">
+                    Terms
+                </a>
+                and
+                <a href="#" aria-label="Privacy Policy">
+                    Privacy Policy
+                </a>.
+            </p>
+
+        </form>
+
+
+        <!-- Footer -->
+        <div class="auth-footer">
+
+            <span>
+                Already have an account?
+            </span>
+
+            <a
+                href="{{ url_for('auth_pages.login_page') }}"
+            >
+                Login
+                <span>→</span>
+            </a>
 
         </div>
 
+    </section>
 
-        <div class="form-group">
-
-            <label for="password">
-                Password
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Create a password"
-                minlength="8"
-                required
-            >
-
-        </div>
+</main>
 
 
-        <div
-            id="registerMessage"
-            style="display: none;"
-        ></div>
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form =
+        document.getElementById("registerForm");
+
+    const role =
+        document.getElementById("role");
+
+    const professionGroup =
+        document.getElementById("professionGroup");
+
+    const profession =
+        document.getElementById("profession");
+
+    const password =
+        document.getElementById("password");
+
+    const passwordToggle =
+        document.getElementById("passwordToggle");
+
+    const passwordStrength =
+        document.getElementById("passwordStrength");
+
+    const strengthText =
+        document.getElementById("strengthText");
+
+    const message =
+        document.getElementById("registerMessage");
+
+    const button =
+        document.getElementById("registerButton");
+
+    const buttonText =
+        document.getElementById("buttonText");
+
+    const buttonLoader =
+        document.getElementById("buttonLoader");
 
 
-        <button
-            type="submit"
-            class="btn btn-primary auth-submit"
-            id="registerButton"
-        >
-            Create Account
-        </button>
+    /* =====================================================
+       PROFESSION FIELD
+    ===================================================== */
 
-    </form>
+    function updateProfessionField() {
+
+        if (role.value === "worker") {
+
+            professionGroup.classList.add("show");
+
+            profession.required = true;
+
+        } else {
+
+            professionGroup.classList.remove("show");
+
+            profession.required = false;
+
+            profession.value = "";
+        }
+    }
 
 
-    <div class="auth-footer">
+    role.addEventListener(
+        "change",
+        updateProfessionField
+    );
 
-        Already have an account?
+    updateProfessionField();
 
-        <a
-            href="{{ url_for('auth_pages.login_page') }}"
-        >
-            Login
-        </a>
 
-    </div>
+    /* =====================================================
+       PASSWORD VISIBILITY
+    ===================================================== */
 
-</div>
+    passwordToggle.addEventListener(
+        "click",
+        function () {
 
-</div><script>
+            const isPassword =
+                password.type === "password";
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+            password.type =
+                isPassword
+                    ? "text"
+                    : "password";
 
-        const form =
-            document.getElementById(
-                "registerForm"
+            passwordToggle.setAttribute(
+                "aria-label",
+                isPassword
+                    ? "Hide password"
+                    : "Show password"
             );
 
-        const role =
-            document.getElementById(
-                "role"
+        }
+    );
+
+
+    /* =====================================================
+       PASSWORD STRENGTH
+    ===================================================== */
+
+    password.addEventListener(
+        "input",
+        function () {
+
+            const value =
+                password.value;
+
+            const bars =
+                document.querySelectorAll(
+                    ".strength-bars span"
+                );
+
+            let score = 0;
+
+            if (value.length >= 8) {
+                score++;
+            }
+
+            if (/[A-Z]/.test(value)) {
+                score++;
+            }
+
+            if (/[0-9]/.test(value)) {
+                score++;
+            }
+
+            if (/[^A-Za-z0-9]/.test(value)) {
+                score++;
+            }
+
+
+            bars.forEach(
+                function (bar, index) {
+
+                    bar.classList.toggle(
+                        "active",
+                        index < score
+                    );
+
+                }
             );
 
-        const professionGroup =
-            document.getElementById(
-                "professionGroup"
-            );
 
-        const profession =
-            document.getElementById(
-                "profession"
-            );
-
-        const message =
-            document.getElementById(
-                "registerMessage"
-            );
-
-        const button =
-            document.getElementById(
-                "registerButton"
-            );
+            strengthText.className =
+                "strength-text";
 
 
-        function updateProfessionField() {
+            if (!value) {
 
-            if (
-                role.value === "worker"
-            ) {
+                strengthText.textContent =
+                    "Password strength";
 
-                professionGroup.style.display =
-                    "block";
+            } else if (score <= 1) {
 
-                profession.required = true;
+                strengthText.textContent =
+                    "Weak password";
+
+                strengthText.classList.add(
+                    "weak"
+                );
+
+            } else if (score === 2) {
+
+                strengthText.textContent =
+                    "Fair password";
+
+                strengthText.classList.add(
+                    "fair"
+                );
+
+            } else if (score === 3) {
+
+                strengthText.textContent =
+                    "Good password";
+
+                strengthText.classList.add(
+                    "good"
+                );
 
             } else {
 
-                professionGroup.style.display =
-                    "none";
+                strengthText.textContent =
+                    "Strong password";
 
-                profession.required = false;
+                strengthText.classList.add(
+                    "strong"
+                );
+            }
 
-                profession.value = "";
+        }
+    );
+
+
+    /* =====================================================
+       MESSAGE
+    ===================================================== */
+
+    function showMessage(
+        text,
+        type
+    ) {
+
+        message.textContent = text;
+
+        message.className =
+            "register-message " + type;
+
+        message.style.display =
+            "flex";
+
+    }
+
+
+    function hideMessage() {
+
+        message.textContent = "";
+
+        message.className =
+            "register-message";
+
+        message.style.display =
+            "none";
+
+    }
+
+
+    /* =====================================================
+       FORM SUBMIT
+    ===================================================== */
+
+    form.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            hideMessage();
+
+
+            const selectedRole =
+                role.value;
+
+
+            const fullName =
+                document
+                .getElementById("full_name")
+                .value
+                .trim();
+
+
+            const email =
+                document
+                .getElementById("email")
+                .value
+                .trim();
+
+
+            const phone =
+                document
+                .getElementById("phone")
+                .value
+                .trim();
+
+
+            const passwordValue =
+                password.value;
+
+
+            /* Basic validation */
+
+            if (fullName.length < 2) {
+
+                showMessage(
+                    "Please enter your full name.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (!email) {
+
+                showMessage(
+                    "Please enter your email address.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (!phone) {
+
+                showMessage(
+                    "Please enter your phone number.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (passwordValue.length < 8) {
+
+                showMessage(
+                    "Password must contain at least 8 characters.",
+                    "error"
+                );
+
+                password.focus();
+
+                return;
+            }
+
+
+            if (
+                selectedRole === "worker" &&
+                profession.value.trim().length < 2
+            ) {
+
+                showMessage(
+                    "Please enter your profession.",
+                    "error"
+                );
+
+                profession.focus();
+
+                return;
+            }
+
+
+            let endpoint;
+
+
+            if (
+                selectedRole === "worker"
+            ) {
+
+                endpoint =
+                    "/api/auth/register/worker";
+
+            } else {
+
+                endpoint =
+                    "/api/auth/register/customer";
 
             }
-        }
 
 
-        role.addEventListener(
-            "change",
-            updateProfessionField
-        );
+            const data = {
+
+                full_name:
+                    fullName,
+
+                email:
+                    email,
+
+                phone:
+                    phone,
+
+                password:
+                    passwordValue
+
+            };
 
 
-        updateProfessionField();
+            if (
+                selectedRole === "worker"
+            ) {
+
+                data.profession =
+                    profession.value.trim();
+
+            }
 
 
-        form.addEventListener(
-            "submit",
-            async function (event) {
+            /* Loading state */
 
-                event.preventDefault();
+            button.disabled = true;
 
+            button.classList.add(
+                "loading"
+            );
 
-                message.style.display =
-                    "none";
+            buttonText.textContent =
+                "Creating Account...";
 
-                message.textContent = "";
-
-
-                const selectedRole =
-                    role.value;
+            buttonLoader.style.display =
+                "block";
 
 
-                let endpoint;
+            try {
+
+                const response =
+                    await fetch(
+                        endpoint,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(data)
+                        }
+                    );
 
 
-                if (
-                    selectedRole === "worker"
-                ) {
-
-                    endpoint =
-                        "/api/auth/register/worker";
-
-                } else {
-
-                    endpoint =
-                        "/api/auth/register/customer";
-
-                }
-
-
-                const data = {
-
-                    full_name:
-                        document
-                        .getElementById(
-                            "full_name"
-                        )
-                        .value
-                        .trim(),
-
-                    email:
-                        document
-                        .getElementById(
-                            "email"
-                        )
-                        .value
-                        .trim(),
-
-                    phone:
-                        document
-                        .getElementById(
-                            "phone"
-                        )
-                        .value
-                        .trim(),
-
-                    password:
-                        document
-                        .getElementById(
-                            "password"
-                        )
-                        .value
-                };
-
-
-                if (
-                    selectedRole === "worker"
-                ) {
-
-                    data.profession =
-                        profession.value
-                        .trim();
-
-                }
-
-
-                button.disabled = true;
-
-                button.textContent =
-                    "Creating Account...";
-
+                let result = {};
 
                 try {
 
-                    const response =
-                        await fetch(
-                            endpoint,
-                            {
-                                method: "POST",
+                    result =
+                        await response.json();
 
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
+                } catch (jsonError) {
 
-                                body:
-                                    JSON.stringify(
-                                        data
-                                    )
+                    result = {};
+
+                }
+
+
+                if (response.ok) {
+
+                    showMessage(
+                        result.message ||
+                        "Account created successfully!",
+                        "success"
+                    );
+
+
+                    form.reset();
+
+                    updateProfessionField();
+
+
+                    passwordStrength
+                        .querySelectorAll(
+                            "span"
+                        )
+                        .forEach(
+                            function (bar) {
+                                bar.classList.remove(
+                                    "active"
+                                );
                             }
                         );
 
 
-                    const result =
-                        await response.json();
+                    strengthText.textContent =
+                        "Password strength";
 
 
-                    if (
-                        response.ok
-                    ) {
+                    setTimeout(
+                        function () {
 
-                        message.style.display =
-                            "block";
+                            window.location.href =
+                                "{{ url_for('auth_pages.login_page') }}";
 
-                        message.textContent =
-                            result.message ||
-                            "Registration successful.";
-
-                        message.style.padding =
-                            "12px";
-
-                        message.style.marginBottom =
-                            "15px";
+                        },
+                        1200
+                    );
 
 
-                        form.reset();
+                } else {
 
-                        updateProfessionField();
-
-
-                        setTimeout(
-                            function () {
-
-                                window.location.href =
-                                    "{{ url_for('auth_pages.login_page') }}";
-
-                            },
-                            1200
-                        );
-
-
-                    } else {
-
-                        message.style.display =
-                            "block";
-
-                        message.textContent =
-                            result.message ||
-                            "Registration failed.";
-
-                        message.style.padding =
-                            "12px";
-
-                        message.style.marginBottom =
-                            "15px";
-
-                    }
-
-
-                } catch (error) {
-
-                    message.style.display =
-                        "block";
-
-                    message.textContent =
-                        "Unable to connect to the server. Please try again.";
-
-                    message.style.padding =
-                        "12px";
-
-                    message.style.marginBottom =
-                        "15px";
-
-                } finally {
-
-                    button.disabled = false;
-
-                    button.textContent =
-                        "Create Account";
+                    showMessage(
+                        result.message ||
+                        result.error ||
+                        "Registration failed. Please check your details.",
+                        "error"
+                    );
 
                 }
 
+
+            } catch (error) {
+
+                console.error(
+                    "Registration error:",
+                    error
+                );
+
+
+                showMessage(
+                    "Unable to connect to the server. Please try again.",
+                    "error"
+                );
+
+
+            } finally {
+
+                button.disabled = false;
+
+                button.classList.remove(
+                    "loading"
+                );
+
+                buttonText.textContent =
+                    "Create Account";
+
+                buttonLoader.style.display =
+                    "none";
+
             }
-        );
 
-    }
-);
+        }
+    );
 
-</script>{% endblock %}
+});
+
+</script>
+
+{% endblock %}
