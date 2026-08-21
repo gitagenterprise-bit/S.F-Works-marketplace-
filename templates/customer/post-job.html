@@ -82,109 +82,192 @@ Post a Job — S. F Works
     <!-- =====================================================
          POST JOB SECTION
     ====================================================== -->
+<!-- =====================================================
+     PREMIUM CATEGORY PICKER
+====================================================== -->
 
-    <section class="post-job-section">
+<div class="form-group">
 
-        <div class="post-job-container">
+    <label for="jobCategory">
 
-            <div class="post-job-layout">
+        Category
 
+        <span>*</span>
 
-                <!-- =================================================
-                     SIDEBAR
-                ================================================== -->
-
-                <aside class="post-job-sidebar">
-
-                    <div class="sidebar-card">
-
-                        <div class="sidebar-icon">
-                            +
-                        </div>
+    </label>
 
 
-                        <h2>
-                            Create your job
-                        </h2>
+    <div
+        class="category-picker"
+        id="categoryPicker"
+    >
+
+        <!-- =================================================
+             SEARCH INPUT
+        ================================================== -->
+
+        <div class="category-input-wrapper">
+
+            <span
+                class="input-icon category-search-icon"
+                aria-hidden="true"
+            >
+                ◈
+            </span>
 
 
-                        <p>
-                            Give workers enough information to
-                            understand your requirements and
-                            send you the right proposals.
-                        </p>
+            <input
+                type="text"
+                id="jobCategory"
+                name="category_search"
+                placeholder="Search category..."
+                autocomplete="off"
+                maxlength="100"
+                required
+                role="combobox"
+                aria-expanded="false"
+                aria-controls="categoryDropdown"
+                aria-autocomplete="list"
+            >
 
 
-                        <div class="sidebar-steps">
+            <button
+                type="button"
+                class="category-dropdown-button"
+                id="categoryDropdownButton"
+                aria-label="Open categories"
+                aria-expanded="false"
+            >
+                <span aria-hidden="true">
+                   ⌄
+                </span>
+            </button>
 
-                            <div class="sidebar-step">
-
-                                <div class="step-number">
-                                    01
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Describe the work
-                                    </strong>
-
-                                    <span>
-                                        Explain what you need.
-                                    </span>
-
-                                </div>
-
-                            </div>
+        </div>
 
 
-                            <div class="sidebar-step">
+        <!-- =================================================
+             REAL DATABASE CATEGORY ID
 
-                                <div class="step-number">
-                                    02
-                                </div>
+             THIS VALUE IS SENT TO BACKEND
+             category_id = Category.id
+        ================================================== -->
 
-                                <div>
-
-                                    <strong>
-                                        Set your budget
-                                    </strong>
-
-                                    <span>
-                                        Add your expected budget.
-                                    </span>
-
-                                </div>
-
-                            </div>
+        <input
+            type="hidden"
+            id="jobCategoryId"
+            name="category_id"
+            value=""
+        >
 
 
-                            <div class="sidebar-step">
+        <!-- =================================================
+             DROPDOWN
+        ================================================== -->
 
-                                <div class="step-number">
-                                    03
-                                </div>
+        <div
+            class="category-dropdown"
+            id="categoryDropdown"
+            aria-hidden="true"
+        >
 
-                                <div>
+            <!-- HEADER -->
 
-                                    <strong>
-                                        Choose location
-                                    </strong>
+            <div class="category-dropdown-header">
 
-                                    <span>
-                                        Help workers find you.
-                                    </span>
+                <div class="category-header-title">
 
-                                </div>
+                    <span class="category-header-icon">
+                        ✦
+                    </span>
 
-                            </div>
+                    <span>
+                        Choose a category
+                    </span>
 
-                        </div>
+                </div>
 
-                    </div>
 
-                </aside>
+                <span
+                    id="categoryCount"
+                    class="category-count"
+                >
+                    0
+                </span>
 
+            </div>
+
+
+            <!-- CATEGORY LIST -->
+
+            <div
+                class="category-list"
+                id="categoryList"
+                role="listbox"
+            >
+
+                <div class="category-loading">
+
+                    <span class="category-spinner"></span>
+
+                    <strong>
+                        Loading categories...
+                    </strong>
+
+                    <small>
+                        Please wait
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CUSTOM CATEGORY
+
+                 DOES NOT BYPASS ADMIN CONTROL
+             ================================================== -->
+
+            <button
+                type="button"
+                class="custom-category-option"
+                id="customCategoryButton"
+            >
+
+                <span class="custom-category-icon">
+                    +
+                </span>
+
+
+                <span class="custom-category-content">
+
+                    <strong>
+                        Can't find your category?
+                    </strong>
+
+                    <small>
+                        Search another approved category
+                    </small>
+
+                </span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- CATEGORY STATUS -->
+
+    <div
+        id="categoryStatus"
+        class="category-status"
+        aria-live="polite"
+    ></div>
+
+                </div>
 
 
                 <!-- =================================================
