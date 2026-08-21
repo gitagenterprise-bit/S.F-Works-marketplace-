@@ -12,6 +12,7 @@ job_pages_bp = Blueprint(
 
 # ============================================================
 # PUBLIC JOBS PAGE
+# GET /jobs
 # ============================================================
 
 @job_pages_bp.route(
@@ -27,6 +28,7 @@ def jobs_page():
 
 # ============================================================
 # JOB DETAILS PAGE
+# GET /jobs/<job_id>
 # ============================================================
 
 @job_pages_bp.route(
@@ -42,7 +44,25 @@ def job_details_page(job_id):
 
 
 # ============================================================
+# APPLY FOR JOB PAGE
+# GET /jobs/<job_id>/apply
+# ============================================================
+
+@job_pages_bp.route(
+    "/jobs/<int:job_id>/apply",
+    methods=["GET"]
+)
+def apply_job_page(job_id):
+
+    return render_template(
+        "worker/apply-job.html",
+        job_id=job_id
+    )
+
+
+# ============================================================
 # POST JOB PAGE
+# GET /post-job
 # ============================================================
 
 @job_pages_bp.route(
