@@ -30,8 +30,11 @@ Post a Job — S. F Works
             <div class="hero-content">
 
                 <div class="hero-badge">
+
                     <span class="badge-dot"></span>
+
                     S. F Works Marketplace
+
                 </div>
 
 
@@ -73,6 +76,7 @@ Post a Job — S. F Works
         </div>
 
     </section>
+
 
 
     <!-- =====================================================
@@ -120,6 +124,7 @@ Post a Job — S. F Works
                                 </div>
 
                                 <div>
+
                                     <strong>
                                         Describe the work
                                     </strong>
@@ -127,6 +132,7 @@ Post a Job — S. F Works
                                     <span>
                                         Explain what you need.
                                     </span>
+
                                 </div>
 
                             </div>
@@ -139,6 +145,7 @@ Post a Job — S. F Works
                                 </div>
 
                                 <div>
+
                                     <strong>
                                         Set your budget
                                     </strong>
@@ -146,6 +153,7 @@ Post a Job — S. F Works
                                     <span>
                                         Add your expected budget.
                                     </span>
+
                                 </div>
 
                             </div>
@@ -158,6 +166,7 @@ Post a Job — S. F Works
                                 </div>
 
                                 <div>
+
                                     <strong>
                                         Choose location
                                     </strong>
@@ -165,6 +174,7 @@ Post a Job — S. F Works
                                     <span>
                                         Help workers find you.
                                     </span>
+
                                 </div>
 
                             </div>
@@ -174,6 +184,7 @@ Post a Job — S. F Works
                     </div>
 
                 </aside>
+
 
 
                 <!-- =================================================
@@ -222,6 +233,7 @@ Post a Job — S. F Works
                     </div>
 
 
+
                     <!-- =================================================
                          FORM
                     ================================================== -->
@@ -243,9 +255,7 @@ Post a Job — S. F Works
 
                                 Job Title
 
-                                <span>
-                                    *
-                                </span>
+                                <span>*</span>
 
                             </label>
 
@@ -277,6 +287,7 @@ Post a Job — S. F Works
                         </div>
 
 
+
                         <!-- =============================================
                              DESCRIPTION
                         ============================================== -->
@@ -287,9 +298,7 @@ Post a Job — S. F Works
 
                                 Job Description
 
-                                <span>
-                                    *
-                                </span>
+                                <span>*</span>
 
                             </label>
 
@@ -321,9 +330,10 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =============================================
-                             CATEGORY
-                        ============================================== -->
+
+                        <!-- =====================================================
+                             PREMIUM CATEGORY PICKER
+                        ====================================================== -->
 
                         <div class="form-group">
 
@@ -331,9 +341,7 @@ Post a Job — S. F Works
 
                                 Category
 
-                                <span>
-                                    *
-                                </span>
+                                <span>*</span>
 
                             </label>
 
@@ -344,7 +352,9 @@ Post a Job — S. F Works
                             >
 
 
-                                <!-- CATEGORY INPUT -->
+                                <!-- =================================================
+                                     SEARCH / TYPE CATEGORY
+                                ================================================== -->
 
                                 <div class="category-input-wrapper">
 
@@ -356,11 +366,13 @@ Post a Job — S. F Works
                                     <input
                                         type="text"
                                         id="jobCategory"
-                                        name="category_name"
+                                        name="category_search"
                                         placeholder="Search or type a category..."
                                         autocomplete="off"
                                         maxlength="100"
                                         required
+                                        aria-expanded="false"
+                                        aria-controls="categoryDropdown"
                                     >
 
 
@@ -381,13 +393,32 @@ Post a Job — S. F Works
                                 </div>
 
 
-                                <!-- CATEGORY DROPDOWN -->
+
+                                <!-- =================================================
+                                     IMPORTANT:
+                                     Actual category ID
+                                     sent to backend
+                                ================================================== -->
+
+                                <input
+                                    type="hidden"
+                                    id="jobCategoryId"
+                                    name="category_id"
+                                >
+
+
+
+                                <!-- =================================================
+                                     CATEGORY DROPDOWN
+                                ================================================== -->
 
                                 <div
                                     class="category-dropdown"
                                     id="categoryDropdown"
                                 >
 
+
+                                    <!-- HEADER -->
 
                                     <div class="category-dropdown-header">
 
@@ -403,6 +434,7 @@ Post a Job — S. F Works
                                     </div>
 
 
+
                                     <!-- CATEGORY LIST -->
 
                                     <div
@@ -410,20 +442,19 @@ Post a Job — S. F Works
                                         id="categoryList"
                                     >
 
-                                        <div class="category-empty">
+                                        <div class="category-loading">
 
-                                            <strong>
-                                                Loading categories...
-                                            </strong>
-
-                                            Please wait.
+                                            Loading categories...
 
                                         </div>
 
                                     </div>
 
 
-                                    <!-- CUSTOM CATEGORY -->
+
+                                    <!-- =================================================
+                                         CUSTOM CATEGORY
+                                    ================================================== -->
 
                                     <button
                                         type="button"
@@ -439,11 +470,12 @@ Post a Job — S. F Works
                                         <span>
 
                                             <strong>
-                                                Use your own category
+                                                Can't find your category?
                                             </strong>
 
+
                                             <small>
-                                                Type a custom category
+                                                Type a category name to search
                                             </small>
 
                                         </span>
@@ -455,6 +487,9 @@ Post a Job — S. F Works
                             </div>
 
 
+
+                            <!-- CATEGORY STATUS -->
+
                             <div
                                 id="categoryStatus"
                                 class="category-status"
@@ -464,9 +499,10 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =============================================
+
+                        <!-- =================================================
                              BUDGET DIVIDER
-                        ============================================== -->
+                        ================================================== -->
 
                         <div class="form-section-title">
 
@@ -481,9 +517,10 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =============================================
+
+                        <!-- =================================================
                              BUDGET
-                        ============================================== -->
+                        ================================================== -->
 
                         <div class="form-grid">
 
@@ -521,6 +558,7 @@ Post a Job — S. F Works
                             </div>
 
 
+
                             <!-- MAXIMUM -->
 
                             <div class="form-group">
@@ -556,9 +594,10 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =============================================
+
+                        <!-- =================================================
                              LOCATION DIVIDER
-                        ============================================== -->
+                        ================================================== -->
 
                         <div class="form-section-title">
 
@@ -573,9 +612,10 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =============================================
+
+                        <!-- =================================================
                              FULL LOCATION
-                        ============================================== -->
+                        ================================================== -->
 
                         <div class="form-group">
 
@@ -583,9 +623,7 @@ Post a Job — S. F Works
 
                                 Full Work Location
 
-                                <span>
-                                    *
-                                </span>
+                                <span>*</span>
 
                             </label>
 
@@ -612,9 +650,10 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =============================================
+
+                        <!-- =================================================
                              CITY + STATE
-                        ============================================== -->
+                        ================================================== -->
 
                         <div class="form-grid">
 
@@ -640,6 +679,7 @@ Post a Job — S. F Works
                             </div>
 
 
+
                             <!-- STATE -->
 
                             <div class="form-group">
@@ -663,9 +703,10 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =============================================
+
+                        <!-- =================================================
                              PINCODE + PRIORITY
-                        ============================================== -->
+                        ================================================== -->
 
                         <div class="form-grid">
 
@@ -690,6 +731,7 @@ Post a Job — S. F Works
                                 >
 
                             </div>
+
 
 
                             <!-- PRIORITY -->
@@ -736,9 +778,10 @@ Post a Job — S. F Works
                         </div>
 
 
-                        <!-- =============================================
+
+                        <!-- =================================================
                              FORM MESSAGE
-                        ============================================== -->
+                        ================================================== -->
 
                         <div
                             id="formMessage"
@@ -747,12 +790,12 @@ Post a Job — S. F Works
                         ></div>
 
 
-                        <!-- =============================================
+
+                        <!-- =================================================
                              SUBMIT
-                        ============================================== -->
+                        ================================================== -->
 
                         <div class="form-submit-area">
-
 
                             <button
                                 type="submit"
@@ -778,8 +821,10 @@ Post a Job — S. F Works
 
 
                             <p class="submit-note">
+
                                 By posting this job, you agree to
                                 S. F Works marketplace terms.
+
                             </p>
 
                         </div>
@@ -797,6 +842,7 @@ Post a Job — S. F Works
 </main>
 
 {% endblock %}
+
 
 
 {% block extra_js %}
