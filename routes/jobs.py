@@ -1,3 +1,5 @@
+from decimal import Decimal, InvalidOperation
+
 from flask import (
     Blueprint,
     request,
@@ -8,12 +10,19 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 
-from sqlalchemy import or_
+from sqlalchemy import (
+    or_,
+    func
+)
 
 from extensions import db
 
 from models.user import User
-from models.job import Job, JobImage
+from models.job import (
+    Job,
+    JobImage
+)
+from models.job_application import JobApplication
 from models.category import Category
 
 from utils.default_categories import (
@@ -34,10 +43,402 @@ jobs_bp = Blueprint(
 
 
 # ============================================================
+# CONSTANTS
+# ============================================================
+
+JOB_STATUSES = {
+    "open",
+    "paused",
+    "assigned",
+    "completed",
+    "cancelled",
+    "closed"
+}
+
+PRIORITIES = {
+    "normal",
+    "high",
+    "urgent"
+}
+
+APPLICATION_STATUSES = {
+    "pending",
+    "shortlisted",
+    "accepted",
+    "rejected",
+    "withdrawn"
+}
+
+MAX_TITLE_LENGTH = 200
+MAX_DESCRIPTION_LENGTH = 5000
+MAX_LOCATION_LENGTH = 255
+MAX_IMAGES_PER_JOB = 10
+
+
+# ============================================================
+# HELPERS
+# ============================================================
+
+def json_error(
+    message,
+    status_code=400
+):
+
+    return jsonify({
+
+        "status": "error",
+
+        "message": message
+
+    }), status_code
+
+
+def get_current_user():
+
+    identity = get_jwt_identity()
+
+    try:
+
+        user_id = int(identity)
+
+    except (
+        TypeError,
+        ValueError
+    ):
+
+        return None
+
+    return db.session.get(
+        User,
+        user_id
+    )
+
+
+def decimal_value(
+    value,
+    field_name,
+    allow_none=True
+):
+
+    if value is None:
+
+        if allow_none:
+
+            return None
+
+        raise ValueError(
+            f"{field_name} is required"
+        )
+
+    try:
+
+        amount = Decimal(
+            str(value)
+        )
+
+    except (
+        InvalidOperation,
+        ValueError,
+        TypeError
+    ):
+
+        raise ValueError(
+            f"Invalid {field_name}"
+        )
+
+    if amount < 0:
+
+        raise ValueError(
+            f"{field_name} cannot be negative"
+        )
+
+    return amount
+
+
+def coordinate_value(
+    value,
+    field_name,
+    minimum,
+    maximum
+):
+
+    if value is None:
+
+        return None
+
+    try:
+
+        coordinate = Decimal(
+            str(value)
+        )
+
+    except (
+        InvalidOperation,
+        ValueError,
+        TypeError
+    ):
+
+        raise ValueError(
+            f"Invalid {field_name}"
+        )
+
+    if (
+        coordinate < Decimal(str(minimum))
+        or coordinate > Decimal(str(maximum))
+    ):
+
+        raise ValueError(
+            f"Invalid {field_name}"
+        )
+
+    return coordinate
+
+
+def clean_optional_text(
+    value,
+    max_length=None
+):
+
+    if not isinstance(
+        value,
+        str
+    ):
+
+        return None
+
+    value = value.strip()
+
+    if not value:
+
+        return None
+
+    if (
+        max_length
+        and len(value) > max_length
+    ):
+
+        raise ValueError(
+            "Text value is too long"
+        )
+
+    return value
+
+
+def serialize_category(category):
+
+    if not category:
+
+        return None
+
+    return {
+
+        "id": category.id,
+
+        "name": category.name,
+
+        "slug": category.slug,
+
+        "description": (
+            category.description
+            or ""
+        ),
+
+        "icon": (
+            category.icon
+            or "✦"
+        ),
+
+        "image": (
+            category.image
+            or ""
+        )
+    }
+
+
+def serialize_job_image(image):
+
+    return {
+
+        "id": image.id,
+
+        "image_path": image.image_path
+    }
+
+
+def serialize_job(
+    job,
+    include_description=True,
+    include_images=False,
+    include_owner=False
+):
+
+    data = {
+
+        "id": job.id,
+
+        "title": job.title,
+
+        "description": (
+            job.description
+            if include_description
+            else None
+        ),
+
+        "budget": {
+
+            "min": (
+                float(job.budget_min)
+                if job.budget_min is not None
+                else None
+            ),
+
+            "max": (
+                float(job.budget_max)
+                if job.budget_max is not None
+                else None
+            )
+        },
+
+        "budget_display": job.budget_display,
+
+        "location": job.location,
+
+        "city": job.city,
+
+        "state": job.state,
+
+        "pincode": job.pincode,
+
+        "latitude": (
+            float(job.latitude)
+            if job.latitude is not None
+            else None
+        ),
+
+        "longitude": (
+            float(job.longitude)
+            if job.longitude is not None
+            else None
+        ),
+
+        "status": job.status,
+
+        "priority": job.priority,
+
+        "is_featured": bool(
+            job.is_featured
+        ),
+
+        "views": job.views or 0,
+
+        "category": serialize_category(
+            job.category
+        ),
+
+        "created_at": (
+            job.created_at.isoformat()
+            if job.created_at
+            else None
+        ),
+
+        "updated_at": (
+            job.updated_at.isoformat()
+            if job.updated_at
+            else None
+        )
+    }
+
+    if include_images:
+
+        data["images"] = [
+
+            serialize_job_image(image)
+
+            for image in job.images
+        ]
+
+    if include_owner and job.customer:
+
+        data["posted_by"] = {
+
+            "id": job.customer.id,
+
+            "name": job.customer.full_name,
+
+            "role": job.customer.role
+        }
+
+    return data
+
+
+def serialize_application(
+    application,
+    include_job=False
+):
+
+    worker = application.worker
+
+    data = {
+
+        "id": application.id,
+
+        "job_id": application.job_id,
+
+        "worker_id": application.worker_id,
+
+        "proposed_amount": (
+            float(application.proposed_amount)
+            if application.proposed_amount is not None
+            else None
+        ),
+
+        "message": application.message,
+
+        "availability": application.availability,
+
+        "status": application.status,
+
+        "created_at": (
+            application.created_at.isoformat()
+            if application.created_at
+            else None
+        ),
+
+        "updated_at": (
+            application.updated_at.isoformat()
+            if application.updated_at
+            else None
+        )
+    }
+
+    if worker:
+
+        data["worker"] = {
+
+            "id": worker.id,
+
+            "name": worker.full_name,
+
+            "role": worker.role
+        }
+
+    if include_job and application.job:
+
+        data["job"] = {
+
+            "id": application.job.id,
+
+            "title": application.job.title,
+
+            "status": application.job.status
+        }
+
+    return data
+
+
+# ============================================================
 # PUBLIC JOB LIST
 # GET /api/jobs/
-#
-# Guest + Logged-in users can view jobs
 # ============================================================
 
 @jobs_bp.route(
@@ -58,12 +459,15 @@ def public_jobs():
         type=int
     )
 
-    # Safety limit
-    if per_page < 1:
-        per_page = 12
+    page = max(
+        page,
+        1
+    )
 
-    if per_page > 50:
-        per_page = 50
+    per_page = min(
+        max(per_page, 1),
+        50
+    )
 
     search = request.args.get(
         "search",
@@ -77,6 +481,12 @@ def public_jobs():
         type=str
     ).strip()
 
+    state = request.args.get(
+        "state",
+        "",
+        type=str
+    ).strip()
+
     category_id = request.args.get(
         "category_id",
         type=int
@@ -84,13 +494,19 @@ def public_jobs():
 
     min_budget = request.args.get(
         "min_budget",
-        type=float
+        type=str
     )
 
     max_budget = request.args.get(
         "max_budget",
-        type=float
+        type=str
     )
+
+    priority = request.args.get(
+        "priority",
+        "",
+        type=str
+    ).strip().lower()
 
     # --------------------------------------------------------
     # BASE QUERY
@@ -106,25 +522,21 @@ def public_jobs():
 
     if search:
 
-        search_pattern = f"%{search}%"
+        pattern = f"%{search}%"
 
         query = query.filter(
+
             or_(
-                Job.title.ilike(
-                    search_pattern
-                ),
 
-                Job.description.ilike(
-                    search_pattern
-                ),
+                Job.title.ilike(pattern),
 
-                Job.location.ilike(
-                    search_pattern
-                ),
+                Job.description.ilike(pattern),
 
-                Job.city.ilike(
-                    search_pattern
-                )
+                Job.location.ilike(pattern),
+
+                Job.city.ilike(pattern),
+
+                Job.state.ilike(pattern)
             )
         )
 
@@ -141,6 +553,18 @@ def public_jobs():
         )
 
     # --------------------------------------------------------
+    # STATE
+    # --------------------------------------------------------
+
+    if state:
+
+        query = query.filter(
+            Job.state.ilike(
+                f"%{state}%"
+            )
+        )
+
+    # --------------------------------------------------------
     # CATEGORY
     # --------------------------------------------------------
 
@@ -151,18 +575,62 @@ def public_jobs():
         )
 
     # --------------------------------------------------------
-    # MINIMUM BUDGET
+    # PRIORITY
     # --------------------------------------------------------
+
+    if priority:
+
+        if priority not in PRIORITIES:
+
+            return json_error(
+                "Invalid priority"
+            )
+
+        query = query.filter(
+            Job.priority == priority
+        )
+
+    # --------------------------------------------------------
+    # BUDGET
+    # --------------------------------------------------------
+
+    try:
+
+        if min_budget is not None:
+
+            min_budget = decimal_value(
+                min_budget,
+                "minimum budget"
+            )
+
+        if max_budget is not None:
+
+            max_budget = decimal_value(
+                max_budget,
+                "maximum budget"
+            )
+
+    except ValueError as exc:
+
+        return json_error(
+            str(exc)
+        )
+
+    if (
+        min_budget is not None
+        and max_budget is not None
+        and min_budget > max_budget
+    ):
+
+        return json_error(
+            "Minimum budget cannot exceed maximum budget"
+        )
 
     if min_budget is not None:
 
         query = query.filter(
             Job.budget_max >= min_budget
         )
-
-    # --------------------------------------------------------
-    # MAXIMUM BUDGET
-    # --------------------------------------------------------
 
     if max_budget is not None:
 
@@ -175,8 +643,14 @@ def public_jobs():
     # --------------------------------------------------------
 
     query = query.order_by(
+
         Job.is_featured.desc(),
-        Job.created_at.desc()
+
+        Job.priority.desc(),
+
+        Job.created_at.desc(),
+
+        Job.id.desc()
     )
 
     # --------------------------------------------------------
@@ -184,72 +658,24 @@ def public_jobs():
     # --------------------------------------------------------
 
     pagination = query.paginate(
+
         page=page,
+
         per_page=per_page,
+
         error_out=False
     )
 
-    jobs = []
+    jobs = [
 
-    for job in pagination.items:
+        serialize_job(
+            job,
+            include_description=False,
+            include_images=False
+        )
 
-        jobs.append({
-
-            "id": job.id,
-
-            "title": job.title,
-
-            "description": job.description,
-
-            "budget": {
-
-                "min": (
-                    float(job.budget_min)
-                    if job.budget_min is not None
-                    else None
-                ),
-
-                "max": (
-                    float(job.budget_max)
-                    if job.budget_max is not None
-                    else None
-                )
-            },
-
-            "location": job.location,
-
-            "city": job.city,
-
-            "state": job.state,
-
-            "pincode": job.pincode,
-
-            "status": job.status,
-
-            "priority": job.priority,
-
-            "is_featured": job.is_featured,
-
-            "views": job.views,
-
-            "category": {
-
-                "id": job.category.id,
-
-                "name": job.category.name,
-
-                "slug": job.category.slug,
-
-                "icon": job.category.icon
-
-            } if job.category else None,
-
-            "created_at": (
-                job.created_at.isoformat()
-                if job.created_at
-                else None
-            )
-        })
+        for job in pagination.items
+    ]
 
     return jsonify({
 
@@ -278,8 +704,6 @@ def public_jobs():
 # ============================================================
 # JOB DETAILS
 # GET /api/jobs/<job_id>
-#
-# Public
 # ============================================================
 
 @jobs_bp.route(
@@ -295,140 +719,65 @@ def job_details(job_id):
 
     if not job:
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Job not found"
-
-        }), 404
+        return json_error(
+            "Job not found",
+            404
+        )
 
     if job.status != "open":
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "This job is no longer available"
-
-        }), 404
-
-    # --------------------------------------------------------
-    # INCREASE VIEW COUNT
-    # --------------------------------------------------------
-
-    job.views = (
-        job.views or 0
-    ) + 1
-
-    db.session.commit()
-
-    # --------------------------------------------------------
-    # IMAGES
-    # --------------------------------------------------------
-
-    images = []
-
-    for image in job.images:
-
-        images.append({
-
-            "id": image.id,
-
-            "image_path": image.image_path
-
-        })
-
-    # --------------------------------------------------------
-    # RESPONSE
-    # --------------------------------------------------------
-
-    response = {
-
-        "id": job.id,
-
-        "title": job.title,
-
-        "description": job.description,
-
-        "budget": {
-
-            "min": (
-                float(job.budget_min)
-                if job.budget_min is not None
-                else None
-            ),
-
-            "max": (
-                float(job.budget_max)
-                if job.budget_max is not None
-                else None
-            )
-        },
-
-        "location": job.location,
-
-        "city": job.city,
-
-        "state": job.state,
-
-        "pincode": job.pincode,
-
-        "latitude": (
-
-            float(job.latitude)
-
-            if job.latitude is not None
-
-            else None
-        ),
-
-        "longitude": (
-
-            float(job.longitude)
-
-            if job.longitude is not None
-
-            else None
-        ),
-
-        "status": job.status,
-
-        "priority": job.priority,
-
-        "is_featured": job.is_featured,
-
-        "views": job.views,
-
-        "category": {
-
-            "id": job.category.id,
-
-            "name": job.category.name,
-
-            "slug": job.category.slug,
-
-            "icon": job.category.icon
-
-        } if job.category else None,
-
-        "images": images,
-
-        "created_at": (
-
-            job.created_at.isoformat()
-
-            if job.created_at
-
-            else None
+        return json_error(
+            "This job is no longer available",
+            404
         )
-    }
+
+    # --------------------------------------------------------
+    # VIEW COUNT
+    # --------------------------------------------------------
+
+    try:
+
+        db.session.execute(
+
+            db.update(Job)
+            .where(Job.id == job.id)
+            .values(
+                views=(
+                    func.coalesce(
+                        Job.views,
+                        0
+                    ) + 1
+                )
+            )
+        )
+
+        db.session.commit()
+
+        db.session.refresh(job)
+
+    except Exception as exc:
+
+        db.session.rollback()
+
+        print(
+            "[JOB VIEW ERROR]",
+            exc
+        )
 
     return jsonify({
 
         "status": "success",
 
-        "job": response
+        "job": serialize_job(
+
+            job,
+
+            include_description=True,
+
+            include_images=True,
+
+            include_owner=True
+        )
 
     }), 200
 
@@ -436,14 +785,6 @@ def job_details(job_id):
 # ============================================================
 # CREATE JOB
 # POST /api/jobs/create
-#
-# AUTHENTICATED USERS ONLY
-#
-# Customer  -> allowed
-# Worker    -> allowed
-# Admin     -> allowed
-#
-# Guest     -> 401
 # ============================================================
 
 @jobs_bp.route(
@@ -457,82 +798,37 @@ def job_details(job_id):
 )
 def create_job():
 
-    # ========================================================
-    # CURRENT USER
-    # ========================================================
-
-    user_id = get_jwt_identity()
-
-    try:
-
-        user_id = int(user_id)
-
-    except (
-        TypeError,
-        ValueError
-    ):
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Invalid user identity"
-
-        }), 401
-
-    # ========================================================
-    # USER
-    # ========================================================
-
-    user = db.session.get(
-        User,
-        user_id
-    )
+    user = get_current_user()
 
     if not user:
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "User not found"
-
-        }), 401
-
-    # ========================================================
-    # ACTIVE ACCOUNT
-    # ========================================================
+        return json_error(
+            "User not found",
+            401
+        )
 
     if not user.is_active:
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Your account has been disabled"
-
-        }), 403
-
-    # ========================================================
-    # REQUEST BODY
-    # ========================================================
+        return json_error(
+            "Your account has been disabled",
+            403
+        )
 
     data = request.get_json(
         silent=True
     )
 
-    if not data:
+    if not isinstance(
+        data,
+        dict
+    ):
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Request body is required"
-
-        }), 400
+        return json_error(
+            "Request body is required"
+        )
 
     # ========================================================
-    # INPUTS
+    # BASIC INPUTS
     # ========================================================
 
     title = data.get(
@@ -551,158 +847,57 @@ def create_job():
         "location"
     )
 
-    budget_min = data.get(
-        "budget_min"
-    )
-
-    budget_max = data.get(
-        "budget_max"
-    )
-
-    city = data.get(
-        "city"
-    )
-
-    state = data.get(
-        "state"
-    )
-
-    pincode = data.get(
-        "pincode"
-    )
-
-    latitude = data.get(
-        "latitude"
-    )
-
-    longitude = data.get(
-        "longitude"
-    )
-
-    priority = data.get(
-        "priority",
-        "normal"
-    )
-
-    # ========================================================
-    # PRIORITY
-    # ========================================================
-
-    allowed_priorities = {
-
-        "normal",
-
-        "high",
-
-        "urgent"
-    }
-
-    if priority not in allowed_priorities:
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Invalid priority"
-
-        }), 400
-
     # ========================================================
     # TITLE
     # ========================================================
 
     if (
-        not isinstance(
-            title,
-            str
-        )
+        not isinstance(title, str)
         or not title.strip()
     ):
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Job title is required"
-
-        }), 400
+        return json_error(
+            "Job title is required"
+        )
 
     title = title.strip()
 
     if len(title) < 3:
 
-        return jsonify({
+        return json_error(
+            "Job title must contain at least 3 characters"
+        )
 
-            "status": "error",
+    if len(title) > MAX_TITLE_LENGTH:
 
-            "message": (
-                "Job title must contain "
-                "at least 3 characters"
-            )
-
-        }), 400
-
-    if len(title) > 200:
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Job title cannot exceed "
-                "200 characters"
-            )
-
-        }), 400
+        return json_error(
+            "Job title cannot exceed 200 characters"
+        )
 
     # ========================================================
     # DESCRIPTION
     # ========================================================
 
     if (
-        not isinstance(
-            description,
-            str
-        )
+        not isinstance(description, str)
         or not description.strip()
     ):
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Job description is required"
-
-        }), 400
+        return json_error(
+            "Job description is required"
+        )
 
     description = description.strip()
 
-    if len(description) > 5000:
+    if len(description) > MAX_DESCRIPTION_LENGTH:
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Job description cannot exceed "
-                "5000 characters"
-            )
-
-        }), 400
+        return json_error(
+            "Job description cannot exceed 5000 characters"
+        )
 
     # ========================================================
-    # CATEGORY ID
+    # CATEGORY
     # ========================================================
-
-    if category_id is None:
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Category is required"
-
-        }), 400
 
     try:
 
@@ -715,17 +910,9 @@ def create_job():
         ValueError
     ):
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Invalid category"
-
-        }), 400
-
-    # ========================================================
-    # CATEGORY
-    # ========================================================
+        return json_error(
+            "Invalid category"
+        )
 
     category = db.session.get(
         Category,
@@ -734,60 +921,36 @@ def create_job():
 
     if not category:
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Invalid category"
-
-        }), 400
+        return json_error(
+            "Invalid category"
+        )
 
     if not category.is_active:
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "This category is currently unavailable"
-            )
-
-        }), 400
+        return json_error(
+            "This category is currently unavailable"
+        )
 
     # ========================================================
     # LOCATION
     # ========================================================
 
     if (
-        not isinstance(
-            location,
-            str
-        )
+        not isinstance(location, str)
         or not location.strip()
     ):
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Location is required"
-
-        }), 400
+        return json_error(
+            "Location is required"
+        )
 
     location = location.strip()
 
-    if len(location) > 255:
+    if len(location) > MAX_LOCATION_LENGTH:
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Location cannot exceed "
-                "255 characters"
-            )
-
-        }), 400
+        return json_error(
+            "Location cannot exceed 255 characters"
+        )
 
     # ========================================================
     # BUDGET
@@ -795,62 +958,21 @@ def create_job():
 
     try:
 
-        if budget_min is not None:
+        budget_min = decimal_value(
+            data.get("budget_min"),
+            "minimum budget"
+        )
 
-            budget_min = float(
-                budget_min
-            )
+        budget_max = decimal_value(
+            data.get("budget_max"),
+            "maximum budget"
+        )
 
-        if budget_max is not None:
+    except ValueError as exc:
 
-            budget_max = float(
-                budget_max
-            )
-
-    except (
-        TypeError,
-        ValueError
-    ):
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Invalid budget amount"
-
-        }), 400
-
-    if (
-        budget_min is not None
-        and budget_min < 0
-    ):
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Minimum budget cannot "
-                "be negative"
-            )
-
-        }), 400
-
-    if (
-        budget_max is not None
-        and budget_max < 0
-    ):
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Maximum budget cannot "
-                "be negative"
-            )
-
-        }), 400
+        return json_error(
+            str(exc)
+        )
 
     if (
         budget_min is not None
@@ -858,77 +980,70 @@ def create_job():
         and budget_min > budget_max
     ):
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Minimum budget cannot "
-                "exceed maximum budget"
-            )
-
-        }), 400
+        return json_error(
+            "Minimum budget cannot exceed maximum budget"
+        )
 
     # ========================================================
-    # OPTIONAL TEXT FIELDS
+    # OPTIONAL LOCATION DATA
     # ========================================================
 
-    if isinstance(
-        city,
-        str
-    ):
+    try:
 
-        city = city.strip()
+        city = clean_optional_text(
+            data.get("city"),
+            100
+        )
 
-        if not city:
+        state = clean_optional_text(
+            data.get("state"),
+            100
+        )
 
-            city = None
+        pincode = clean_optional_text(
+            data.get("pincode"),
+            10
+        )
 
-    else:
+        latitude = coordinate_value(
+            data.get("latitude"),
+            "latitude",
+            -90,
+            90
+        )
 
-        city = None
+        longitude = coordinate_value(
+            data.get("longitude"),
+            "longitude",
+            -180,
+            180
+        )
 
-    if isinstance(
-        state,
-        str
-    ):
+    except ValueError as exc:
 
-        state = state.strip()
-
-        if not state:
-
-            state = None
-
-    else:
-
-        state = None
-
-    if isinstance(
-        pincode,
-        str
-    ):
-
-        pincode = pincode.strip()
-
-        if not pincode:
-
-            pincode = None
-
-    else:
-
-        pincode = None
+        return json_error(
+            str(exc)
+        )
 
     # ========================================================
-    # CREATE JOB
+    # PRIORITY
     # ========================================================
-    #
-    # NOTE:
-    # Existing Job model uses customer_id as the user FK.
-    # We keep that field so no database migration is required.
-    #
-    # It stores the ID of the authenticated user who posted
-    # the job, regardless of whether the role is customer,
-    # worker, or admin.
+
+    priority = str(
+        data.get(
+            "priority",
+            "normal"
+        )
+    ).strip().lower()
+
+    if priority not in PRIORITIES:
+
+        return json_error(
+            "Invalid priority"
+        )
+
+    # ========================================================
+    # CREATE
     # ========================================================
 
     job = Job(
@@ -959,12 +1074,12 @@ def create_job():
 
         priority=priority,
 
-        status="open"
-    )
+        status="open",
 
-    # ========================================================
-    # DATABASE TRANSACTION
-    # ========================================================
+        is_featured=False,
+
+        views=0
+    )
 
     try:
 
@@ -983,20 +1098,10 @@ def create_job():
             exc
         )
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Unable to create job. "
-                "Please try again."
-            )
-
-        }), 500
-
-    # ========================================================
-    # SUCCESS RESPONSE
-    # ========================================================
+        return json_error(
+            "Unable to create job. Please try again.",
+            500
+        )
 
     return jsonify({
 
@@ -1004,51 +1109,16 @@ def create_job():
 
         "message": "Job posted successfully",
 
-        "job": {
+        "job": serialize_job(
 
-            "id": job.id,
+            job,
 
-            "title": job.title,
+            include_description=True,
 
-            "status": job.status,
+            include_images=True,
 
-            "category": {
-
-                "id": category.id,
-
-                "name": category.name,
-
-                "slug": category.slug
-            },
-
-            "posted_by": {
-
-                "id": user.id,
-
-                "name": user.full_name,
-
-                "phone": user.phone,
-
-                "role": user.role
-            },
-
-            "location": job.location,
-
-            "city": job.city,
-
-            "state": job.state,
-
-            "pincode": job.pincode,
-
-            "created_at": (
-
-                job.created_at.isoformat()
-
-                if job.created_at
-
-                else None
-            )
-        }
+            include_owner=True
+        )
 
     }), 201
 
@@ -1056,39 +1126,28 @@ def create_job():
 # ============================================================
 # UPDATE JOB
 # PUT /api/jobs/<job_id>
-#
-# Currently only the original customer can edit.
+# PATCH /api/jobs/<job_id>
 # ============================================================
 
 @jobs_bp.route(
     "/<int:job_id>",
-    methods=["PUT"]
+    methods=["PUT", "PATCH"]
 )
 @role_required(
-    "customer"
+    "customer",
+    "worker",
+    "admin"
 )
 def update_job(job_id):
 
-    user_id = get_jwt_identity()
+    user = get_current_user()
 
-    try:
+    if not user:
 
-        user_id = int(
-            user_id
+        return json_error(
+            "User not found",
+            401
         )
-
-    except (
-        TypeError,
-        ValueError
-    ):
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Invalid user identity"
-
-        }), 401
 
     job = db.session.get(
         Job,
@@ -1097,56 +1156,53 @@ def update_job(job_id):
 
     if not job:
 
-        return jsonify({
+        return json_error(
+            "Job not found",
+            404
+        )
 
-            "status": "error",
+    # ========================================================
+    # OWNERSHIP
+    #
+    # Admin can edit any job.
+    # Normal users can edit only their own job.
+    # ========================================================
 
-            "message": "Job not found"
+    if (
+        user.role != "admin"
+        and job.customer_id != user.id
+    ):
 
-        }), 404
+        return json_error(
+            "You can only edit your own jobs",
+            403
+        )
 
-    if job.customer_id != user_id:
+    if job.status not in {
+        "open",
+        "paused"
+    }:
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "You can only edit "
-                "your own jobs"
-            )
-
-        }), 403
-
-    if job.status != "open":
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Only open jobs can be edited"
-            )
-
-        }), 400
+        return json_error(
+            "Only active jobs can be edited"
+        )
 
     data = request.get_json(
         silent=True
     )
 
-    if not data:
+    if not isinstance(
+        data,
+        dict
+    ):
 
-        return jsonify({
+        return json_error(
+            "Request body is required"
+        )
 
-            "status": "error",
-
-            "message": "Request body is required"
-
-        }), 400
-
-    # --------------------------------------------------------
+    # ========================================================
     # TITLE
-    # --------------------------------------------------------
+    # ========================================================
 
     if "title" in data:
 
@@ -1155,54 +1211,33 @@ def update_job(job_id):
         )
 
         if (
-            not isinstance(
-                title,
-                str
-            )
+            not isinstance(title, str)
             or not title.strip()
         ):
 
-            return jsonify({
-
-                "status": "error",
-
-                "message": "Title cannot be empty"
-
-            }), 400
+            return json_error(
+                "Title cannot be empty"
+            )
 
         title = title.strip()
 
         if len(title) < 3:
 
-            return jsonify({
+            return json_error(
+                "Title must contain at least 3 characters"
+            )
 
-                "status": "error",
+        if len(title) > MAX_TITLE_LENGTH:
 
-                "message": (
-                    "Title must contain "
-                    "at least 3 characters"
-                )
-
-            }), 400
-
-        if len(title) > 200:
-
-            return jsonify({
-
-                "status": "error",
-
-                "message": (
-                    "Title cannot exceed "
-                    "200 characters"
-                )
-
-            }), 400
+            return json_error(
+                "Title cannot exceed 200 characters"
+            )
 
         job.title = title
 
-    # --------------------------------------------------------
+    # ========================================================
     # DESCRIPTION
-    # --------------------------------------------------------
+    # ========================================================
 
     if "description" in data:
 
@@ -1211,43 +1246,27 @@ def update_job(job_id):
         )
 
         if (
-            not isinstance(
-                description,
-                str
-            )
+            not isinstance(description, str)
             or not description.strip()
         ):
 
-            return jsonify({
-
-                "status": "error",
-
-                "message": (
-                    "Description cannot be empty"
-                )
-
-            }), 400
+            return json_error(
+                "Description cannot be empty"
+            )
 
         description = description.strip()
 
-        if len(description) > 5000:
+        if len(description) > MAX_DESCRIPTION_LENGTH:
 
-            return jsonify({
-
-                "status": "error",
-
-                "message": (
-                    "Description cannot exceed "
-                    "5000 characters"
-                )
-
-            }), 400
+            return json_error(
+                "Description cannot exceed 5000 characters"
+            )
 
         job.description = description
 
-    # --------------------------------------------------------
+    # ========================================================
     # CATEGORY
-    # --------------------------------------------------------
+    # ========================================================
 
     if "category_id" in data:
 
@@ -1264,13 +1283,9 @@ def update_job(job_id):
             ValueError
         ):
 
-            return jsonify({
-
-                "status": "error",
-
-                "message": "Invalid category"
-
-            }), 400
+            return json_error(
+                "Invalid category"
+            )
 
         category = db.session.get(
             Category,
@@ -1279,125 +1294,43 @@ def update_job(job_id):
 
         if not category:
 
-            return jsonify({
-
-                "status": "error",
-
-                "message": "Invalid category"
-
-            }), 400
+            return json_error(
+                "Invalid category"
+            )
 
         if not category.is_active:
 
-            return jsonify({
-
-                "status": "error",
-
-                "message": (
-                    "This category is currently unavailable"
-                )
-
-            }), 400
+            return json_error(
+                "This category is currently unavailable"
+            )
 
         job.category_id = category.id
 
-    # --------------------------------------------------------
+    # ========================================================
     # BUDGET
-    # --------------------------------------------------------
+    # ========================================================
 
-    if "budget_min" in data:
+    try:
 
-        try:
+        if "budget_min" in data:
 
-            job.budget_min = (
-                float(
-                    data.get(
-                        "budget_min"
-                    )
-                )
-                if data.get(
-                    "budget_min"
-                ) is not None
-                else None
+            job.budget_min = decimal_value(
+                data.get("budget_min"),
+                "minimum budget"
             )
 
-        except (
-            TypeError,
-            ValueError
-        ):
+        if "budget_max" in data:
 
-            return jsonify({
-
-                "status": "error",
-
-                "message": (
-                    "Invalid minimum budget"
-                )
-
-            }), 400
-
-    if "budget_max" in data:
-
-        try:
-
-            job.budget_max = (
-                float(
-                    data.get(
-                        "budget_max"
-                    )
-                )
-                if data.get(
-                    "budget_max"
-                ) is not None
-                else None
+            job.budget_max = decimal_value(
+                data.get("budget_max"),
+                "maximum budget"
             )
 
-        except (
-            TypeError,
-            ValueError
-        ):
+    except ValueError as exc:
 
-            return jsonify({
-
-                "status": "error",
-
-                "message": (
-                    "Invalid maximum budget"
-                )
-
-            }), 400
-
-    if (
-        job.budget_min is not None
-        and job.budget_min < 0
-    ):
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Minimum budget cannot "
-                "be negative"
-            )
-
-        }), 400
-
-    if (
-        job.budget_max is not None
-        and job.budget_max < 0
-    ):
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Maximum budget cannot "
-                "be negative"
-            )
-
-        }), 400
+        return json_error(
+            str(exc)
+        )
 
     if (
         job.budget_min is not None
@@ -1405,20 +1338,13 @@ def update_job(job_id):
         and job.budget_min > job.budget_max
     ):
 
-        return jsonify({
+        return json_error(
+            "Minimum budget cannot exceed maximum budget"
+        )
 
-            "status": "error",
-
-            "message": (
-                "Minimum budget cannot "
-                "exceed maximum budget"
-            )
-
-        }), 400
-
-    # --------------------------------------------------------
+    # ========================================================
     # LOCATION
-    # --------------------------------------------------------
+    # ========================================================
 
     if "location" in data:
 
@@ -1427,139 +1353,171 @@ def update_job(job_id):
         )
 
         if (
-            not isinstance(
-                location,
-                str
-            )
+            not isinstance(location, str)
             or not location.strip()
         ):
 
-            return jsonify({
+            return json_error(
+                "Location cannot be empty"
+            )
 
-                "status": "error",
+        location = location.strip()
 
-                "message": (
-                    "Location cannot be empty"
-                )
+        if len(location) > MAX_LOCATION_LENGTH:
 
-            }), 400
+            return json_error(
+                "Location cannot exceed 255 characters"
+            )
 
-        job.location = location.strip()
+        job.location = location
 
-    # --------------------------------------------------------
+    # ========================================================
     # CITY
-    # --------------------------------------------------------
+    # ========================================================
 
     if "city" in data:
 
-        city = data.get(
-            "city"
-        )
+        try:
 
-        job.city = (
-
-            city.strip()
-
-            if isinstance(
-                city,
-                str
+            job.city = clean_optional_text(
+                data.get("city"),
+                100
             )
-            and city.strip()
 
-            else None
-        )
+        except ValueError as exc:
 
-    # --------------------------------------------------------
+            return json_error(
+                str(exc)
+            )
+
+    # ========================================================
     # STATE
-    # --------------------------------------------------------
+    # ========================================================
 
     if "state" in data:
 
-        state = data.get(
-            "state"
-        )
+        try:
 
-        job.state = (
-
-            state.strip()
-
-            if isinstance(
-                state,
-                str
+            job.state = clean_optional_text(
+                data.get("state"),
+                100
             )
-            and state.strip()
 
-            else None
-        )
+        except ValueError as exc:
 
-    # --------------------------------------------------------
+            return json_error(
+                str(exc)
+            )
+
+    # ========================================================
     # PINCODE
-    # --------------------------------------------------------
+    # ========================================================
 
     if "pincode" in data:
 
-        pincode = data.get(
-            "pincode"
-        )
+        try:
 
-        job.pincode = (
-
-            pincode.strip()
-
-            if isinstance(
-                pincode,
-                str
+            job.pincode = clean_optional_text(
+                data.get("pincode"),
+                10
             )
-            and pincode.strip()
 
-            else None
-        )
+        except ValueError as exc:
 
-    # --------------------------------------------------------
+            return json_error(
+                str(exc)
+            )
+
+    # ========================================================
     # COORDINATES
-    # --------------------------------------------------------
+    # ========================================================
 
-    if "latitude" in data:
+    try:
 
-        job.latitude = data.get(
-            "latitude"
+        if "latitude" in data:
+
+            job.latitude = coordinate_value(
+                data.get("latitude"),
+                "latitude",
+                -90,
+                90
+            )
+
+        if "longitude" in data:
+
+            job.longitude = coordinate_value(
+                data.get("longitude"),
+                "longitude",
+                -180,
+                180
+            )
+
+    except ValueError as exc:
+
+        return json_error(
+            str(exc)
         )
 
-    if "longitude" in data:
-
-        job.longitude = data.get(
-            "longitude"
-        )
-
-    # --------------------------------------------------------
+    # ========================================================
     # PRIORITY
-    # --------------------------------------------------------
+    # ========================================================
 
     if "priority" in data:
 
-        priority = data.get(
-            "priority"
-        )
+        priority = str(
+            data.get(
+                "priority"
+            )
+        ).strip().lower()
 
-        if priority not in {
-            "normal",
-            "high",
-            "urgent"
-        }:
+        if priority not in PRIORITIES:
 
-            return jsonify({
-
-                "status": "error",
-
-                "message": "Invalid priority"
-
-            }), 400
+            return json_error(
+                "Invalid priority"
+            )
 
         job.priority = priority
 
-    # --------------------------------------------------------
+    # ========================================================
+    # STATUS
+    #
+    # Only admin can directly set arbitrary status.
+    # Owner can pause/reopen their own job.
+    # ========================================================
+
+    if "status" in data:
+
+        requested_status = str(
+            data.get(
+                "status"
+            )
+        ).strip().lower()
+
+        if requested_status not in JOB_STATUSES:
+
+            return json_error(
+                "Invalid job status"
+            )
+
+        if user.role != "admin":
+
+            allowed_owner_statuses = {
+                "open",
+                "paused"
+            }
+
+            if requested_status not in allowed_owner_statuses:
+
+                return json_error(
+                    "You are not allowed to set this job status",
+                    403
+                )
+
+        job.status = requested_status
+
+    # ========================================================
     # SAVE
-    # --------------------------------------------------------
+    # ========================================================
 
     try:
 
@@ -1574,32 +1532,27 @@ def update_job(job_id):
             exc
         )
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Unable to update job"
-            )
-
-        }), 500
+        return json_error(
+            "Unable to update job. Please try again.",
+            500
+        )
 
     return jsonify({
 
         "status": "success",
 
-        "message": (
-            "Job updated successfully"
-        ),
+        "message": "Job updated successfully",
 
-        "job": {
+        "job": serialize_job(
 
-            "id": job.id,
+            job,
 
-            "title": job.title,
+            include_description=True,
 
-            "status": job.status
-        }
+            include_images=True,
+
+            include_owner=True
+        )
 
     }), 200
 
@@ -1614,30 +1567,20 @@ def update_job(job_id):
     methods=["DELETE"]
 )
 @role_required(
-    "customer"
+    "customer",
+    "worker",
+    "admin"
 )
 def delete_job(job_id):
 
-    user_id = get_jwt_identity()
+    user = get_current_user()
 
-    try:
+    if not user:
 
-        user_id = int(
-            user_id
+        return json_error(
+            "User not found",
+            401
         )
-
-    except (
-        TypeError,
-        ValueError
-    ):
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": "Invalid user identity"
-
-        }), 401
 
     job = db.session.get(
         Job,
@@ -1646,38 +1589,32 @@ def delete_job(job_id):
 
     if not job:
 
-        return jsonify({
+        return json_error(
+            "Job not found",
+            404
+        )
 
-            "status": "error",
+    if (
+        user.role != "admin"
+        and job.customer_id != user.id
+    ):
 
-            "message": "Job not found"
+        return json_error(
+            "You can only delete your own jobs",
+            403
+        )
 
-        }), 404
+    if (
+        user.role != "admin"
+        and job.status not in {
+            "open",
+            "paused"
+        }
+    ):
 
-    if job.customer_id != user_id:
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "You can only delete "
-                "your own jobs"
-            )
-
-        }), 403
-
-    if job.status != "open":
-
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Only open jobs can be deleted"
-            )
-
-        }), 400
+        return json_error(
+            "Only active jobs can be deleted"
+        )
 
     try:
 
@@ -1696,23 +1633,951 @@ def delete_job(job_id):
             exc
         )
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Unable to delete job"
-            )
-
-        }), 500
+        return json_error(
+            "Unable to delete job. Please try again.",
+            500
+        )
 
     return jsonify({
 
         "status": "success",
 
-        "message": (
-            "Job deleted successfully"
+        "message": "Job deleted successfully"
+
+    }), 200
+
+
+# ============================================================
+# JOB IMAGES
+# POST /api/jobs/<job_id>/images
+#
+# Accepts already uploaded image URLs/paths.
+# Cloudinary upload can be connected separately.
+# ============================================================
+
+@jobs_bp.route(
+    "/<int:job_id>/images",
+    methods=["POST"]
+)
+@role_required(
+    "customer",
+    "worker",
+    "admin"
+)
+def add_job_images(job_id):
+
+    user = get_current_user()
+
+    if not user:
+
+        return json_error(
+            "User not found",
+            401
         )
+
+    job = db.session.get(
+        Job,
+        job_id
+    )
+
+    if not job:
+
+        return json_error(
+            "Job not found",
+            404
+        )
+
+    if (
+        user.role != "admin"
+        and job.customer_id != user.id
+    ):
+
+        return json_error(
+            "You can only add images to your own job",
+            403
+        )
+
+    data = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        data,
+        dict
+    ):
+
+        return json_error(
+            "Request body is required"
+        )
+
+    images = data.get(
+        "images"
+    )
+
+    if not isinstance(
+        images,
+        list
+    ):
+
+        return json_error(
+            "images must be an array"
+        )
+
+    if not images:
+
+        return json_error(
+            "At least one image is required"
+        )
+
+    current_count = len(
+        job.images
+    )
+
+    if (
+        current_count + len(images)
+        > MAX_IMAGES_PER_JOB
+    ):
+
+        return json_error(
+            f"A job can have maximum {MAX_IMAGES_PER_JOB} images"
+        )
+
+    created_images = []
+
+    for image_path in images:
+
+        if not isinstance(
+            image_path,
+            str
+        ):
+
+            continue
+
+        image_path = image_path.strip()
+
+        if not image_path:
+
+            continue
+
+        if len(image_path) > 1000:
+
+            return json_error(
+                "Image URL is too long"
+            )
+
+        image = JobImage(
+
+            job_id=job.id,
+
+            image_path=image_path
+        )
+
+        db.session.add(
+            image
+        )
+
+        created_images.append(
+            image
+        )
+
+    if not created_images:
+
+        return json_error(
+            "No valid images were provided"
+        )
+
+    try:
+
+        db.session.commit()
+
+    except Exception as exc:
+
+        db.session.rollback()
+
+        print(
+            "[JOB IMAGE ERROR]",
+            exc
+        )
+
+        return json_error(
+            "Unable to save job images",
+            500
+        )
+
+    return jsonify({
+
+        "status": "success",
+
+        "message": "Job images added successfully",
+
+        "images": [
+
+            serialize_job_image(
+                image
+            )
+
+            for image in created_images
+        ]
+
+    }), 201
+
+
+# ============================================================
+# DELETE JOB IMAGE
+# DELETE /api/jobs/<job_id>/images/<image_id>
+# ============================================================
+
+@jobs_bp.route(
+    "/<int:job_id>/images/<int:image_id>",
+    methods=["DELETE"]
+)
+@role_required(
+    "customer",
+    "worker",
+    "admin"
+)
+def delete_job_image(
+    job_id,
+    image_id
+):
+
+    user = get_current_user()
+
+    if not user:
+
+        return json_error(
+            "User not found",
+            401
+        )
+
+    job = db.session.get(
+        Job,
+        job_id
+    )
+
+    if not job:
+
+        return json_error(
+            "Job not found",
+            404
+        )
+
+    if (
+        user.role != "admin"
+        and job.customer_id != user.id
+    ):
+
+        return json_error(
+            "You can only modify your own job",
+            403
+        )
+
+    image = JobImage.query.filter_by(
+
+        id=image_id,
+
+        job_id=job.id
+
+    ).first()
+
+    if not image:
+
+        return json_error(
+            "Job image not found",
+            404
+        )
+
+    try:
+
+        db.session.delete(
+            image
+        )
+
+        db.session.commit()
+
+    except Exception as exc:
+
+        db.session.rollback()
+
+        print(
+            "[DELETE JOB IMAGE ERROR]",
+            exc
+        )
+
+        return json_error(
+            "Unable to delete image",
+            500
+        )
+
+    return jsonify({
+
+        "status": "success",
+
+        "message": "Job image deleted successfully"
+
+    }), 200
+
+
+# ============================================================
+# CREATE APPLICATION
+# POST /api/jobs/<job_id>/apply
+#
+# Worker only
+# ============================================================
+
+@jobs_bp.route(
+    "/<int:job_id>/apply",
+    methods=["POST"]
+)
+@role_required(
+    "worker"
+)
+def apply_for_job(job_id):
+
+    worker = get_current_user()
+
+    if not worker:
+
+        return json_error(
+            "Worker not found",
+            401
+        )
+
+    if not worker.is_active:
+
+        return json_error(
+            "Your account has been disabled",
+            403
+        )
+
+    job = db.session.get(
+        Job,
+        job_id
+    )
+
+    if not job:
+
+        return json_error(
+            "Job not found",
+            404
+        )
+
+    if job.status != "open":
+
+        return json_error(
+            "This job is no longer accepting applications",
+            400
+        )
+
+    # --------------------------------------------------------
+    # Prevent owner from applying to own job
+    # --------------------------------------------------------
+
+    if job.customer_id == worker.id:
+
+        return json_error(
+            "You cannot apply to your own job",
+            403
+        )
+
+    data = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        data,
+        dict
+    ):
+
+        return json_error(
+            "Request body is required"
+        )
+
+    # --------------------------------------------------------
+    # DUPLICATE APPLICATION
+    # --------------------------------------------------------
+
+    existing = JobApplication.query.filter_by(
+
+        job_id=job.id,
+
+        worker_id=worker.id
+
+    ).first()
+
+    if existing:
+
+        return json_error(
+            "You have already applied for this job",
+            409
+        )
+
+    # --------------------------------------------------------
+    # AMOUNT
+    # --------------------------------------------------------
+
+    try:
+
+        proposed_amount = decimal_value(
+            data.get(
+                "proposed_amount"
+            ),
+            "proposed amount",
+            allow_none=False
+        )
+
+    except ValueError as exc:
+
+        return json_error(
+            str(exc)
+        )
+
+    # --------------------------------------------------------
+    # MESSAGE
+    # --------------------------------------------------------
+
+    message = data.get(
+        "message"
+    )
+
+    if message is not None:
+
+        if not isinstance(
+            message,
+            str
+        ):
+
+            return json_error(
+                "Invalid message"
+            )
+
+        message = message.strip()
+
+        if len(message) > 3000:
+
+            return json_error(
+                "Application message cannot exceed 3000 characters"
+            )
+
+        if not message:
+
+            message = None
+
+    # --------------------------------------------------------
+    # AVAILABILITY
+    # --------------------------------------------------------
+
+    availability = data.get(
+        "availability"
+    )
+
+    if availability is not None:
+
+        if not isinstance(
+            availability,
+            str
+        ):
+
+            return json_error(
+                "Invalid availability"
+            )
+
+        availability = availability.strip()
+
+        if len(availability) > 100:
+
+            return json_error(
+                "Availability cannot exceed 100 characters"
+            )
+
+        if not availability:
+
+            availability = None
+
+    application = JobApplication(
+
+        job_id=job.id,
+
+        worker_id=worker.id,
+
+        proposed_amount=proposed_amount,
+
+        message=message,
+
+        availability=availability,
+
+        status="pending"
+    )
+
+    try:
+
+        db.session.add(
+            application
+        )
+
+        db.session.commit()
+
+    except Exception as exc:
+
+        db.session.rollback()
+
+        print(
+            "[APPLICATION ERROR]",
+            exc
+        )
+
+        return json_error(
+            "Unable to submit application. Please try again.",
+            500
+        )
+
+    return jsonify({
+
+        "status": "success",
+
+        "message": "Application submitted successfully",
+
+        "application": serialize_application(
+            application,
+            include_job=True
+        )
+
+    }), 201
+
+
+# ============================================================
+# MY APPLICATIONS
+# GET /api/jobs/my-applications
+# ============================================================
+
+@jobs_bp.route(
+    "/my-applications",
+    methods=["GET"]
+)
+@role_required(
+    "worker"
+)
+def my_applications():
+
+    worker = get_current_user()
+
+    if not worker:
+
+        return json_error(
+            "Worker not found",
+            401
+        )
+
+    page = max(
+        request.args.get(
+            "page",
+            1,
+            type=int
+        ),
+        1
+    )
+
+    per_page = min(
+        max(
+            request.args.get(
+                "per_page",
+                12,
+                type=int
+            ),
+            1
+        ),
+        50
+    )
+
+    query = (
+
+        JobApplication.query
+
+        .filter(
+            JobApplication.worker_id
+            == worker.id
+        )
+
+        .order_by(
+            JobApplication.created_at.desc()
+        )
+    )
+
+    pagination = query.paginate(
+
+        page=page,
+
+        per_page=per_page,
+
+        error_out=False
+    )
+
+    return jsonify({
+
+        "status": "success",
+
+        "applications": [
+
+            serialize_application(
+                application,
+                include_job=True
+            )
+
+            for application in pagination.items
+        ],
+
+        "pagination": {
+
+            "page": pagination.page,
+
+            "per_page": pagination.per_page,
+
+            "total": pagination.total,
+
+            "pages": pagination.pages,
+
+            "has_next": pagination.has_next,
+
+            "has_prev": pagination.has_prev
+        }
+
+    }), 200
+
+
+# ============================================================
+# JOB APPLICATIONS
+# GET /api/jobs/<job_id>/applications
+#
+# Job owner + admin
+# ============================================================
+
+@jobs_bp.route(
+    "/<int:job_id>/applications",
+    methods=["GET"]
+)
+@role_required(
+    "customer",
+    "worker",
+    "admin"
+)
+def job_applications(job_id):
+
+    user = get_current_user()
+
+    if not user:
+
+        return json_error(
+            "User not found",
+            401
+        )
+
+    job = db.session.get(
+        Job,
+        job_id
+    )
+
+    if not job:
+
+        return json_error(
+            "Job not found",
+            404
+        )
+
+    if (
+        user.role != "admin"
+        and job.customer_id != user.id
+    ):
+
+        return json_error(
+            "You are not allowed to view these applications",
+            403
+        )
+
+    applications = (
+
+        JobApplication.query
+
+        .filter(
+            JobApplication.job_id
+            == job.id
+        )
+
+        .order_by(
+            JobApplication.created_at.desc()
+        )
+
+        .all()
+    )
+
+    return jsonify({
+
+        "status": "success",
+
+        "job": {
+
+            "id": job.id,
+
+            "title": job.title,
+
+            "status": job.status
+        },
+
+        "applications": [
+
+            serialize_application(
+                application
+            )
+
+            for application in applications
+        ],
+
+        "count": len(
+            applications
+        )
+
+    }), 200
+
+
+# ============================================================
+# UPDATE APPLICATION STATUS
+# PATCH /api/jobs/applications/<application_id>
+#
+# Job owner OR admin
+# ============================================================
+
+@jobs_bp.route(
+    "/applications/<int:application_id>",
+    methods=["PATCH"]
+)
+@role_required(
+    "customer",
+    "admin"
+)
+def update_application_status(
+    application_id
+):
+
+    user = get_current_user()
+
+    if not user:
+
+        return json_error(
+            "User not found",
+            401
+        )
+
+    application = db.session.get(
+        JobApplication,
+        application_id
+    )
+
+    if not application:
+
+        return json_error(
+            "Application not found",
+            404
+        )
+
+    job = application.job
+
+    if not job:
+
+        return json_error(
+            "Related job not found",
+            404
+        )
+
+    if (
+        user.role != "admin"
+        and job.customer_id != user.id
+    ):
+
+        return json_error(
+            "You are not allowed to update this application",
+            403
+        )
+
+    data = request.get_json(
+        silent=True
+    )
+
+    if not isinstance(
+        data,
+        dict
+    ):
+
+        return json_error(
+            "Request body is required"
+        )
+
+    new_status = str(
+        data.get(
+            "status",
+            ""
+        )
+    ).strip().lower()
+
+    if new_status not in APPLICATION_STATUSES:
+
+        return json_error(
+            "Invalid application status"
+        )
+
+    # --------------------------------------------------------
+    # Accepted application
+    # --------------------------------------------------------
+
+    if new_status == "accepted":
+
+        if job.status != "open":
+
+            return json_error(
+                "Only open jobs can accept an application"
+            )
+
+        # Reject other pending/shortlisted applications
+        # after successful acceptance.
+
+        application.status = "accepted"
+
+        job.status = "assigned"
+
+        JobApplication.query.filter(
+
+            JobApplication.job_id == job.id,
+
+            JobApplication.id != application.id,
+
+            JobApplication.status.in_([
+                "pending",
+                "shortlisted"
+            ])
+
+        ).update(
+
+            {
+                JobApplication.status: "rejected"
+            },
+
+            synchronize_session=False
+        )
+
+    else:
+
+        application.status = new_status
+
+    try:
+
+        db.session.commit()
+
+    except Exception as exc:
+
+        db.session.rollback()
+
+        print(
+            "[APPLICATION STATUS ERROR]",
+            exc
+        )
+
+        return json_error(
+            "Unable to update application",
+            500
+        )
+
+    return jsonify({
+
+        "status": "success",
+
+        "message": "Application status updated successfully",
+
+        "application": serialize_application(
+            application,
+            include_job=True
+        )
+
+    }), 200
+
+
+# ============================================================
+# WITHDRAW APPLICATION
+# DELETE /api/jobs/applications/<application_id>
+#
+# Worker only
+# ============================================================
+
+@jobs_bp.route(
+    "/applications/<int:application_id>",
+    methods=["DELETE"]
+)
+@role_required(
+    "worker"
+)
+def withdraw_application(
+    application_id
+):
+
+    worker = get_current_user()
+
+    if not worker:
+
+        return json_error(
+            "Worker not found",
+            401
+        )
+
+    application = db.session.get(
+        JobApplication,
+        application_id
+    )
+
+    if not application:
+
+        return json_error(
+            "Application not found",
+            404
+        )
+
+    if application.worker_id != worker.id:
+
+        return json_error(
+            "You can only withdraw your own application",
+            403
+        )
+
+    if application.status in {
+        "accepted",
+        "rejected"
+    }:
+
+        return json_error(
+            "This application cannot be withdrawn"
+        )
+
+    application.status = "withdrawn"
+
+    try:
+
+        db.session.commit()
+
+    except Exception as exc:
+
+        db.session.rollback()
+
+        print(
+            "[WITHDRAW APPLICATION ERROR]",
+            exc
+        )
+
+        return json_error(
+            "Unable to withdraw application",
+            500
+        )
+
+    return jsonify({
+
+        "status": "success",
+
+        "message": "Application withdrawn successfully"
 
     }), 200
 
@@ -1720,8 +2585,6 @@ def delete_job(job_id):
 # ============================================================
 # ACTIVE CATEGORIES
 # GET /api/jobs/categories
-#
-# Public
 # ============================================================
 
 @jobs_bp.route(
@@ -1732,17 +2595,9 @@ def categories():
 
     try:
 
-        # ----------------------------------------------------
-        # Ensure default categories exist
-        # ----------------------------------------------------
-
         ensure_default_categories()
 
-        # ----------------------------------------------------
-        # Active categories
-        # ----------------------------------------------------
-
-        categories = (
+        category_list = (
 
             Category.query
 
@@ -1757,33 +2612,14 @@ def categories():
             .all()
         )
 
-        data = []
+        data = [
 
-        for category in categories:
+            serialize_category(
+                category
+            )
 
-            data.append({
-
-                "id": category.id,
-
-                "name": category.name,
-
-                "slug": category.slug,
-
-                "description": (
-                    category.description
-                    or ""
-                ),
-
-                "icon": (
-                    category.icon
-                    or "✦"
-                ),
-
-                "image": (
-                    category.image
-                    or ""
-                )
-            })
+            for category in category_list
+        ]
 
         return jsonify({
 
@@ -1804,12 +2640,7 @@ def categories():
             exc
         )
 
-        return jsonify({
-
-            "status": "error",
-
-            "message": (
-                "Unable to load categories"
-            )
-
-        }), 500
+        return json_error(
+            "Unable to load categories",
+            500
+        )
