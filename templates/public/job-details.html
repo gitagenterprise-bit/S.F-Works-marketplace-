@@ -1,0 +1,565 @@
+{% extends "base.html" %}
+
+{% block title %}
+Job Details — S. F Works
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/job-details.css') }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<main
+    class="job-details-page"
+    id="jobDetailsPage"
+    data-job-id="{{ job_id }}"
+    data-api-url="{{ url_for('jobs.job_details', job_id=job_id) }}"
+>
+
+
+    <!-- =====================================================
+         PAGE BACKGROUND
+    ====================================================== -->
+
+    <div class="job-details-background">
+
+        <div class="job-bg-orb job-bg-orb-one"></div>
+
+        <div class="job-bg-orb job-bg-orb-two"></div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CONTAINER
+    ====================================================== -->
+
+    <div class="job-details-container">
+
+
+        <!-- =================================================
+             BACK BUTTON
+        ================================================== -->
+
+        <div class="job-details-topbar">
+
+            <a
+                href="{{ url_for('home.home') if 'home.home' in current_app.view_functions else '/' }}"
+                class="back-to-jobs"
+            >
+
+                <span class="back-icon">
+                    ←
+                </span>
+
+                <span>
+                    Back to Jobs
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             LOADING
+        ================================================== -->
+
+        <section
+            class="job-loading-state"
+            id="jobLoading"
+        >
+
+            <div class="loading-spinner"></div>
+
+            <h2>
+                Loading job details...
+            </h2>
+
+            <p>
+                Please wait while we fetch the job information.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             ERROR
+        ================================================== -->
+
+        <section
+            class="job-error-state"
+            id="jobError"
+            hidden
+        >
+
+            <div class="error-icon">
+                !
+            </div>
+
+            <h2>
+                Job Not Available
+            </h2>
+
+            <p id="jobErrorMessage">
+                We couldn't load this job.
+            </p>
+
+            <a
+                href="/jobs"
+                class="premium-button"
+            >
+                Browse Jobs
+            </a>
+
+        </section>
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <section
+            class="job-content"
+            id="jobContent"
+            hidden
+        >
+
+
+            <!-- =============================================
+                 HEADER
+            ============================================== -->
+
+            <div class="job-header-card">
+
+                <div class="job-header-main">
+
+                    <div class="job-category-icon" id="jobCategoryIcon">
+                        ✦
+                    </div>
+
+                    <div class="job-header-info">
+
+                        <div class="job-meta-row">
+
+                            <span
+                                class="job-category-badge"
+                                id="jobCategory"
+                            >
+                                Category
+                            </span>
+
+                            <span
+                                class="job-status-badge"
+                                id="jobStatus"
+                            >
+                                Open
+                            </span>
+
+                        </div>
+
+
+                        <h1
+                            class="job-title"
+                            id="jobTitle"
+                        >
+                            Job Title
+                        </h1>
+
+
+                        <div class="job-posted-info">
+
+                            <span>
+                                Posted
+                            </span>
+
+                            <span class="meta-dot">
+                                •
+                            </span>
+
+                            <span id="jobCreatedAt">
+                                Recently
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     PRIORITY
+                ========================================== -->
+
+                <div
+                    class="job-priority"
+                    id="jobPriority"
+                >
+                    Normal
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 GRID
+            ================================================== -->
+
+            <div class="job-details-grid">
+
+
+                <!-- =============================================
+                     LEFT
+                ============================================== -->
+
+                <div class="job-main-column">
+
+
+                    <!-- =========================================
+                         DESCRIPTION
+                    ========================================== -->
+
+                    <article class="job-card">
+
+                        <div class="job-card-heading">
+
+                            <div class="heading-icon">
+                                ☰
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    About This Job
+                                </h2>
+
+                                <p>
+                                    Job description and requirements
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="job-description"
+                            id="jobDescription"
+                        ></div>
+
+                    </article>
+
+
+                    <!-- =========================================
+                         LOCATION
+                    ========================================== -->
+
+                    <article class="job-card">
+
+                        <div class="job-card-heading">
+
+                            <div class="heading-icon">
+                                ⌖
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Work Location
+                                </h2>
+
+                                <p>
+                                    Where the work will take place
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="location-box">
+
+                            <div class="location-icon">
+                                📍
+                            </div>
+
+                            <div class="location-details">
+
+                                <strong id="jobLocation">
+                                    —
+                                </strong>
+
+                                <span id="jobAddress">
+                                    —
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="map-placeholder"
+                            id="jobMap"
+                            hidden
+                        >
+
+                            <span>
+                                📍
+                            </span>
+
+                            <strong>
+                                Location available
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- =========================================
+                         IMAGES
+                    ========================================== -->
+
+                    <article
+                        class="job-card"
+                        id="jobImagesCard"
+                        hidden
+                    >
+
+                        <div class="job-card-heading">
+
+                            <div class="heading-icon">
+                                ▧
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Job Images
+                                </h2>
+
+                                <p>
+                                    Images shared by the customer
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="job-images"
+                            id="jobImages"
+                        ></div>
+
+                    </article>
+
+
+                </div>
+
+
+                <!-- =============================================
+                     RIGHT SIDEBAR
+                ============================================== -->
+
+                <aside class="job-sidebar">
+
+
+                    <!-- =========================================
+                         BUDGET
+                    ========================================== -->
+
+                    <div class="sidebar-card budget-card">
+
+                        <div class="sidebar-label">
+                            Estimated Budget
+                        </div>
+
+                        <div
+                            class="job-budget"
+                            id="jobBudget"
+                        >
+                            —
+                        </div>
+
+                        <div class="budget-note">
+                            Budget provided by the customer
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         JOB SUMMARY
+                    ========================================== -->
+
+                    <div class="sidebar-card">
+
+                        <div class="sidebar-title">
+                            Job Summary
+                        </div>
+
+
+                        <div class="summary-list">
+
+
+                            <div class="summary-item">
+
+                                <span class="summary-icon">
+                                    👁
+                                </span>
+
+                                <div>
+
+                                    <small>
+                                        Views
+                                    </small>
+
+                                    <strong id="jobViews">
+                                        0
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="summary-item">
+
+                                <span class="summary-icon">
+                                    🏷
+                                </span>
+
+                                <div>
+
+                                    <small>
+                                        Category
+                                    </small>
+
+                                    <strong id="jobSummaryCategory">
+                                        —
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="summary-item">
+
+                                <span class="summary-icon">
+                                    📌
+                                </span>
+
+                                <div>
+
+                                    <small>
+                                        Priority
+                                    </small>
+
+                                    <strong id="jobSummaryPriority">
+                                        Normal
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="summary-item">
+
+                                <span class="summary-icon">
+                                    🆔
+                                </span>
+
+                                <div>
+
+                                    <small>
+                                        Job ID
+                                    </small>
+
+                                    <strong id="jobId">
+                                        —
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         CTA
+                    ========================================== -->
+
+                    <div class="sidebar-card cta-card">
+
+                        <div class="cta-icon">
+                            ✓
+                        </div>
+
+                        <h3>
+                            Interested in this job?
+                        </h3>
+
+                        <p>
+                            Sign in to continue and connect
+                            with the customer.
+                        </p>
+
+
+                        <a
+                            href="/login"
+                            class="premium-button premium-button-full"
+                            id="loginButton"
+                        >
+                            Login to Continue
+                        </a>
+
+
+                        <a
+                            href="/register"
+                            class="secondary-button"
+                            id="signupButton"
+                        >
+                            Create Free Account
+                        </a>
+
+                    </div>
+
+
+                </aside>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/job-details.js') }}"
+    defer
+></script>
+
+{% endblock %}
