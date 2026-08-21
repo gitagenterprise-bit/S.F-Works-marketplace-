@@ -1,0 +1,663 @@
+{% extends "base.html" %}
+
+{% block title %}
+Apply for Job — S.F Works
+{% endblock %}
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/apply-job.css') }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<main class="apply-page">
+
+    <!-- =====================================================
+         PAGE BACKGROUND
+    ====================================================== -->
+
+    <div class="apply-background">
+
+        <div class="apply-glow apply-glow-one"></div>
+        <div class="apply-glow apply-glow-two"></div>
+
+    </div>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <section class="apply-header">
+
+        <div class="apply-header-inner">
+
+            <button
+                type="button"
+                class="back-button"
+                onclick="history.back()"
+            >
+                <span class="back-icon">←</span>
+                <span>Back</span>
+            </button>
+
+            <div class="header-content">
+
+                <span class="eyebrow">
+                    S.F WORKS • JOB APPLICATION
+                </span>
+
+                <h1>
+                    Apply for this job
+                </h1>
+
+                <p>
+                    Tell the customer why you're the right person
+                    for this work.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN CONTAINER
+    ====================================================== -->
+
+    <section class="apply-container">
+
+        <div class="apply-grid">
+
+
+            <!-- =================================================
+                 JOB SUMMARY
+            ================================================== -->
+
+            <aside class="job-summary-card">
+
+                <div class="summary-top">
+
+                    <span class="summary-label">
+                        JOB DETAILS
+                    </span>
+
+                    <span
+                        class="job-status"
+                        id="jobStatus"
+                    >
+                        Open
+                    </span>
+
+                </div>
+
+
+                <div class="job-icon">
+                    ✦
+                </div>
+
+
+                <h2 id="jobTitle">
+                    Loading job...
+                </h2>
+
+
+                <div
+                    class="job-category"
+                    id="jobCategory"
+                >
+                    Job
+                </div>
+
+
+                <div class="summary-divider"></div>
+
+
+                <!-- Budget -->
+
+                <div class="summary-item">
+
+                    <div class="summary-item-icon">
+                        ₹
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Budget
+                        </span>
+
+                        <strong id="jobBudget">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Location -->
+
+                <div class="summary-item">
+
+                    <div class="summary-item-icon">
+                        ⌖
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Location
+                        </span>
+
+                        <strong id="jobLocation">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="job-description">
+
+                    <span>
+                        ABOUT THIS JOB
+                    </span>
+
+                    <p id="jobDescription">
+                        Loading job description...
+                    </p>
+
+                </div>
+
+
+                <div class="summary-footer">
+
+                    <span>
+                        Make your proposal competitive
+                    </span>
+
+                    <div class="secure-badge">
+                        🔒 Secure
+                    </div>
+
+                </div>
+
+            </aside>
+
+
+            <!-- =================================================
+                 APPLICATION CARD
+            ================================================== -->
+
+            <section class="application-card">
+
+
+                <!-- Card Header -->
+
+                <div class="application-card-header">
+
+                    <div>
+
+                        <span class="form-eyebrow">
+                            YOUR PROPOSAL
+                        </span>
+
+                        <h2>
+                            Submit your application
+                        </h2>
+
+                        <p>
+                            Provide accurate information so the
+                            customer can contact you.
+                        </p>
+
+                    </div>
+
+
+                    <div class="application-badge">
+                        <span class="badge-dot"></span>
+                        New Application
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ALERT
+                ================================================== -->
+
+                <div
+                    id="formAlert"
+                    class="form-alert"
+                    role="alert"
+                    aria-live="polite"
+                ></div>
+
+
+                <!-- =================================================
+                     FORM
+                ================================================== -->
+
+                <form
+                    id="jobApplyForm"
+                    novalidate
+                >
+
+
+                    <!-- =================================================
+                         MOBILE
+                    ================================================== -->
+
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <span class="section-number">
+                                01
+                            </span>
+
+                            <div>
+
+                                <h3>
+                                    Contact information
+                                </h3>
+
+                                <p>
+                                    Your contact details will be
+                                    available to the job owner.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <!-- Name -->
+
+                            <div class="form-field">
+
+                                <label for="workerName">
+                                    Full Name
+                                </label>
+
+                                <div class="input-wrapper">
+
+                                    <span class="input-icon">
+                                        👤
+                                    </span>
+
+                                    <input
+                                        type="text"
+                                        id="workerName"
+                                        name="worker_name"
+                                        placeholder="Your full name"
+                                        readonly
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Mobile -->
+
+                            <div class="form-field">
+
+                                <label for="mobile">
+                                    Mobile Number
+                                    <span class="required">*</span>
+                                </label>
+
+                                <div class="input-wrapper phone-wrapper">
+
+                                    <span class="country-code">
+                                        +91
+                                    </span>
+
+                                    <input
+                                        type="tel"
+                                        id="mobile"
+                                        name="mobile"
+                                        placeholder="9876543210"
+                                        inputmode="numeric"
+                                        autocomplete="tel"
+                                        maxlength="10"
+                                        required
+                                    >
+
+                                </div>
+
+                                <small class="field-hint">
+                                    Customer can use this number
+                                    to contact you about the job.
+                                </small>
+
+                                <div
+                                    class="field-error"
+                                    id="mobileError"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PROPOSAL
+                    ================================================== -->
+
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <span class="section-number">
+                                02
+                            </span>
+
+                            <div>
+
+                                <h3>
+                                    Your proposal
+                                </h3>
+
+                                <p>
+                                    Tell the customer your price
+                                    and availability.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Proposed Amount -->
+
+                        <div class="form-field">
+
+                            <label for="proposedAmount">
+
+                                Proposed Amount
+
+                                <span class="required">
+                                    *
+                                </span>
+
+                            </label>
+
+
+                            <div class="amount-input">
+
+                                <span class="currency">
+                                    ₹
+                                </span>
+
+                                <input
+                                    type="number"
+                                    id="proposedAmount"
+                                    name="proposed_amount"
+                                    placeholder="Enter your price"
+                                    min="1"
+                                    step="0.01"
+                                    inputmode="decimal"
+                                    required
+                                >
+
+                                <span class="amount-label">
+                                    INR
+                                </span>
+
+                            </div>
+
+
+                            <small class="field-hint">
+                                Enter the amount you expect for
+                                completing this job.
+                            </small>
+
+
+                            <div
+                                class="field-error"
+                                id="amountError"
+                            ></div>
+
+                        </div>
+
+
+                        <!-- Availability -->
+
+                        <div class="form-field">
+
+                            <label for="availability">
+
+                                Availability
+
+                                <span class="required">
+                                    *
+                                </span>
+
+                            </label>
+
+
+                            <div class="input-wrapper">
+
+                                <span class="input-icon">
+                                    🕐
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="availability"
+                                    name="availability"
+                                    placeholder="e.g. Available tomorrow"
+                                    maxlength="100"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div
+                                class="field-error"
+                                id="availabilityError"
+                            ></div>
+
+                        </div>
+
+
+                        <!-- Message -->
+
+                        <div class="form-field">
+
+                            <label for="message">
+
+                                Message / Cover Letter
+
+                                <span class="optional">
+                                    Optional
+                                </span>
+
+                            </label>
+
+
+                            <div class="textarea-wrapper">
+
+                                <textarea
+                                    id="message"
+                                    name="message"
+                                    rows="6"
+                                    maxlength="3000"
+                                    placeholder="Introduce yourself, describe your experience and explain why you're a good fit for this job..."
+                                ></textarea>
+
+                                <div class="character-count">
+                                    <span id="messageCount">
+                                        0
+                                    </span>
+                                    / 3000
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="field-error"
+                                id="messageError"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         TERMS
+                    ================================================== -->
+
+                    <div class="application-note">
+
+                        <div class="note-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Before you submit
+                            </strong>
+
+                            <p>
+                                Make sure your mobile number,
+                                proposed amount and availability
+                                are correct.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SUBMIT
+                    ================================================== -->
+
+                    <div class="submit-area">
+
+                        <button
+                            type="submit"
+                            id="submitApplication"
+                            class="submit-button"
+                        >
+
+                            <span
+                                class="button-loader"
+                                id="buttonLoader"
+                            ></span>
+
+                            <span id="submitText">
+                                Submit Application
+                            </span>
+
+                            <span
+                                class="submit-arrow"
+                                id="submitArrow"
+                            >
+                                →
+                            </span>
+
+                        </button>
+
+
+                        <p class="secure-text">
+                            🔒 Your application is securely submitted
+                            to S.F Works.
+                        </p>
+
+                    </div>
+
+                </form>
+
+
+                <!-- =================================================
+                     SUCCESS STATE
+                ================================================== -->
+
+                <div
+                    id="successState"
+                    class="success-state"
+                >
+
+                    <div class="success-icon">
+                        ✓
+                    </div>
+
+                    <h2>
+                        Application submitted!
+                    </h2>
+
+                    <p>
+                        Your application has been successfully
+                        sent to the job owner.
+                    </p>
+
+                    <div class="success-actions">
+
+                        <button
+                            type="button"
+                            onclick="window.location.href='/my-applications'"
+                            class="success-primary"
+                        >
+                            View My Applications
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="history.back()"
+                            class="success-secondary"
+                        >
+                            Back to Job
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </section>
+
+</main>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+    window.JOB_ID = {{ job_id|default('null')|tojson }};
+</script>
+
+<script
+    src="{{ url_for('static', filename='js/apply-job.js') }}"
+    defer
+></script>
+
+{% endblock %}
