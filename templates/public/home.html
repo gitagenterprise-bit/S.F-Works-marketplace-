@@ -1323,6 +1323,7 @@ S. F Works — Find Trusted Workers & Local Jobs
 
 
 
+
 <!-- =====================================================
      LATEST JOBS — REAL DATABASE DATA
 ====================================================== -->
@@ -1330,6 +1331,10 @@ S. F Works — Find Trusted Workers & Local Jobs
 <section class="home-section jobs-section">
 
     <div class="container">
+
+        <!-- =================================================
+             SECTION HEADER
+        ================================================== -->
 
         <div class="section-heading">
 
@@ -1360,7 +1365,13 @@ S. F Works — Find Trusted Workers & Local Jobs
         </div>
 
 
+        <!-- =================================================
+             JOBS SCROLLER
+        ================================================== -->
+
         <div class="horizontal-scroll-wrapper jobs-scroll-wrapper">
+
+            <!-- PREVIOUS -->
 
             <button
                 class="scroll-control scroll-prev"
@@ -1370,6 +1381,10 @@ S. F Works — Find Trusted Workers & Local Jobs
                 ←
             </button>
 
+
+            <!-- =================================================
+                 JOB LIST
+            ================================================== -->
 
             <div
                 class="jobs-list horizontal-scroll job-horizontal-scroll"
@@ -1382,25 +1397,126 @@ S. F Works — Find Trusted Workers & Local Jobs
 
                     <article class="home-job-card">
 
+                        <!-- =================================================
+                             TOP
+                        ================================================== -->
+
                         <div class="home-job-top">
 
+                            <!-- CATEGORY -->
+
                             <span class="job-category">
-                                {{ job.category.name if job.category else "GENERAL" }}
+
+                                {{ job.category.name
+                                   if job.category
+                                   else "GENERAL" }}
+
                             </span>
 
+
+                            <!-- STATUS -->
+
                             <span class="job-status">
-                                ● {{ job.status|upper if job.status else "OPEN" }}
+
+                                <span class="job-status-dot"></span>
+
+                                {{ job.status|upper
+                                   if job.status
+                                   else "OPEN" }}
+
                             </span>
 
                         </div>
 
 
+                        <!-- =================================================
+                             MAIN
+                        ================================================== -->
+
                         <div class="home-job-main">
 
+                            <!-- CATEGORY ICON -->
+
                             <div class="home-job-icon">
-                                🔧
+
+                                {% if job.category %}
+
+                                    {% set category_name =
+                                        job.category.name|lower %}
+
+
+                                    {% if "electric" in category_name %}
+
+                                        ⚡
+
+                                    {% elif "plumb" in category_name %}
+
+                                        🔧
+
+                                    {% elif "clean" in category_name %}
+
+                                        ✨
+
+                                    {% elif "paint" in category_name %}
+
+                                        🎨
+
+                                    {% elif "carpent" in category_name %}
+
+                                        🪚
+
+                                    {% elif "construct" in category_name %}
+
+                                        🏗️
+
+                                    {% elif "mason" in category_name %}
+
+                                        🧱
+
+                                    {% elif "driver" in category_name %}
+
+                                        🚗
+
+                                    {% elif "ac" in category_name
+                                          or "air condition" in category_name %}
+
+                                        ❄️
+
+                                    {% elif "computer" in category_name
+                                          or "it" in category_name %}
+
+                                        💻
+
+                                    {% elif "beauty" in category_name
+                                          or "salon" in category_name %}
+
+                                        💇
+
+                                    {% elif "security" in category_name %}
+
+                                        🛡️
+
+                                    {% elif "garden" in category_name
+                                          or "gardening" in category_name %}
+
+                                        🌱
+
+                                    {% else %}
+
+                                        🛠️
+
+                                    {% endif %}
+
+                                {% else %}
+
+                                    🛠️
+
+                                {% endif %}
+
                             </div>
 
+
+                            <!-- JOB CONTENT -->
 
                             <div class="home-job-content">
 
@@ -1409,36 +1525,55 @@ S. F Works — Find Trusted Workers & Local Jobs
                                 </h3>
 
 
-                                <p>
+                                <!-- DESCRIPTION -->
 
-                                    {{ job.city or
-                                       job.location or
-                                       "Local" }}
+                                {% if job.description %}
 
-                                    ·
+                                <p class="home-job-description">
 
-                                    {% if job.created_at %}
-                                        {{ job.created_at.strftime("%d %b %Y") }}
-                                    {% else %}
-                                        Posted recently
-                                    {% endif %}
+                                    {{ job.description
+                                       |truncate(120, True, "...") }}
 
                                 </p>
 
+                                {% endif %}
+
+
+                                <!-- JOB DETAILS -->
 
                                 <div class="job-details">
 
+                                    {% if job.location %}
+
                                     <span>
                                         📍
-                                        {{ job.location or "Local" }}
+                                        {{ job.location }}
                                     </span>
 
-                                    {% if job.applications is defined %}
+                                    {% elif job.city %}
 
                                     <span>
-                                        👥
-                                        {{ job.applications|length }}
-                                        Applicants
+                                        📍
+                                        {{ job.city }}
+                                    </span>
+
+                                    {% elif job.service_area %}
+
+                                    <span>
+                                        📍
+                                        {{ job.service_area }}
+                                    </span>
+
+                                    {% endif %}
+
+
+                                    {% if job.created_at %}
+
+                                    <span>
+                                        🕒
+                                        {{ job.created_at.strftime(
+                                            "%d %b %Y"
+                                        ) }}
                                     </span>
 
                                     {% endif %}
@@ -1450,34 +1585,90 @@ S. F Works — Find Trusted Workers & Local Jobs
                         </div>
 
 
+                        <!-- =================================================
+                             BOTTOM
+                        ================================================== -->
+
                         <div class="home-job-bottom">
 
-                            <strong>
 
-                                {% if job.budget_min and job.budget_max %}
+                            <!-- =================================================
+                                 BUDGET
+                            ================================================== -->
 
-                                    ₹{{ "{:,.0f}".format(job.budget_min) }}
-                                    –
-                                    ₹{{ "{:,.0f}".format(job.budget_max) }}
+                            <div class="home-job-budget">
 
-                                {% elif job.budget %}
+                                <small>
+                                    BUDGET
+                                </small>
 
-                                    ₹{{ job.budget }}
 
-                                {% else %}
+                                <strong>
 
-                                    Budget on request
+                                    {% if job.budget_min is not none
+                                          and job.budget_max is not none %}
 
-                                {% endif %}
+                                        ₹{{ "{:,.0f}".format(
+                                            job.budget_min|float
+                                        ) }}
 
-                            </strong>
+                                        –
 
+                                        ₹{{ "{:,.0f}".format(
+                                            job.budget_max|float
+                                        ) }}
+
+
+                                    {% elif job.budget is not none %}
+
+                                        ₹{{ "{:,.0f}".format(
+                                            job.budget|float
+                                        ) }}
+
+
+                                    {% elif job.budget_min is not none %}
+
+                                        ₹{{ "{:,.0f}".format(
+                                            job.budget_min|float
+                                        ) }}
+
+
+                                    {% elif job.budget_max is not none %}
+
+                                        ₹{{ "{:,.0f}".format(
+                                            job.budget_max|float
+                                        ) }}
+
+
+                                    {% else %}
+
+                                        Budget on request
+
+                                    {% endif %}
+
+                                </strong>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 ACTIONS
+                            ================================================== -->
 
                             <div class="job-actions">
 
+
+                                <!-- =================================================
+                                     VIEW JOB
+
+                                     IMPORTANT:
+                                     jobs.job_details
+                                     NOT jobs.job_detail
+                                ================================================== -->
+
                                 <a
                                     href="{{ url_for(
-                                        'jobs.job_detail',
+                                        'jobs.job_details',
                                         job_id=job.id
                                     ) }}"
                                     class="job-view-btn"
@@ -1485,6 +1676,10 @@ S. F Works — Find Trusted Workers & Local Jobs
                                     View Job
                                 </a>
 
+
+                                <!-- =================================================
+                                     APPLY JOB
+                                ================================================== -->
 
                                 <a
                                     href="{{ url_for(
@@ -1494,7 +1689,11 @@ S. F Works — Find Trusted Workers & Local Jobs
                                     class="job-apply-btn"
                                 >
                                     Apply Now
-                                    <span>→</span>
+
+                                    <span>
+                                        →
+                                    </span>
+
                                 </a>
 
                             </div>
@@ -1505,7 +1704,12 @@ S. F Works — Find Trusted Workers & Local Jobs
 
                     {% endfor %}
 
+
                 {% else %}
+
+                    <!-- =================================================
+                         EMPTY STATE
+                    ================================================== -->
 
                     <div class="empty-jobs">
 
@@ -1513,19 +1717,28 @@ S. F Works — Find Trusted Workers & Local Jobs
                             📋
                         </div>
 
+
                         <h3>
                             No jobs posted yet
                         </h3>
 
+
                         <p>
-                            New local jobs will appear here.
+                            New local jobs will appear here as customers
+                            post their requirements.
                         </p>
+
 
                         <a
                             href="/post-job"
                             class="job-apply-btn"
                         >
-                            Post a Job →
+                            Post a Job
+
+                            <span>
+                                →
+                            </span>
+
                         </a>
 
                     </div>
@@ -1534,6 +1747,8 @@ S. F Works — Find Trusted Workers & Local Jobs
 
             </div>
 
+
+            <!-- NEXT -->
 
             <button
                 class="scroll-control scroll-next"
@@ -1547,10 +1762,7 @@ S. F Works — Find Trusted Workers & Local Jobs
 
     </div>
 
-</section>
-
-
-
+    </section>
 <!-- =====================================================
      TRUST STATS
 ====================================================== -->
