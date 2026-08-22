@@ -1,54 +1,22 @@
 from flask import request
 
 from extensions import db
+
 from models.audit_log import AuditLog
 
 
 def create_audit_log(
     *,
-    user_id=None,
+    actor_id,
     action,
-    entity_type,
+    entity_type=None,
     entity_id=None,
-    old_status=None,
-    new_status=None,
     description=None
 ):
-    """
-    Creates a security/audit record.
-
-    This function intentionally does not commit.
-    The calling transaction controls commit/rollback.
-    """
-
-    ip_address = None
-
-    if request:
-
-        forwarded = request.headers.get(
-            "X-Forwarded-For"
-        )
-
-        if forwarded:
-
-            ip_address = (
-                forwarded
-                .split(",")[0]
-                .strip()
-            )
-
-        else:
-
-            ip_address = request.remote_addr
-
-    user_agent = request.headers.get(
-        "User-Agent",
-        ""
-    )[:500]
 
     log = AuditLog(
 
-        user_id=user_id,
+        actor_id=actor_id,
 
         action=action,
 
@@ -56,15 +24,24 @@ def create_audit_log(
 
         entity_id=entity_id,
 
-        old_status=old_status,
-
-        new_status=new_status,
-
         description=description,
 
-        ip_address=ip_address,
+        ip_address=(
+            request.headers.get(
+                "X-Forwarded-For",
+                request.remote_addr
+            )
+        ),
 
-        user_agent=user_agent
+        user_agent=(
+            request.headers.get(
+                "User-Agent"
+            )[:500]
+            if request.headers.get(
+                "User-Agent"
+            )
+            else None
+        )
     )
 
     db.session.add(log)
