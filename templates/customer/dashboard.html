@@ -1,81 +1,540 @@
-{% extends "dashboard_base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
-Customer Dashboard
+Customer Dashboard | S.F Works Marketplace
 {% endblock %}
 
+{% block content %}
 
-{% block page_title %}
-Customer Dashboard
-{% endblock %}
+<div class="customer-dashboard">
 
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
-{% block dashboard_content %}
+    <aside class="customer-sidebar" id="customerSidebar">
 
-<div class="stats-grid">
+        <div class="customer-sidebar-brand">
 
-    <div class="stat-card">
+            <div class="customer-logo">
+                SF
+            </div>
 
-        <div class="stat-icon">
-            Jobs
-        </div>
-
-        <div>
-
-            <span>
-                Total Jobs
-            </span>
-
-            <strong>
-                128
-            </strong>
+            <div>
+                <strong>S.F Works</strong>
+                <span>Marketplace</span>
+            </div>
 
         </div>
 
-    </div>
+
+        <nav class="customer-nav">
+
+            <a
+                href="/customer/dashboard"
+                class="customer-nav-item active"
+            >
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
 
 
-    <div class="stat-card">
+            <a
+                href="/customer/dashboard#jobs"
+                class="customer-nav-item"
+            >
+                <span class="nav-icon">▣</span>
+                <span>My Jobs</span>
+            </a>
 
-        <div class="stat-icon">
-            Apps
+
+            <a
+                href="/customer/dashboard#applications"
+                class="customer-nav-item"
+            >
+                <span class="nav-icon">♙</span>
+                <span>Applications</span>
+            </a>
+
+
+            <a
+                href="/post-job"
+                class="customer-nav-item"
+            >
+                <span class="nav-icon">＋</span>
+                <span>Post New Job</span>
+            </a>
+
+        </nav>
+
+
+        <div class="customer-sidebar-bottom">
+
+            <button
+                type="button"
+                class="customer-logout"
+                id="customerLogoutBtn"
+            >
+                <span>↪</span>
+                Logout
+            </button>
+
         </div>
 
-        <div>
-
-            <span>
-                Applications
-            </span>
-
-            <strong>
-                54
-            </strong>
-
-        </div>
-
-    </div>
+    </aside>
 
 
-    <div class="stat-card">
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
 
-        <div class="stat-icon">
-            Done
-        </div>
+    <main class="customer-main">
 
-        <div>
 
-            <span>
-                Completed
-            </span>
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
 
-            <strong>
-                36
-            </strong>
+        <header class="customer-topbar">
 
-        </div>
+            <button
+                type="button"
+                class="mobile-menu-btn"
+                id="customerMenuBtn"
+                aria-label="Open menu"
+            >
+                ☰
+            </button>
 
-    </div>
+
+            <div class="customer-topbar-title">
+
+                <span class="customer-eyebrow">
+                    CUSTOMER PANEL
+                </span>
+
+                <h1>
+                    Dashboard
+                </h1>
+
+            </div>
+
+
+            <div class="customer-topbar-actions">
+
+                <button
+                    type="button"
+                    class="notification-btn"
+                    aria-label="Notifications"
+                >
+                    🔔
+                    <span class="notification-dot"></span>
+                </button>
+
+
+                <div class="customer-avatar">
+                    C
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <section class="customer-content">
+
+
+            <!-- =================================================
+                 WELCOME
+            ================================================== -->
+
+            <section class="customer-welcome">
+
+                <div>
+
+                    <span class="welcome-label">
+                        Welcome back
+                    </span>
+
+                    <h2>
+                        Manage your work with confidence.
+                    </h2>
+
+                    <p>
+                        Post jobs, review applications and
+                        connect with trusted professionals.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="/post-job"
+                    class="primary-action"
+                >
+                    <span>＋</span>
+                    Post New Job
+                </a>
+
+            </section>
+
+
+            <!-- =================================================
+                 STATISTICS
+            ================================================== -->
+
+            <section class="customer-stats">
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Jobs
+                        </span>
+
+                        <strong id="totalJobs">
+                            —
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Active Jobs
+                        </span>
+
+                        <strong id="activeJobs">
+                            —
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        ♙
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Applications
+                        </span>
+
+                        <strong id="totalApplications">
+                            —
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Completed
+                        </span>
+
+                        <strong id="completedJobs">
+                            —
+                        </strong>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- =================================================
+                 JOBS
+            ================================================== -->
+
+            <section
+                class="dashboard-section"
+                id="jobs"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            WORK MANAGEMENT
+                        </span>
+
+                        <h2>
+                            My Jobs
+                        </h2>
+
+                    </div>
+
+
+                    <a
+                        href="/post-job"
+                        class="section-action"
+                    >
+                        View all
+                    </a>
+
+                </div>
+
+
+                <!-- Loading -->
+
+                <div
+                    class="jobs-loading"
+                    id="jobsLoading"
+                >
+
+                    <div class="loading-spinner"></div>
+
+                    <span>
+                        Loading your jobs...
+                    </span>
+
+                </div>
+
+
+                <!-- Empty -->
+
+                <div
+                    class="jobs-empty"
+                    id="jobsEmpty"
+                    hidden
+                >
+
+                    <div class="empty-icon">
+                        ▣
+                    </div>
+
+                    <h3>
+                        No jobs posted yet
+                    </h3>
+
+                    <p>
+                        Create your first job and start
+                        receiving applications.
+                    </p>
+
+                    <a
+                        href="/post-job"
+                        class="primary-action"
+                    >
+                        ＋ Post Your First Job
+                    </a>
+
+                </div>
+
+
+                <!-- Jobs -->
+
+                <div
+                    class="jobs-list"
+                    id="jobsList"
+                ></div>
+
+            </section>
+
+
+            <!-- =================================================
+                 QUICK ACTIONS
+            ================================================== -->
+
+            <section class="quick-actions">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            QUICK ACTIONS
+                        </span>
+
+                        <h2>
+                            What would you like to do?
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="quick-action-grid">
+
+                    <a
+                        href="/post-job"
+                        class="quick-action-card"
+                    >
+
+                        <div class="quick-action-icon">
+                            ＋
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Post a Job
+                            </strong>
+
+                            <span>
+                                Find the right professional
+                            </span>
+
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        href="#jobs"
+                        class="quick-action-card"
+                    >
+
+                        <div class="quick-action-icon">
+                            ▣
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Manage Jobs
+                            </strong>
+
+                            <span>
+                                View and manage your jobs
+                            </span>
+
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        href="#applications"
+                        class="quick-action-card"
+                    >
+
+                        <div class="quick-action-icon">
+                            ♙
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Applications
+                            </strong>
+
+                            <span>
+                                Review worker applications
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 APPLICATIONS PLACEHOLDER
+            ================================================== -->
+
+            <section
+                class="dashboard-section applications-section"
+                id="applications"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            TALENT
+                        </span>
+
+                        <h2>
+                            Recent Applications
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="applications-placeholder">
+
+                    <div class="placeholder-icon">
+                        ♙
+                    </div>
+
+                    <h3>
+                        Applications will appear here
+                    </h3>
+
+                    <p>
+                        Open a job to review applications
+                        from workers.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
 
 </div>
+
+
+<!-- =========================================================
+     MOBILE OVERLAY
+========================================================= -->
+
+<div
+    class="customer-sidebar-overlay"
+    id="customerSidebarOverlay"
+    hidden
+></div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='js/customer-dashboard.js') }}"></script>
 
 {% endblock %}
