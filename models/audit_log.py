@@ -28,25 +28,20 @@ class AuditLog(db.Model):
         index=True
     )
 
-    resource_type = db.Column(
-        db.String(100),
+    entity_type = db.Column(
+        db.String(50),
         nullable=True,
         index=True
     )
 
-    resource_id = db.Column(
+    entity_id = db.Column(
         db.Integer,
         nullable=True,
         index=True
     )
 
-    old_status = db.Column(
-        db.String(50),
-        nullable=True
-    )
-
-    new_status = db.Column(
-        db.String(50),
+    description = db.Column(
+        db.Text,
         nullable=True
     )
 
@@ -57,11 +52,6 @@ class AuditLog(db.Model):
 
     user_agent = db.Column(
         db.String(500),
-        nullable=True
-    )
-
-    details = db.Column(
-        db.JSON,
         nullable=True
     )
 
@@ -83,4 +73,4 @@ class AuditLog(db.Model):
             f"<AuditLog "
             f"id={self.id} "
             f"action={self.action}>"
-  )
+        )
