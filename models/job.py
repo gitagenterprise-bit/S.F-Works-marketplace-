@@ -87,6 +87,18 @@ class Job(db.Model):
         index=True
     )
 
+    district = db.Column(
+        db.String(100),
+        nullable=True,
+        index=True
+    )
+
+    police_station = db.Column(
+        db.String(100),
+        nullable=True,
+        index=True
+    )
+
     state = db.Column(
         db.String(100),
         nullable=True
