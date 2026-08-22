@@ -1,36 +1,37 @@
-from .user import User
+from models.user import User
 
-from .customer import CustomerProfile
+from models.customer import CustomerProfile
 
-from .worker import WorkerProfile
+from models.worker import (
+    WorkerProfile
+)
 
-from .worker_skill import WorkerSkill
+from models.worker_skill import (
+    WorkerSkill
+)
 
-from .worker_portfolio import WorkerPortfolio
+from models.worker_portfolio import (
+    WorkerPortfolio
+)
 
-from .category import Category
+from models.category import Category
 
-from .job import (
+from models.job import (
     Job,
     JobImage
 )
 
-from .job_application import (
+from models.job_application import (
     JobApplication
 )
 
-from .agent import (
-    AgentProfile
+from models.agent import (
+    AgentProfile,
+    AgentArea,
+    AgentAreaAssignment,
+    AgentPermission
 )
 
-from .agent_area import (
-    AgentArea
-)
-
-from .audit_log import (
+from models.audit_log import (
     AuditLog
-)
-
-from .approval import (
-    ApprovalRecord
 )
