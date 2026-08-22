@@ -112,6 +112,11 @@ class User(db.Model):
         uselist=False,
         cascade="all, delete-orphan"
     )
+    audit_logs = db.relationship(
+        "AuditLog",
+        back_populates="user",
+        passive_deletes=True
+    )
 
     # --------------------------------
     # Password
