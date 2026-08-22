@@ -1,3 +1,5 @@
+from secrets import token_urlsafe
+
 from flask import (
     Blueprint,
     jsonify,
@@ -11,19 +13,26 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 
-from sqlalchemy import func
+from sqlalchemy import (
+    func,
+    or_
+)
+from sqlalchemy.exc import (
+    IntegrityError,
+    SQLAlchemyError
+)
 
 from extensions import db
 
 from models import (
     User,
     WorkerProfile,
-    CustomerProfile,
     Job,
     JobApplication,
     Category,
-    AgentProfile,
+    Agent,
     AgentArea,
+    AgentPermission,
     AuditLog,
     ApprovalRecord
 )
@@ -32,6 +41,10 @@ from utils.decorators import (
     admin_required
 )
 
+
+# =========================================================
+# ADMIN BLUEPRINT
+# =========================================================
 
 admin_bp = Blueprint(
     "admin",
@@ -43,13 +56,38 @@ admin_bp = Blueprint(
 # HELPERS
 # =========================================================
 
+def error_response(
+    message,
+    status_code=400
+):
+    """
+    Standard API error response.
+    """
+
+    return jsonify({
+        "status": "error",
+        "message": message
+    }), status_code
+
+
+# =========================================================
+# CURRENT ADMIN
+# =========================================================
+
 def current_admin():
+    """
+    Return currently authenticated active administrator.
+    """
 
     identity = get_jwt_identity()
 
     try:
         user_id = int(identity)
-    except (TypeError, ValueError):
+
+    except (
+        TypeError,
+        ValueError
+    ):
 
         return None
 
@@ -70,62 +108,386 @@ def current_admin():
     return user
 
 
-def audit(
-    actor,
-    action,
+# =========================================================
+# AUDIT LOG HELPER
+# =========================================================
+
+def write_audit_log(
+    actor=None,
+    action=None,
     resource_type=None,
     resource_id=None,
     old_status=None,
     new_status=None,
+    description=None,
     details=None
 ):
+    """
+    Centralized audit logger.
+
+    IMPORTANT:
+    Do not commit here.
+    Caller controls the transaction.
+    """
+
+    if actor is None:
+        actor = current_admin()
 
     log = AuditLog(
-        actor_id=actor.id if actor else None,
+
+        actor_id=(
+            actor.id
+            if actor
+            else None
+        ),
+
         action=action,
+
         resource_type=resource_type,
+
         resource_id=resource_id,
+
         old_status=old_status,
+
         new_status=new_status,
+
         ip_address=request.remote_addr,
+
         user_agent=request.headers.get(
             "User-Agent"
         ),
-        details=details
+
+        details=(
+            details
+            if details is not None
+            else (
+                {
+                    "description":
+                        description
+                }
+                if description
+                else None
+            )
+        )
     )
 
     db.session.add(log)
 
+    return log
 
-def approval_record(
+
+# =========================================================
+# APPROVAL RECORD HELPER
+# =========================================================
+
+def create_approval_record(
     actor,
     resource_type,
     resource_id,
     action,
     remarks=None
 ):
+    """
+    Create approval history record.
+
+    No commit here.
+    """
 
     record = ApprovalRecord(
-        resource_type=resource_type,
-        resource_id=resource_id,
-        actor_id=actor.id,
-        actor_role=actor.role,
-        action=action,
-        remarks=remarks
+
+        resource_type=
+            resource_type,
+
+        resource_id=
+            resource_id,
+
+        actor_id=
+            actor.id,
+
+        actor_role=
+            actor.role,
+
+        action=
+            action,
+
+        remarks=
+            remarks
     )
 
-    db.session.add(record)
+    db.session.add(
+        record
+    )
+
+    return record
 
 
-def error_response(
-    message,
-    status_code=400
+# =========================================================
+# GENERATE UNIQUE AGENT CODE
+# =========================================================
+
+def generate_agent_code():
+    """
+    Generate unique production-safe agent code.
+
+    Example:
+        AG-K8F4X2Q
+    """
+
+    for _ in range(10):
+
+        code = (
+            "AG-"
+            + token_urlsafe(6)
+            .replace("-", "")
+            .replace("_", "")
+            .upper()
+        )
+
+        existing = (
+            Agent.query
+            .filter_by(
+                agent_code=code
+            )
+            .first()
+        )
+
+        if not existing:
+            return code
+
+    raise RuntimeError(
+        "Unable to generate unique agent code."
+    )
+
+
+# =========================================================
+# SERIALIZE AGENT
+# =========================================================
+
+def serialize_agent(
+    agent,
+    include_permissions=True
 ):
+    """
+    Convert Agent model into API-safe JSON.
+    """
 
-    return jsonify({
-        "status": "error",
-        "message": message
-    }), status_code
+    user = agent.user
+
+    data = {
+
+        "id":
+            agent.id,
+
+        "agent_code":
+            agent.agent_code,
+
+        "designation":
+            agent.designation,
+
+        "is_active":
+            agent.is_active,
+
+        "created_at": (
+            agent.created_at.isoformat()
+            if getattr(
+                agent,
+                "created_at",
+                None
+            )
+            else None
+        ),
+
+        "user": {
+
+            "id":
+                user.id
+                if user
+                else None,
+
+            "full_name":
+                user.full_name
+                if user
+                else None,
+
+            "email":
+                user.email
+                if user
+                else None,
+
+            "phone":
+                user.phone
+                if user
+                else None,
+
+            "is_active":
+                user.is_active
+                if user
+                else False,
+
+            "is_verified":
+                user.is_verified
+                if user
+                else False
+        },
+
+        "areas": [
+
+            {
+                "id":
+                    area.id,
+
+                "district":
+                    area.district,
+
+                "police_station":
+                    area.police_station,
+
+                "area":
+                    area.area,
+
+                "pincode":
+                    area.pincode,
+
+                "is_active":
+                    area.is_active
+            }
+
+            for area in agent.areas
+        ]
+    }
+
+    if include_permissions:
+
+        data["permissions"] = [
+
+            {
+                "id":
+                    permission.id,
+
+                "permission":
+                    permission.permission,
+
+                "is_allowed":
+                    permission.is_allowed
+            }
+
+            for permission
+            in agent.permissions
+        ]
+
+    return data
+
+
+# =========================================================
+# NORMALIZE AREA
+# =========================================================
+
+def normalize_area(item):
+    """
+    Validate and normalize area payload.
+    """
+
+    if not isinstance(
+        item,
+        dict
+    ):
+
+        raise ValueError(
+            "Each area must be an object."
+        )
+
+    district = str(
+        item.get(
+            "district",
+            ""
+        )
+    ).strip()
+
+    if not district:
+
+        raise ValueError(
+            "District is required."
+        )
+
+    police_station = (
+        str(
+            item.get(
+                "police_station",
+                ""
+            )
+        ).strip()
+        or None
+    )
+
+    area = (
+        str(
+            item.get(
+                "area",
+                ""
+            )
+        ).strip()
+        or None
+    )
+
+    pincode = (
+        str(
+            item.get(
+                "pincode",
+                ""
+            )
+        ).strip()
+        or None
+    )
+
+    if pincode:
+
+        if (
+            not pincode.isdigit()
+            or len(pincode) != 6
+        ):
+
+            raise ValueError(
+                "Pincode must contain exactly 6 digits."
+            )
+
+    return {
+        "district":
+            district,
+
+        "police_station":
+            police_station,
+
+        "area":
+            area,
+
+        "pincode":
+            pincode
+    }
+
+
+# =========================================================
+# DEFAULT AGENT PERMISSIONS
+# =========================================================
+
+DEFAULT_AGENT_PERMISSIONS = [
+
+    "jobs.view",
+    "jobs.review",
+
+    "applications.view",
+    "applications.review",
+
+    "workers.view",
+    "workers.review",
+
+    "customers.view",
+
+    "doctors.view",
+    "chambers.view",
+
+    "bookings.view",
+    "bookings.review"
+]
 
 
 # =========================================================
@@ -140,11 +502,17 @@ def admin_login():
     ) or {}
 
     email = str(
-        data.get("email", "")
+        data.get(
+            "email",
+            ""
+        )
     ).strip().lower()
 
     password = str(
-        data.get("password", "")
+        data.get(
+            "password",
+            ""
+        )
     )
 
     if not email or not password:
@@ -154,9 +522,15 @@ def admin_login():
             400
         )
 
-    user = User.query.filter(
-        func.lower(User.email) == email
-    ).first()
+    user = (
+        User.query
+        .filter(
+            func.lower(
+                User.email
+            ) == email
+        )
+        .first()
+    )
 
     if not user:
 
@@ -179,7 +553,9 @@ def admin_login():
             403
         )
 
-    if not user.check_password(password):
+    if not user.check_password(
+        password
+    ):
 
         return error_response(
             "Invalid administrator credentials.",
@@ -187,7 +563,11 @@ def admin_login():
         )
 
     access_token = create_access_token(
-        identity=str(user.id),
+
+        identity=str(
+            user.id
+        ),
+
         additional_claims={
             "role": "admin"
         }
@@ -195,18 +575,26 @@ def admin_login():
 
     response = jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
             "Administrator login successful.",
 
         "user": {
-            "id": user.id,
-            "full_name": user.full_name,
-            "email": user.email,
-            "role": user.role
-        }
 
+            "id":
+                user.id,
+
+            "full_name":
+                user.full_name,
+
+            "email":
+                user.email,
+
+            "role":
+                user.role
+        }
     })
 
     set_access_cookies(
@@ -227,11 +615,11 @@ def admin_logout():
 
     response = jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
             "Administrator logged out."
-
     })
 
     unset_jwt_cookies(
@@ -260,7 +648,8 @@ def admin_me():
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "user": {
 
@@ -285,10 +674,11 @@ def admin_me():
             "is_verified":
                 admin.is_verified,
 
-            "created_at":
+            "created_at": (
                 admin.created_at.isoformat()
                 if admin.created_at
                 else None
+            )
         }
     })
 
@@ -390,10 +780,11 @@ def admin_dashboard():
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
-        "stats": stats
-
+        "stats":
+            stats
     })
 
 
@@ -414,51 +805,68 @@ def admin_users():
         1
     )
 
-    per_page = request.args.get(
-        "per_page",
-        25,
-        type=int
-    )
-
     per_page = min(
-        max(per_page, 1),
+        max(
+            request.args.get(
+                "per_page",
+                25,
+                type=int
+            ),
+            1
+        ),
         100
     )
 
-    query = (
+    pagination = (
         User.query
         .order_by(
             User.created_at.desc()
         )
-    )
-
-    pagination = query.paginate(
-        page=page,
-        per_page=per_page,
-        error_out=False
+        .paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
     )
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "users": [
 
             {
-                "id": user.id,
-                "full_name": user.full_name,
-                "email": user.email,
-                "phone": user.phone,
-                "role": user.role,
-                "is_active": user.is_active,
-                "is_verified": user.is_verified,
-                "created_at":
+                "id":
+                    user.id,
+
+                "full_name":
+                    user.full_name,
+
+                "email":
+                    user.email,
+
+                "phone":
+                    user.phone,
+
+                "role":
+                    user.role,
+
+                "is_active":
+                    user.is_active,
+
+                "is_verified":
+                    user.is_verified,
+
+                "created_at": (
                     user.created_at.isoformat()
                     if user.created_at
                     else None
+                )
             }
 
-            for user in pagination.items
+            for user
+            in pagination.items
         ],
 
         "pagination": {
@@ -492,9 +900,18 @@ def admin_users():
     "/users/<int:user_id>/status"
 )
 @admin_required
-def update_user_status(user_id):
+def update_user_status(
+    user_id
+):
 
     admin = current_admin()
+
+    if not admin:
+
+        return error_response(
+            "Administrator account not found.",
+            401
+        )
 
     user = db.session.get(
         User,
@@ -508,7 +925,6 @@ def update_user_status(user_id):
             404
         )
 
-    # Prevent admin from disabling himself.
     if user.id == admin.id:
 
         return error_response(
@@ -536,24 +952,68 @@ def update_user_status(user_id):
 
     old_value = user.is_active
 
+    if old_value == is_active:
+
+        return jsonify({
+
+            "status":
+                "success",
+
+            "message":
+                "User status is already up to date.",
+
+            "user": {
+
+                "id":
+                    user.id,
+
+                "is_active":
+                    user.is_active
+            }
+        })
+
     user.is_active = is_active
 
-    audit(
-        admin,
-        "USER_STATUS_CHANGED",
-        "user",
-        user.id,
-        details={
-            "old_is_active": old_value,
-            "new_is_active": is_active
-        }
+    write_audit_log(
+
+        actor=admin,
+
+        action=(
+            "user.activated"
+            if is_active
+            else "user.suspended"
+        ),
+
+        resource_type="user",
+
+        resource_id=user.id,
+
+        old_status=str(
+            old_value
+        ),
+
+        new_status=str(
+            is_active
+        )
     )
 
-    db.session.commit()
+    try:
+
+        db.session.commit()
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to update user status.",
+            500
+        )
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
             "User status updated successfully.",
@@ -577,7 +1037,9 @@ def update_user_status(user_id):
     "/users/<int:user_id>/verify"
 )
 @admin_required
-def verify_user(user_id):
+def verify_user(
+    user_id
+):
 
     admin = current_admin()
 
@@ -593,20 +1055,47 @@ def verify_user(user_id):
             404
         )
 
+    if user.is_verified:
+
+        return jsonify({
+
+            "status":
+                "success",
+
+            "message":
+                "User is already verified."
+        })
+
     user.is_verified = True
 
-    audit(
-        admin,
-        "USER_VERIFIED",
-        "user",
-        user.id
+    write_audit_log(
+
+        actor=admin,
+
+        action="user.verified",
+
+        resource_type="user",
+
+        resource_id=user.id
     )
 
-    db.session.commit()
+    try:
+
+        db.session.commit()
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to verify user.",
+            500
+        )
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
             "User verified successfully."
@@ -623,134 +1112,376 @@ def create_agent():
 
     admin = current_admin()
 
+    if not admin:
+
+        return error_response(
+            "Administrator account not found.",
+            401
+        )
+
     data = request.get_json(
         silent=True
     ) or {}
 
     full_name = str(
-        data.get("full_name", "")
+        data.get(
+            "full_name",
+            ""
+        )
     ).strip()
 
     email = str(
-        data.get("email", "")
+        data.get(
+            "email",
+            ""
+        )
     ).strip().lower()
 
     phone = str(
-        data.get("phone", "")
+        data.get(
+            "phone",
+            ""
+        )
     ).strip()
 
     password = str(
-        data.get("password", "")
+        data.get(
+            "password",
+            ""
+        )
     )
-
-    employee_code = str(
-        data.get("employee_code", "")
-    ).strip().upper()
 
     designation = str(
         data.get(
             "designation",
-            "Area Agent"
+            ""
         )
     ).strip()
 
+    areas = data.get(
+        "areas",
+        []
+    )
+
+    # -----------------------------------------------------
+    # VALIDATION
+    # -----------------------------------------------------
+
     if not full_name:
+
         return error_response(
-            "Full name is required."
+            "Full name is required.",
+            400
+        )
+
+    if len(full_name) > 150:
+
+        return error_response(
+            "Full name is too long.",
+            400
         )
 
     if not email:
+
         return error_response(
-            "Email is required."
+            "Email is required.",
+            400
         )
 
     if not phone:
+
         return error_response(
-            "Phone is required."
+            "Phone is required.",
+            400
         )
 
-    if len(password) < 8:
+    if len(password) < 10:
+
         return error_response(
-            "Password must contain at least 8 characters."
+            "Password must contain at least 10 characters.",
+            400
         )
 
-    if not employee_code:
+    if not isinstance(
+        areas,
+        list
+    ) or not areas:
+
         return error_response(
-            "Employee code is required."
+            "At least one service area is required.",
+            400
         )
 
-    existing = User.query.filter(
-        (User.email == email) |
-        (User.phone == phone)
-    ).first()
+    if len(areas) > 100:
+
+        return error_response(
+            "Maximum 100 service areas can be assigned at once.",
+            400
+        )
+
+    # -----------------------------------------------------
+    # NORMALIZE AREAS BEFORE DATABASE TRANSACTION
+    # -----------------------------------------------------
+
+    normalized_areas = []
+
+    area_keys = set()
+
+    try:
+
+        for item in areas:
+
+            normalized = normalize_area(
+                item
+            )
+
+            key = (
+                normalized["district"].lower(),
+                (
+                    normalized["police_station"]
+                    or ""
+                ).lower(),
+                (
+                    normalized["area"]
+                    or ""
+                ).lower(),
+                normalized["pincode"]
+                or ""
+            )
+
+            if key in area_keys:
+
+                return error_response(
+                    "Duplicate service area provided.",
+                    409
+                )
+
+            area_keys.add(
+                key
+            )
+
+            normalized_areas.append(
+                normalized
+            )
+
+    except ValueError as exc:
+
+        return error_response(
+            str(exc),
+            400
+        )
+
+    # -----------------------------------------------------
+    # EMAIL / PHONE DUPLICATE CHECK
+    # -----------------------------------------------------
+
+    existing = (
+        User.query
+        .filter(
+            or_(
+                func.lower(
+                    User.email
+                ) == email,
+
+                User.phone == phone
+            )
+        )
+        .first()
+    )
 
     if existing:
 
         return error_response(
-            "Email or phone is already registered.",
+            "Email or phone already exists.",
             409
         )
 
-    existing_code = AgentProfile.query.filter_by(
-        employee_code=employee_code
-    ).first()
-
-    if existing_code:
-
-        return error_response(
-            "Employee code already exists.",
-            409
-        )
+    # -----------------------------------------------------
+    # TRANSACTION
+    # -----------------------------------------------------
 
     try:
 
+        # -------------------------------------------------
+        # USER
+        # -------------------------------------------------
+
         user = User(
-            full_name=full_name,
-            email=email,
-            phone=phone,
-            role="agent",
-            is_active=True,
-            is_verified=True
+
+            full_name=
+                full_name,
+
+            email=
+                email,
+
+            phone=
+                phone,
+
+            role=
+                "agent",
+
+            is_active=
+                True,
+
+            is_verified=
+                True
         )
 
         user.set_password(
             password
         )
 
-        db.session.add(user)
+        db.session.add(
+            user
+        )
 
         db.session.flush()
 
-        agent = AgentProfile(
+        # -------------------------------------------------
+        # AGENT
+        # -------------------------------------------------
 
-            user_id=user.id,
+        agent_code = (
+            generate_agent_code()
+        )
 
-            employee_code=
-                employee_code,
+        agent = Agent(
+
+            user_id=
+                user.id,
+
+            agent_code=
+                agent_code,
 
             designation=
                 designation
                 or "Area Agent",
 
-            status="active",
+            created_by=
+                admin.id,
 
-            created_by=admin.id
+            is_active=
+                True
         )
 
-        db.session.add(agent)
+        db.session.add(
+            agent
+        )
 
-        audit(
-            admin,
-            "AGENT_CREATED",
-            "agent",
-            agent.id,
+        db.session.flush()
+
+        # -------------------------------------------------
+        # AREAS
+        # -------------------------------------------------
+
+        for normalized in normalized_areas:
+
+            agent_area = AgentArea(
+
+                agent_id=
+                    agent.id,
+
+                district=
+                    normalized["district"],
+
+                police_station=
+                    normalized["police_station"],
+
+                area=
+                    normalized["area"],
+
+                pincode=
+                    normalized["pincode"],
+
+                is_active=
+                    True
+            )
+
+            db.session.add(
+                agent_area
+            )
+
+        # -------------------------------------------------
+        # DEFAULT PERMISSIONS
+        # -------------------------------------------------
+
+        for permission_name in DEFAULT_AGENT_PERMISSIONS:
+
+            permission = AgentPermission(
+
+                agent_id=
+                    agent.id,
+
+                permission=
+                    permission_name,
+
+                is_allowed=
+                    True
+            )
+
+            db.session.add(
+                permission
+            )
+
+        # -------------------------------------------------
+        # AUDIT
+        # -------------------------------------------------
+
+        write_audit_log(
+
+            actor=admin,
+
+            action=
+                "agent.created",
+
+            resource_type=
+                "agent",
+
+            resource_id=
+                agent.id,
+
+            new_status=
+                "active",
+
+            description=(
+                f"Agent {agent.agent_code} "
+                f"created by administrator."
+            ),
+
             details={
-                "user_id": user.id,
-                "employee_code": employee_code
+
+                "agent_code":
+                    agent.agent_code,
+
+                "user_id":
+                    user.id,
+
+                "areas_count":
+                    len(
+                        normalized_areas
+                    )
             }
         )
 
         db.session.commit()
+
+    except IntegrityError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to create agent because some information already exists.",
+            409
+        )
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to create agent.",
+            500
+        )
 
     except Exception:
 
@@ -763,38 +1494,16 @@ def create_agent():
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
             "Agent created successfully.",
 
-        "agent": {
-
-            "id":
-                agent.id,
-
-            "user_id":
-                user.id,
-
-            "full_name":
-                user.full_name,
-
-            "email":
-                user.email,
-
-            "phone":
-                user.phone,
-
-            "employee_code":
-                agent.employee_code,
-
-            "designation":
-                agent.designation,
-
-            "status":
-                agent.status
-        }
-
+        "agent":
+            serialize_agent(
+                agent
+            )
     }), 201
 
 
@@ -807,99 +1516,46 @@ def create_agent():
 def admin_agents():
 
     agents = (
-        AgentProfile.query
-        .join(
-            User,
-            AgentProfile.user_id == User.id
-        )
+        Agent.query
         .order_by(
-            AgentProfile.created_at.desc()
+            Agent.created_at.desc()
         )
         .all()
     )
 
-    result = []
-
-    for agent in agents:
-
-        result.append({
-
-            "id":
-                agent.id,
-
-            "user_id":
-                agent.user_id,
-
-            "full_name":
-                agent.user.full_name,
-
-            "email":
-                agent.user.email,
-
-            "phone":
-                agent.user.phone,
-
-            "employee_code":
-                agent.employee_code,
-
-            "designation":
-                agent.designation,
-
-            "status":
-                agent.status,
-
-            "is_active":
-                agent.user.is_active,
-
-            "areas": [
-
-                {
-                    "id":
-                        area.id,
-
-                    "district":
-                        area.district,
-
-                    "police_station":
-                        area.police_station,
-
-                    "area":
-                        area.area,
-
-                    "pincode":
-                        area.pincode,
-
-                    "is_active":
-                        area.is_active
-                }
-
-                for area in agent.areas
-            ]
-        })
-
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
-        "agents":
-            result
-    })
+        "agents": [
+
+            serialize_agent(
+                agent
+            )
+
+            for agent
+            in agents
+        ]
+    }), 200
 
 
 # =========================================================
-# ASSIGN AGENT AREA
+# AGENT STATUS
 # =========================================================
 
-@admin_bp.post(
-    "/agents/<int:agent_id>/areas"
+@admin_bp.patch(
+    "/agents/<int:agent_id>/status"
 )
 @admin_required
-def assign_agent_area(agent_id):
+def update_agent_status(
+    agent_id
+):
 
     admin = current_admin()
 
     agent = db.session.get(
-        AgentProfile,
+        Agent,
         agent_id
     )
 
@@ -914,114 +1570,551 @@ def assign_agent_area(agent_id):
         silent=True
     ) or {}
 
-    district = str(
-        data.get("district", "")
-    ).strip() or None
+    is_active = data.get(
+        "is_active"
+    )
 
-    police_station = str(
-        data.get("police_station", "")
-    ).strip() or None
-
-    area = str(
-        data.get("area", "")
-    ).strip() or None
-
-    pincode = str(
-        data.get("pincode", "")
-    ).strip() or None
-
-    if not any([
-        district,
-        police_station,
-        area,
-        pincode
-    ]):
+    if not isinstance(
+        is_active,
+        bool
+    ):
 
         return error_response(
-            "At least one area scope is required.",
+            "is_active must be boolean.",
             400
         )
 
-    existing = AgentArea.query.filter_by(
-        agent_id=agent.id,
-        district=district,
-        police_station=police_station,
-        area=area,
-        pincode=pincode
-    ).first()
+    old_status = agent.is_active
+
+    if old_status == is_active:
+
+        return jsonify({
+
+            "status":
+                "success",
+
+            "message":
+                "Agent status is already up to date.",
+
+            "is_active":
+                agent.is_active
+        }), 200
+
+    # -----------------------------------------------------
+    # Update Agent + User Together
+    # -----------------------------------------------------
+
+    agent.is_active = is_active
+
+    if agent.user:
+
+        agent.user.is_active = is_active
+
+    write_audit_log(
+
+        actor=admin,
+
+        action=(
+            "agent.activated"
+            if is_active
+            else "agent.suspended"
+        ),
+
+        resource_type=
+            "agent",
+
+        resource_id=
+            agent.id,
+
+        old_status=(
+            "active"
+            if old_status
+            else "suspended"
+        ),
+
+        new_status=(
+            "active"
+            if is_active
+            else "suspended"
+        ),
+
+        description=(
+            f"Agent {agent.agent_code} "
+            f"status changed."
+        )
+    )
+
+    try:
+
+        db.session.commit()
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to update agent status.",
+            500
+        )
+
+    return jsonify({
+
+        "status":
+            "success",
+
+        "message":
+            "Agent status updated successfully.",
+
+        "agent": {
+
+            "id":
+                agent.id,
+
+            "agent_code":
+                agent.agent_code,
+
+            "is_active":
+                agent.is_active,
+
+            "user_is_active": (
+                agent.user.is_active
+                if agent.user
+                else False
+            )
+        }
+    }), 200
+
+
+# =========================================================
+# ADD AGENT AREA
+# =========================================================
+
+@admin_bp.post(
+    "/agents/<int:agent_id>/areas"
+)
+@admin_required
+def add_agent_area(
+    agent_id
+):
+
+    admin = current_admin()
+
+    agent = db.session.get(
+        Agent,
+        agent_id
+    )
+
+    if not agent:
+
+        return error_response(
+            "Agent not found.",
+            404
+        )
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    try:
+
+        normalized = normalize_area(
+            data
+        )
+
+    except ValueError as exc:
+
+        return error_response(
+            str(exc),
+            400
+        )
+
+    district = normalized[
+        "district"
+    ]
+
+    police_station = normalized[
+        "police_station"
+    ]
+
+    area = normalized[
+        "area"
+    ]
+
+    pincode = normalized[
+        "pincode"
+    ]
+
+    # -----------------------------------------------------
+    # DUPLICATE AREA
+    # -----------------------------------------------------
+
+    existing = (
+        AgentArea.query
+        .filter_by(
+
+            agent_id=
+                agent.id,
+
+            district=
+                district,
+
+            police_station=
+                police_station,
+
+            area=
+                area,
+
+            pincode=
+                pincode
+        )
+        .first()
+    )
 
     if existing:
 
+        if not existing.is_active:
+
+            existing.is_active = True
+
+            write_audit_log(
+
+                actor=admin,
+
+                action=
+                    "agent.area_reactivated",
+
+                resource_type=
+                    "agent_area",
+
+                resource_id=
+                    existing.id,
+
+                description=(
+                    f"Previously inactive area "
+                    f"reactivated for agent "
+                    f"{agent.agent_code}."
+                )
+            )
+
+            try:
+
+                db.session.commit()
+
+            except SQLAlchemyError:
+
+                db.session.rollback()
+
+                return error_response(
+                    "Unable to reactivate agent area.",
+                    500
+                )
+
+            return jsonify({
+
+                "status":
+                    "success",
+
+                "message":
+                    "Previously assigned area reactivated.",
+
+                "area": {
+
+                    "id":
+                        existing.id,
+
+                    "district":
+                        existing.district,
+
+                    "police_station":
+                        existing.police_station,
+
+                    "area":
+                        existing.area,
+
+                    "pincode":
+                        existing.pincode,
+
+                    "is_active":
+                        existing.is_active
+                }
+            }), 200
+
         return error_response(
-            "This area is already assigned to the agent.",
+            "This area is already assigned.",
             409
         )
 
-    assigned_area = AgentArea(
+    # -----------------------------------------------------
+    # CREATE AREA
+    # -----------------------------------------------------
 
-        agent_id=agent.id,
+    agent_area = AgentArea(
 
-        district=district,
+        agent_id=
+            agent.id,
+
+        district=
+            district,
 
         police_station=
             police_station,
 
-        area=area,
+        area=
+            area,
 
-        pincode=pincode,
+        pincode=
+            pincode,
 
-        is_active=True
+        is_active=
+            True
     )
 
     db.session.add(
-        assigned_area
+        agent_area
     )
 
-    audit(
-        admin,
-        "AGENT_AREA_ASSIGNED",
-        "agent_area",
-        assigned_area.id,
+    # IMPORTANT:
+    # Need ID before audit.
+    db.session.flush()
+
+    write_audit_log(
+
+        actor=admin,
+
+        action=
+            "agent.area_added",
+
+        resource_type=
+            "agent_area",
+
+        resource_id=
+            agent_area.id,
+
+        new_status=
+            "active",
+
+        description=(
+            f"Area assigned to agent "
+            f"{agent.agent_code}."
+        ),
+
         details={
-            "agent_id": agent.id,
-            "district": district,
-            "police_station": police_station,
-            "area": area,
-            "pincode": pincode
+
+            "district":
+                district,
+
+            "police_station":
+                police_station,
+
+            "area":
+                area,
+
+            "pincode":
+                pincode
         }
     )
 
-    db.session.commit()
+    try:
+
+        db.session.commit()
+
+    except IntegrityError:
+
+        db.session.rollback()
+
+        return error_response(
+            "This area is already assigned.",
+            409
+        )
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to assign agent area.",
+            500
+        )
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
-            "Area assigned successfully.",
+            "Agent area assigned successfully.",
 
         "area": {
 
             "id":
-                assigned_area.id,
+                agent_area.id,
 
             "district":
-                assigned_area.district,
+                agent_area.district,
 
             "police_station":
-                assigned_area.police_station,
+                agent_area.police_station,
 
             "area":
-                assigned_area.area,
+                agent_area.area,
 
             "pincode":
-                assigned_area.pincode
+                agent_area.pincode,
+
+            "is_active":
+                agent_area.is_active
         }
     }), 201
 
 
 # =========================================================
+# DEACTIVATE AGENT AREA
+# =========================================================
+
+@admin_bp.patch(
+    "/agents/<int:agent_id>/areas/<int:area_id>/status"
+)
+@admin_required
+def update_agent_area_status(
+    agent_id,
+    area_id
+):
+
+    admin = current_admin()
+
+    agent = db.session.get(
+        Agent,
+        agent_id
+    )
+
+    if not agent:
+
+        return error_response(
+            "Agent not found.",
+            404
+        )
+
+    agent_area = db.session.get(
+        AgentArea,
+        area_id
+    )
+
+    if not agent_area:
+
+        return error_response(
+            "Agent area not found.",
+            404
+        )
+
+    if agent_area.agent_id != agent.id:
+
+        return error_response(
+            "This area does not belong to this agent.",
+            403
+        )
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    is_active = data.get(
+        "is_active"
+    )
+
+    if not isinstance(
+        is_active,
+        bool
+    ):
+
+        return error_response(
+            "is_active must be boolean.",
+            400
+        )
+
+    if agent_area.is_active == is_active:
+
+        return jsonify({
+
+            "status":
+                "success",
+
+            "message":
+                "Area status is already up to date.",
+
+            "is_active":
+                agent_area.is_active
+        }), 200
+
+    old_status = agent_area.is_active
+
+    agent_area.is_active = is_active
+
+    write_audit_log(
+
+        actor=admin,
+
+        action=(
+            "agent.area_activated"
+            if is_active
+            else "agent.area_deactivated"
+        ),
+
+        resource_type=
+            "agent_area",
+
+        resource_id=
+            agent_area.id,
+
+        old_status=(
+            "active"
+            if old_status
+            else "inactive"
+        ),
+
+        new_status=(
+            "active"
+            if is_active
+            else "inactive"
+        )
+    )
+
+    try:
+
+        db.session.commit()
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to update area status.",
+            500
+        )
+
+    return jsonify({
+
+        "status":
+            "success",
+
+        "message":
+            "Agent area status updated.",
+
+        "area": {
+
+            "id":
+                agent_area.id,
+
+            "is_active":
+                agent_area.is_active
+        }
+    }), 200
+
+
+# =========================================================
 # REMOVE AGENT AREA
+# =========================================================
+# Backward-compatible DELETE endpoint.
+# Does NOT physically delete the record.
 # =========================================================
 
 @admin_bp.delete(
@@ -1035,59 +2128,8 @@ def remove_agent_area(
 
     admin = current_admin()
 
-    area = db.session.get(
-        AgentArea,
-        area_id
-    )
-
-    if not area:
-
-        return error_response(
-            "Assigned area not found.",
-            404
-        )
-
-    if area.agent_id != agent_id:
-
-        return error_response(
-            "Area does not belong to this agent.",
-            403
-        )
-
-    area.is_active = False
-
-    audit(
-        admin,
-        "AGENT_AREA_DEACTIVATED",
-        "agent_area",
-        area.id
-    )
-
-    db.session.commit()
-
-    return jsonify({
-
-        "status": "success",
-
-        "message":
-            "Agent area deactivated successfully."
-    })
-
-
-# =========================================================
-# AGENT STATUS
-# =========================================================
-
-@admin_bp.patch(
-    "/agents/<int:agent_id>/status"
-)
-@admin_required
-def update_agent_status(agent_id):
-
-    admin = current_admin()
-
     agent = db.session.get(
-        AgentProfile,
+        Agent,
         agent_id
     )
 
@@ -1098,62 +2140,79 @@ def update_agent_status(agent_id):
             404
         )
 
-    data = request.get_json(
-        silent=True
-    ) or {}
+    agent_area = db.session.get(
+        AgentArea,
+        area_id
+    )
 
-    status = str(
-        data.get("status", "")
-    ).strip().lower()
-
-    if status not in {
-        "active",
-        "suspended"
-    }:
+    if not agent_area:
 
         return error_response(
-            "Invalid agent status.",
-            400
+            "Agent area not found.",
+            404
         )
 
-    old_status = agent.status
+    if agent_area.agent_id != agent.id:
 
-    agent.status = status
+        return error_response(
+            "This area does not belong to this agent.",
+            403
+        )
 
-    agent.user.is_active = (
-        status == "active"
+    if not agent_area.is_active:
+
+        return jsonify({
+
+            "status":
+                "success",
+
+            "message":
+                "Agent area is already inactive."
+        }), 200
+
+    agent_area.is_active = False
+
+    write_audit_log(
+
+        actor=admin,
+
+        action=
+            "agent.area_deactivated",
+
+        resource_type=
+            "agent_area",
+
+        resource_id=
+            agent_area.id,
+
+        old_status=
+            "active",
+
+        new_status=
+            "inactive"
     )
 
-    audit(
-        admin,
-        "AGENT_STATUS_CHANGED",
-        "agent",
-        agent.id,
-        old_status=old_status,
-        new_status=status
-    )
+    try:
 
-    db.session.commit()
+        db.session.commit()
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to deactivate agent area.",
+            500
+        )
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
-            "Agent status updated.",
-
-        "agent": {
-
-            "id":
-                agent.id,
-
-            "status":
-                agent.status,
-
-            "is_active":
-                agent.user.is_active
-        }
-    })
+            "Agent area deactivated successfully."
+    }), 200
 
 
 # =========================================================
@@ -1292,15 +2351,17 @@ def admin_jobs():
                     else None
             },
 
-            "created_at":
+            "created_at": (
                 job.created_at.isoformat()
                 if job.created_at
                 else None
+            )
         })
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "jobs":
             jobs,
@@ -1336,7 +2397,9 @@ def admin_jobs():
     "/jobs/<int:job_id>/approval"
 )
 @admin_required
-def admin_job_approval(job_id):
+def admin_job_approval(
+    job_id
+):
 
     admin = current_admin()
 
@@ -1357,11 +2420,17 @@ def admin_job_approval(job_id):
     ) or {}
 
     action = str(
-        data.get("action", "")
+        data.get(
+            "action",
+            ""
+        )
     ).strip().lower()
 
     remarks = str(
-        data.get("remarks", "")
+        data.get(
+            "remarks",
+            ""
+        )
     ).strip() or None
 
     if action not in {
@@ -1380,39 +2449,65 @@ def admin_job_approval(job_id):
 
         job.status = "approved"
 
-        approval_action = "approved"
-
     else:
 
         job.status = "rejected"
 
-        approval_action = "rejected"
+    create_approval_record(
 
-    approval_record(
         admin,
+
         "job",
+
         job.id,
-        approval_action,
+
+        action,
+
         remarks
     )
 
-    audit(
-        admin,
-        "JOB_FINAL_APPROVAL",
-        "job",
-        job.id,
-        old_status=old_status,
-        new_status=job.status,
+    write_audit_log(
+
+        actor=admin,
+
+        action=
+            "job.final_approval",
+
+        resource_type=
+            "job",
+
+        resource_id=
+            job.id,
+
+        old_status=
+            old_status,
+
+        new_status=
+            job.status,
+
         details={
-            "remarks": remarks
+            "remarks":
+                remarks
         }
     )
 
-    db.session.commit()
+    try:
+
+        db.session.commit()
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to update job approval.",
+            500
+        )
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
             "Job approval status updated.",
@@ -1436,7 +2531,9 @@ def admin_job_approval(job_id):
     "/jobs/<int:job_id>"
 )
 @admin_required
-def delete_job(job_id):
+def delete_job(
+    job_id
+):
 
     admin = current_admin()
 
@@ -1452,25 +2549,58 @@ def delete_job(job_id):
             404
         )
 
+    if job.status == "deleted":
+
+        return jsonify({
+
+            "status":
+                "success",
+
+            "message":
+                "Job is already deleted."
+        })
+
     old_status = job.status
 
-    # Do NOT physically delete the job.
     job.status = "deleted"
 
-    audit(
-        admin,
-        "JOB_SOFT_DELETED",
-        "job",
-        job.id,
-        old_status=old_status,
-        new_status="deleted"
+    write_audit_log(
+
+        actor=admin,
+
+        action=
+            "job.soft_deleted",
+
+        resource_type=
+            "job",
+
+        resource_id=
+            job.id,
+
+        old_status=
+            old_status,
+
+        new_status=
+            "deleted"
     )
 
-    db.session.commit()
+    try:
+
+        db.session.commit()
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to delete job.",
+            500
+        )
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
             "Job removed successfully."
@@ -1542,25 +2672,29 @@ def admin_applications():
             "job_id":
                 application.job_id,
 
-            "job_title":
+            "job_title": (
                 application.job.title
                 if application.job
-                else None,
+                else None
+            ),
 
             "worker_id":
                 application.worker_id,
 
-            "worker_name":
+            "worker_name": (
                 application.worker.full_name
                 if application.worker
-                else None,
+                else None
+            ),
 
-            "proposed_amount":
+            "proposed_amount": (
                 float(
                     application.proposed_amount
                 )
-                if application.proposed_amount is not None
-                else None,
+                if application.proposed_amount
+                is not None
+                else None
+            ),
 
             "message":
                 application.message,
@@ -1571,15 +2705,17 @@ def admin_applications():
             "status":
                 application.status,
 
-            "created_at":
+            "created_at": (
                 application.created_at.isoformat()
                 if application.created_at
                 else None
+            )
         })
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "applications":
             applications,
@@ -1638,11 +2774,17 @@ def admin_application_approval(
     ) or {}
 
     action = str(
-        data.get("action", "")
+        data.get(
+            "action",
+            ""
+        )
     ).strip().lower()
 
     remarks = str(
-        data.get("remarks", "")
+        data.get(
+            "remarks",
+            ""
+        )
     ).strip() or None
 
     if action not in {
@@ -1665,31 +2807,61 @@ def admin_application_approval(
 
         application.status = "rejected"
 
-    approval_record(
+    create_approval_record(
+
         admin,
+
         "job_application",
+
         application.id,
+
         action,
+
         remarks
     )
 
-    audit(
-        admin,
-        "APPLICATION_FINAL_APPROVAL",
-        "job_application",
-        application.id,
-        old_status=old_status,
-        new_status=application.status,
+    write_audit_log(
+
+        actor=admin,
+
+        action=
+            "application.final_approval",
+
+        resource_type=
+            "job_application",
+
+        resource_id=
+            application.id,
+
+        old_status=
+            old_status,
+
+        new_status=
+            application.status,
+
         details={
-            "remarks": remarks
+            "remarks":
+                remarks
         }
     )
 
-    db.session.commit()
+    try:
+
+        db.session.commit()
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to update application status.",
+            500
+        )
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
             "Application final status updated.",
@@ -1761,20 +2933,43 @@ def update_worker_verification(
         status == "approved"
     )
 
-    audit(
-        admin,
-        "WORKER_VERIFICATION_CHANGED",
-        "worker",
-        worker.id,
-        old_status=old_status,
-        new_status=status
+    write_audit_log(
+
+        actor=admin,
+
+        action=
+            "worker.verification_changed",
+
+        resource_type=
+            "worker",
+
+        resource_id=
+            worker.id,
+
+        old_status=
+            old_status,
+
+        new_status=
+            status
     )
 
-    db.session.commit()
+    try:
+
+        db.session.commit()
+
+    except SQLAlchemyError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to update worker verification.",
+            500
+        )
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "message":
             "Worker verification updated.",
@@ -1805,7 +3000,8 @@ def admin_categories():
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "categories": [
 
@@ -1832,7 +3028,8 @@ def admin_categories():
                     category.is_active
             }
 
-            for category in categories
+            for category
+            in categories
         ]
     })
 
@@ -1880,7 +3077,8 @@ def admin_audit_logs():
 
     return jsonify({
 
-        "status": "success",
+        "status":
+            "success",
 
         "logs": [
 
@@ -1912,13 +3110,15 @@ def admin_audit_logs():
                 "details":
                     log.details,
 
-                "created_at":
+                "created_at": (
                     log.created_at.isoformat()
                     if log.created_at
                     else None
+                )
             }
 
-            for log in pagination.items
+            for log
+            in pagination.items
         ],
 
         "pagination": {
