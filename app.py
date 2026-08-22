@@ -369,6 +369,11 @@ def create_app():
 
         url_prefix="/api/customer"
     )
+    from routes.customer_pages import customer_page_bp
+
+    app.register_blueprint(
+    customer_page_bp
+    )
 
 
     # ========================================================
