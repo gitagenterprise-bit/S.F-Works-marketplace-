@@ -4,19 +4,19 @@ from flask import jsonify
 
 from flask_jwt_extended import (
     jwt_required,
-    get_jwt,
-    get_jwt_identity
+    get_jwt
 )
 
-from extensions import db
-from models.user import User
+from utils.permissions import (
+    get_current_user
+)
 
-
-# =========================================================
-# ROLE REQUIRED
-# =========================================================
 
 def role_required(*allowed_roles):
+
+    allowed_roles = set(
+        allowed_roles
+    )
 
     def decorator(function):
 
@@ -24,78 +24,39 @@ def role_required(*allowed_roles):
         @jwt_required()
         def wrapper(*args, **kwargs):
 
-            # -------------------------------------------------
-            # JWT CLAIMS
-            # -------------------------------------------------
-
-            claims = get_jwt()
-
-            role = claims.get("role")
-
-
-            # -------------------------------------------------
-            # ROLE CHECK
-            # -------------------------------------------------
-
-            if role not in allowed_roles:
-
-                return jsonify({
-                    "status": "error",
-                    "message": "You do not have permission"
-                }), 403
-
-
-            # -------------------------------------------------
-            # CURRENT USER
-            # -------------------------------------------------
-
-            user_id = get_jwt_identity()
-
-            try:
-
-                user_id = int(user_id)
-
-            except (TypeError, ValueError):
-
-                return jsonify({
-                    "status": "error",
-                    "message": "Invalid user identity"
-                }), 401
-
-
-            user = db.session.get(
-                User,
-                user_id
-            )
-
-
-            # -------------------------------------------------
-            # USER NOT FOUND
-            # -------------------------------------------------
+            user = get_current_user()
 
             if not user:
 
                 return jsonify({
                     "status": "error",
-                    "message": "User not found"
-                }), 404
+                    "message": "Authentication required."
+                }), 401
 
+            claims = get_jwt()
 
-            # -------------------------------------------------
-            # ACTIVE ACCOUNT CHECK
-            # -------------------------------------------------
+            token_role = claims.get(
+                "role"
+            )
 
-            if not user.is_active:
+            # ------------------------------------------------
+            # JWT role must match database role.
+            # Prevents stale/manipulated privilege.
+            # ------------------------------------------------
+
+            if token_role != user.role:
 
                 return jsonify({
                     "status": "error",
-                    "message": "Account is disabled"
+                    "message": "Security validation failed."
+                }), 401
+
+            if user.role not in allowed_roles:
+
+                return jsonify({
+                    "status": "error",
+                    "message": "You do not have permission."
                 }), 403
-
-
-            # -------------------------------------------------
-            # EXECUTE ROUTE
-            # -------------------------------------------------
 
             return function(
                 *args,
@@ -107,88 +68,89 @@ def role_required(*allowed_roles):
     return decorator
 
 
-# =========================================================
-# ADMIN REQUIRED
-# =========================================================
-
 def admin_required(function):
 
     @wraps(function)
     @jwt_required()
     def wrapper(*args, **kwargs):
 
-        # -------------------------------------------------
-        # JWT CLAIMS
-        # -------------------------------------------------
-
-        claims = get_jwt()
-
-        role = claims.get("role")
-
-
-        # -------------------------------------------------
-        # ADMIN ROLE CHECK
-        # -------------------------------------------------
-
-        if role != "admin":
-
-            return jsonify({
-                "status": "error",
-                "message": "Administrator access required"
-            }), 403
-
-
-        # -------------------------------------------------
-        # CURRENT USER
-        # -------------------------------------------------
-
-        user_id = get_jwt_identity()
-
-        try:
-
-            user_id = int(user_id)
-
-        except (TypeError, ValueError):
-
-            return jsonify({
-                "status": "error",
-                "message": "Invalid user identity"
-            }), 401
-
-
-        user = db.session.get(
-            User,
-            user_id
-        )
-
-
-        # -------------------------------------------------
-        # USER NOT FOUND
-        # -------------------------------------------------
+        user = get_current_user()
 
         if not user:
 
             return jsonify({
                 "status": "error",
-                "message": "User not found"
-            }), 404
+                "message": "Authentication required."
+            }), 401
 
+        claims = get_jwt()
 
-        # -------------------------------------------------
-        # ACTIVE ACCOUNT CHECK
-        # -------------------------------------------------
-
-        if not user.is_active:
+        if claims.get("role") != "admin":
 
             return jsonify({
                 "status": "error",
-                "message": "Account is disabled"
+                "message": "Administrator access required."
             }), 403
 
+        if user.role != "admin":
 
-        # -------------------------------------------------
-        # EXECUTE ADMIN ROUTE
-        # -------------------------------------------------
+            return jsonify({
+                "status": "error",
+                "message": "Administrator access required."
+            }), 403
+
+        return function(
+            *args,
+            **kwargs
+        )
+
+    return wrapper
+
+
+def agent_required(function):
+
+    @wraps(function)
+    @jwt_required()
+    def wrapper(*args, **kwargs):
+
+        user = get_current_user()
+
+        if not user:
+
+            return jsonify({
+                "status": "error",
+                "message": "Authentication required."
+            }), 401
+
+        if user.role != "agent":
+
+            return jsonify({
+                "status": "error",
+                "message": "Agent access required."
+            }), 403
+
+        if not user.agent_profile:
+
+            return jsonify({
+                "status": "error",
+                "message": "Agent profile not configured."
+            }), 403
+
+        if not user.agent_profile.is_active:
+
+            return jsonify({
+                "status": "error",
+                "message": "Agent account is inactive."
+            }), 403
+
+        claims = get_jwt()
+
+        if claims.get("role") != "agent":
+
+            return jsonify({
+                "status": "error",
+                "message": "Security validation failed."
+            }), 401
 
         return function(
             *args,
