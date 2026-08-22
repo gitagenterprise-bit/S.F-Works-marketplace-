@@ -841,3 +841,93 @@ def update_agent_permissions(agent_id):
 
     }), 200
 
+@admin_agents_bp.patch(
+    "/<int:agent_id>/status"
+)
+@admin_required
+def update_agent_status(agent_id):
+
+    agent = db.session.get(
+        AgentProfile,
+        agent_id
+    )
+
+    if not agent:
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "Agent not found."
+        }), 404
+
+    data = (
+        request.get_json(
+            silent=True
+        )
+        or {}
+    )
+
+    is_active = data.get(
+        "is_active"
+    )
+
+    if not isinstance(
+        is_active,
+        bool
+    ):
+
+        return jsonify({
+            "status": "error",
+            "message":
+                "is_active must be boolean."
+        }), 400
+
+    agent.user.is_active = (
+        is_active
+    )
+
+    create_audit_log(
+
+        actor_id=int(
+            get_jwt_identity()
+        ),
+
+        action=(
+            "AGENT_ACTIVATED"
+            if is_active
+            else "AGENT_SUSPENDED"
+        ),
+
+        entity_type="agent",
+
+        entity_id=agent.id,
+
+        description=(
+            f"Agent "
+            f"{agent.employee_code} "
+            + (
+                "activated."
+                if is_active
+                else "suspended."
+            )
+        )
+    )
+
+    db.session.commit()
+
+    return jsonify({
+
+        "status":
+            "success",
+
+        "message":
+            (
+                "Agent activated."
+                if is_active
+                else "Agent suspended."
+            ),
+
+        "is_active":
+            agent.user.is_active
+
+    }), 200
