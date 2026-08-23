@@ -1,1970 +1,1676 @@
 {% extends "base.html" %}
 
 {% block title %}
-Admin Dashboard | S. F Works
+Admin Dashboard | S. F Works Marketplace
 {% endblock %}
 
 {% block content %}
 
-<main class="sf-admin">
+<div class="sf-admin-app">
 
-    <!-- SIDEBAR -->
+    <!-- =====================================================
+         MOBILE OVERLAY
+    ====================================================== -->
 
-    <aside class="admin-sidebar">
+    <div
+        class="sf-sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
 
-        <div class="admin-sidebar-brand">
 
-            <div class="admin-sidebar-logo">
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="sf-admin-sidebar"
+        id="adminSidebar"
+    >
+
+        <div class="sf-sidebar-brand">
+
+            <div class="sf-brand-mark">
                 SF
             </div>
 
-            <div>
-                <strong>S. F Works</strong>
-                <span>Administration</span>
+            <div class="sf-brand-text">
+
+                <strong>
+                    S. F Works
+                </strong>
+
+                <span>
+                    Administration
+                </span>
+
             </div>
 
         </div>
 
 
-        <nav class="admin-nav">
+        <!-- NAVIGATION -->
 
-            <button
-                class="admin-nav-item active"
+        <nav class="sf-admin-nav">
+
+            <div class="sf-nav-section">
+                OVERVIEW
+            </div>
+
+            <a
+                href="#"
+                class="sf-nav-item active"
                 data-section="dashboard"
             >
-                <span>⌂</span>
-                Dashboard
-            </button>
+                <span class="sf-nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
 
-            <button
-                class="admin-nav-item"
+
+            <div class="sf-nav-section">
+                MANAGEMENT
+            </div>
+
+            <a
+                href="#"
+                class="sf-nav-item"
                 data-section="users"
             >
-                <span>◉</span>
-                Users
-            </button>
+                <span class="sf-nav-icon">♙</span>
+                <span>Users</span>
+            </a>
 
-            <button
-                class="admin-nav-item"
+            <a
+                href="#"
+                class="sf-nav-item"
+                data-section="agents"
+            >
+                <span class="sf-nav-icon">◉</span>
+                <span>Agents</span>
+            </a>
+
+            <a
+                href="#"
+                class="sf-nav-item"
                 data-section="workers"
             >
-                <span>★</span>
-                Workers
-            </button>
+                <span class="sf-nav-icon">♟</span>
+                <span>Workers</span>
+            </a>
 
-            <button
-                class="admin-nav-item"
-                data-section="jobs"
-            >
-                <span>▣</span>
-                Jobs
-            </button>
-
-            <button
-                class="admin-nav-item"
+            <a
+                href="#"
+                class="sf-nav-item"
                 data-section="categories"
             >
-                <span>▤</span>
-                Categories
-            </button>
+                <span class="sf-nav-icon">▦</span>
+                <span>Categories</span>
+            </a>
 
-            <button
-                class="admin-nav-item"
-                data-section="settings"
+
+            <div class="sf-nav-section">
+                MARKETPLACE
+            </div>
+
+            <a
+                href="#"
+                class="sf-nav-item"
+                data-section="jobs"
             >
-                <span>⚙</span>
-                Settings
-            </button>
+                <span class="sf-nav-icon">▣</span>
+                <span>Jobs</span>
+            </a>
+
+            <a
+                href="#"
+                class="sf-nav-item"
+                data-section="applications"
+            >
+                <span class="sf-nav-icon">✓</span>
+                <span>Applications</span>
+            </a>
+
+
+            <div class="sf-nav-section">
+                SECURITY
+            </div>
+
+            <a
+                href="#"
+                class="sf-nav-item"
+                data-section="audit"
+            >
+                <span class="sf-nav-icon">◌</span>
+                <span>Audit Logs</span>
+            </a>
 
         </nav>
 
 
-        <div class="admin-sidebar-bottom">
+        <!-- SIDEBAR FOOTER -->
 
-            <button
-                id="adminLogout"
-                class="admin-logout"
-            >
-                ⇥ Logout
-            </button>
+        <div class="sf-sidebar-footer">
+
+            <div class="sf-security-status">
+
+                <span class="sf-status-dot"></span>
+
+                <div>
+                    <strong>
+                        System Secure
+                    </strong>
+
+                    <small>
+                        Administrator session active
+                    </small>
+                </div>
+
+            </div>
 
         </div>
 
     </aside>
 
 
-    <!-- MAIN -->
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
 
-    <section class="admin-main">
+    <main class="sf-admin-main">
 
-        <header class="admin-topbar">
 
-            <div>
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
 
-                <span class="admin-eyebrow">
-                    ADMINISTRATION
-                </span>
+        <header class="sf-admin-topbar">
 
-                <h1 id="adminPageTitle">
-                    Dashboard
-                </h1>
+            <div class="sf-topbar-left">
+
+                <button
+                    class="sf-mobile-menu"
+                    id="mobileMenu"
+                    type="button"
+                >
+                    ☰
+                </button>
+
+                <div>
+
+                    <div class="sf-breadcrumb">
+                        Administration
+                        <span>/</span>
+                        <strong id="pageBreadcrumb">
+                            Dashboard
+                        </strong>
+                    </div>
+
+                    <h1 id="pageTitle">
+                        Command Center
+                    </h1>
+
+                </div>
 
             </div>
 
 
-            <div class="admin-profile">
+            <div class="sf-topbar-actions">
 
-                <div class="admin-avatar">
-                    A
+                <button
+                    class="sf-icon-button"
+                    id="refreshDashboard"
+                    title="Refresh"
+                >
+                    ↻
+                </button>
+
+
+                <div class="sf-admin-profile">
+
+                    <div class="sf-avatar">
+                        A
+                    </div>
+
+                    <div class="sf-admin-profile-info">
+
+                        <strong id="adminName">
+                            Administrator
+                        </strong>
+
+                        <span>
+                            Super Admin
+                        </span>
+
+                    </div>
+
                 </div>
 
-                <div>
 
-                    <strong id="adminName">
-                        Administrator
-                    </strong>
-
-                    <span>
-                        Super Admin
-                    </span>
-
-                </div>
+                <button
+                    class="sf-logout-button"
+                    id="logoutButton"
+                >
+                    Logout
+                </button>
 
             </div>
 
         </header>
 
 
-        <!-- DASHBOARD -->
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
 
-        <section
-            id="section-dashboard"
-            class="admin-section active"
-        >
+        <section class="sf-admin-content">
 
-            <div class="admin-welcome">
 
-                <div>
+            <!-- =================================================
+                 DASHBOARD
+            ================================================== -->
 
-                    <span>
-                        CONTROL CENTER
-                    </span>
+            <section
+                class="sf-page-section active"
+                id="section-dashboard"
+            >
 
-                    <h2>
-                        Marketplace Overview
-                    </h2>
+                <!-- HERO -->
 
-                    <p>
-                        Monitor and control your S. F Works
-                        marketplace from one secure dashboard.
-                    </p>
+                <div class="sf-dashboard-hero">
+
+                    <div>
+
+                        <span class="sf-eyebrow">
+                            ADMINISTRATIVE OVERVIEW
+                        </span>
+
+                        <h2>
+                            Welcome back,
+                            <span id="heroAdminName">
+                                Administrator
+                            </span>
+                        </h2>
+
+                        <p>
+                            Monitor your marketplace,
+                            workforce, agents and approval
+                            workflows from one place.
+                        </p>
+
+                    </div>
+
+                    <div class="sf-hero-status">
+
+                        <span class="sf-live-dot"></span>
+
+                        <span>
+                            System Live
+                        </span>
+
+                    </div>
 
                 </div>
 
-                <div class="admin-live">
 
-                    <span></span>
+                <!-- KPI GRID -->
 
-                    System Online
-
-                </div>
-
-            </div>
+                <div class="sf-stat-grid">
 
 
-            <div class="admin-stats">
+                    <article class="sf-stat-card">
 
-                <div class="admin-stat">
-                    <span>Users</span>
-                    <strong id="totalUsers">—</strong>
-                </div>
-
-                <div class="admin-stat">
-                    <span>Workers</span>
-                    <strong id="totalWorkers">—</strong>
-                </div>
-
-                <div class="admin-stat">
-                    <span>Customers</span>
-                    <strong id="totalCustomers">—</strong>
-                </div>
-
-                <div class="admin-stat">
-                    <span>Jobs</span>
-                    <strong id="totalJobs">—</strong>
-                </div>
-
-                <div class="admin-stat">
-                    <span>Applications</span>
-                    <strong id="totalApplications">—</strong>
-                </div>
-
-                <div class="admin-stat warning">
-                    <span>Pending Verification</span>
-                    <strong id="pendingWorkers">—</strong>
-                </div>
-
-            </div>
-
-
-            <div class="admin-panels">
-
-                <div class="admin-panel">
-
-                    <div class="admin-panel-header">
-
-                        <div>
-                            <span>SECURITY</span>
-                            <h3>System Status</h3>
+                        <div class="sf-stat-icon users">
+                            ♙
                         </div>
 
-                    </div>
+                        <div class="sf-stat-content">
 
-                    <div class="system-row">
-                        <span>Authentication</span>
-                        <b>Protected</b>
-                    </div>
+                            <span>
+                                Total Users
+                            </span>
 
-                    <div class="system-row">
-                        <span>Admin API</span>
-                        <b>Protected</b>
-                    </div>
+                            <strong
+                                id="statTotalUsers"
+                                data-stat="total_users"
+                            >
+                                —
+                            </strong>
 
-                    <div class="system-row">
-                        <span>Session</span>
-                        <b>HttpOnly Cookie</b>
-                    </div>
+                            <small>
+                                Registered accounts
+                            </small>
 
-                </div>
-
-
-                <div class="admin-panel">
-
-                    <div class="admin-panel-header">
-
-                        <div>
-                            <span>QUICK ACTIONS</span>
-                            <h3>Management</h3>
                         </div>
 
-                    </div>
+                    </article>
 
-                    <button
-                        class="quick-action"
-                        data-section="users"
-                    >
-                        Manage Users →
-                    </button>
 
-                    <button
-                        class="quick-action"
-                        data-section="workers"
-                    >
-                        Verify Workers →
-                    </button>
+                    <article class="sf-stat-card">
 
-                    <button
-                        class="quick-action"
-                        data-section="jobs"
-                    >
-                        Manage Jobs →
-                    </button>
+                        <div class="sf-stat-icon workers">
+                            ♟
+                        </div>
+
+                        <div class="sf-stat-content">
+
+                            <span>
+                                Workers
+                            </span>
+
+                            <strong
+                                id="statWorkers"
+                            >
+                                —
+                            </strong>
+
+                            <small>
+                                Workforce accounts
+                            </small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sf-stat-card">
+
+                        <div class="sf-stat-icon agents">
+                            ◉
+                        </div>
+
+                        <div class="sf-stat-content">
+
+                            <span>
+                                Agents
+                            </span>
+
+                            <strong
+                                id="statAgents"
+                            >
+                                —
+                            </strong>
+
+                            <small>
+                                Area agents
+                            </small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sf-stat-card">
+
+                        <div class="sf-stat-icon jobs">
+                            ▣
+                        </div>
+
+                        <div class="sf-stat-content">
+
+                            <span>
+                                Total Jobs
+                            </span>
+
+                            <strong
+                                id="statJobs"
+                            >
+                                —
+                            </strong>
+
+                            <small>
+                                Marketplace jobs
+                            </small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sf-stat-card">
+
+                        <div class="sf-stat-icon pending">
+                            ◷
+                        </div>
+
+                        <div class="sf-stat-content">
+
+                            <span>
+                                Pending Jobs
+                            </span>
+
+                            <strong
+                                id="statPendingJobs"
+                            >
+                                —
+                            </strong>
+
+                            <small>
+                                Require attention
+                            </small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sf-stat-card">
+
+                        <div class="sf-stat-icon applications">
+                            ✓
+                        </div>
+
+                        <div class="sf-stat-content">
+
+                            <span>
+                                Applications
+                            </span>
+
+                            <strong
+                                id="statApplications"
+                            >
+                                —
+                            </strong>
+
+                            <small>
+                                Job applications
+                            </small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sf-stat-card">
+
+                        <div class="sf-stat-icon verification">
+                            !
+                        </div>
+
+                        <div class="sf-stat-content">
+
+                            <span>
+                                Pending Workers
+                            </span>
+
+                            <strong
+                                id="statPendingWorkers"
+                            >
+                                —
+                            </strong>
+
+                            <small>
+                                Verification queue
+                            </small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sf-stat-card">
+
+                        <div class="sf-stat-icon active">
+                            ●
+                        </div>
+
+                        <div class="sf-stat-content">
+
+                            <span>
+                                Active Users
+                            </span>
+
+                            <strong
+                                id="statActiveUsers"
+                            >
+                                —
+                            </strong>
+
+                            <small>
+                                Currently enabled
+                            </small>
+
+                        </div>
+
+                    </article>
 
                 </div>
 
-            </div>
 
-        </section>
+                <!-- =================================================
+                     CHARTS
+                ================================================== -->
 
+                <div class="sf-dashboard-grid">
 
-        <!-- USERS -->
 
-        <section
-            id="section-users"
-            class="admin-section"
-        >
+                    <article class="sf-panel sf-chart-panel">
 
-            <div class="section-heading">
+                        <div class="sf-panel-header">
 
-                <div>
-                    <span>ACCOUNT MANAGEMENT</span>
-                    <h2>Users</h2>
-                </div>
+                            <div>
 
-            </div>
+                                <span class="sf-panel-label">
+                                    MARKETPLACE
+                                </span>
 
-            <div
-                id="usersContainer"
-                class="admin-table-wrapper"
-            >
+                                <h3>
+                                    Platform Overview
+                                </h3>
 
-                <div class="admin-loading">
-                    Loading users...
-                </div>
+                            </div>
 
-            </div>
+                            <span class="sf-panel-badge">
+                                Live
+                            </span>
 
-        </section>
+                        </div>
 
+                        <div class="sf-chart">
 
-        <!-- WORKERS -->
+                            <div
+                                class="sf-bar"
+                                style="--value: 75%"
+                            >
+                                <span>
+                                    Jobs
+                                </span>
+                                <i></i>
+                            </div>
 
-        <section
-            id="section-workers"
-            class="admin-section"
-        >
+                            <div
+                                class="sf-bar"
+                                style="--value: 55%"
+                            >
+                                <span>
+                                    Applications
+                                </span>
+                                <i></i>
+                            </div>
 
-            <div class="section-heading">
+                            <div
+                                class="sf-bar"
+                                style="--value: 82%"
+                            >
+                                <span>
+                                    Users
+                                </span>
+                                <i></i>
+                            </div>
 
-                <div>
-                    <span>PROFESSIONALS</span>
-                    <h2>Worker Verification</h2>
-                </div>
+                            <div
+                                class="sf-bar"
+                                style="--value: 43%"
+                            >
+                                <span>
+                                    Workers
+                                </span>
+                                <i></i>
+                            </div>
 
-            </div>
+                            <div
+                                class="sf-bar"
+                                style="--value: 35%"
+                            >
+                                <span>
+                                    Agents
+                                </span>
+                                <i></i>
+                            </div>
 
-            <div class="admin-empty-panel">
+                        </div>
 
-                Worker verification management is ready.
+                    </article>
 
-                <br>
 
-                Connect this section to your WorkerProfile
-                verification workflow.
+                    <article class="sf-panel">
 
-            </div>
+                        <div class="sf-panel-header">
 
-        </section>
+                            <div>
 
+                                <span class="sf-panel-label">
+                                    WORKFLOW
+                                </span>
 
-        <!-- JOBS -->
+                                <h3>
+                                    Attention Required
+                                </h3>
 
-        <section
-            id="section-jobs"
-            class="admin-section"
-        >
+                            </div>
 
-            <div class="section-heading">
+                        </div>
 
-                <div>
-                    <span>MARKETPLACE</span>
-                    <h2>Jobs</h2>
-                </div>
 
-            </div>
+                        <div class="sf-attention-list">
 
-            <div
-                id="jobsContainer"
-                class="admin-table-wrapper"
-            >
 
-                <div class="admin-loading">
-                    Loading jobs...
-                </div>
+                            <button
+                                class="sf-attention-item"
+                                data-section="workers"
+                            >
 
-            </div>
+                                <div class="sf-attention-icon orange">
+                                    !
+                                </div>
 
-        </section>
+                                <div>
 
-
-        <!-- CATEGORIES -->
-
-        <section
-            id="section-categories"
-            class="admin-section"
-        >
-
-            <div class="section-heading">
-
-                <div>
-                    <span>MARKETPLACE STRUCTURE</span>
-                    <h2>Categories</h2>
-                </div>
-
-            </div>
-
-            <div
-                id="categoriesContainer"
-                class="admin-table-wrapper"
-            >
-
-                <div class="admin-loading">
-                    Loading categories...
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- SETTINGS -->
-
-        <section
-            id="section-settings"
-            class="admin-section"
-        >
-
-            <div class="section-heading">
-
-                <div>
-                    <span>SYSTEM</span>
-                    <h2>Admin Settings</h2>
-                </div>
-
-            </div>
-
-            <div class="admin-empty-panel">
-
-                <h3>Administration Security</h3>
-
-                <p>
-                    Admin-only settings can be connected here,
-                    including password changes, security logs,
-                    account controls and system configuration.
-                </p>
-
-            </div>
-
-        </section>
-
-    </section>
-
-</main>
-
-
-<style>
-
-.sf-admin {
-
-    min-height: calc(100vh - 70px);
-
-    display: flex;
-
-    background: #f8fafc;
-
-    color: #0f172a;
-}
-
-
-/* SIDEBAR */
-
-.admin-sidebar {
-
-    position: sticky;
-
-    top: 0;
-
-    width: 250px;
-
-    min-height: calc(100vh - 70px);
-
-    display: flex;
-
-    flex-direction: column;
-
-    padding: 24px 16px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #0f172a,
-            #111827
-        );
-
-    color: white;
-}
-
-
-.admin-sidebar-brand {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 11px;
-
-    padding: 5px 8px 28px;
-}
-
-
-.admin-sidebar-logo {
-
-    width: 42px;
-    height: 42px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-
-    background: rgba(255,255,255,.10);
-
-    font-size: 13px;
-
-    font-weight: 900;
-}
-
-
-.admin-sidebar-brand strong {
-
-    display: block;
-
-    font-size: 13px;
-}
-
-
-.admin-sidebar-brand span {
-
-    display: block;
-
-    margin-top: 3px;
-
-    color: #94a3b8;
-
-    font-size: 10px;
-}
-
-
-.admin-nav {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 5px;
-}
-
-
-.admin-nav-item {
-
-    width: 100%;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-    padding: 12px 13px;
-
-    border: 0;
-
-    border-radius: 11px;
-
-    background: transparent;
-
-    color: #94a3b8;
-
-    text-align: left;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    cursor: pointer;
-}
-
-
-.admin-nav-item span {
-
-    width: 18px;
-
-    text-align: center;
-}
-
-
-.admin-nav-item:hover {
-
-    background: rgba(255,255,255,.06);
-
-    color: white;
-}
-
-
-.admin-nav-item.active {
-
-    background: #2563eb;
-
-    color: white;
-
-    box-shadow:
-        0 8px 20px
-        rgba(37,99,235,.20);
-}
-
-
-.admin-sidebar-bottom {
-
-    margin-top: auto;
-}
-
-
-.admin-logout {
-
-    width: 100%;
-
-    padding: 11px;
-
-    border: 1px solid rgba(255,255,255,.08);
-
-    border-radius: 10px;
-
-    background: rgba(255,255,255,.04);
-
-    color: #cbd5e1;
-
-    font-size: 11px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-}
-
-
-/* MAIN */
-
-.admin-main {
-
-    flex: 1;
-
-    min-width: 0;
-
-    padding: 30px;
-
-}
-
-
-.admin-topbar {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    margin-bottom: 28px;
-}
-
-
-.admin-eyebrow,
-.section-heading span {
-
-    color: #2563eb;
-
-    font-size: 9px;
-
-    font-weight: 900;
-
-    letter-spacing: .14em;
-}
-
-
-.admin-topbar h1 {
-
-    margin: 6px 0 0;
-
-    font-size: 28px;
-
-    letter-spacing: -.04em;
-}
-
-
-.admin-profile {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-}
-
-
-.admin-avatar {
-
-    width: 40px;
-    height: 40px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-
-    background: #dbeafe;
-
-    color: #1d4ed8;
-
-    font-weight: 900;
-}
-
-
-.admin-profile strong {
-
-    display: block;
-
-    font-size: 12px;
-}
-
-
-.admin-profile span {
-
-    display: block;
-
-    margin-top: 3px;
-
-    color: #94a3b8;
-
-    font-size: 10px;
-}
-
-
-/* SECTIONS */
-
-.admin-section {
-
-    display: none;
-}
-
-
-.admin-section.active {
-
-    display: block;
-}
-
-
-/* WELCOME */
-
-.admin-welcome {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding: 28px;
-
-    margin-bottom: 20px;
-
-    border-radius: 20px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #0f172a,
-            #172554
-        );
-
-    color: white;
-
-    box-shadow:
-        0 20px 45px
-        rgba(15,23,42,.13);
-}
-
-
-.admin-welcome span {
-
-    color: #93c5fd;
-
-    font-size: 9px;
-
-    font-weight: 900;
-
-    letter-spacing: .15em;
-}
-
-
-.admin-welcome h2 {
-
-    margin: 8px 0;
-
-    font-size: 27px;
-
-    letter-spacing: -.04em;
-}
-
-
-.admin-welcome p {
-
-    margin: 0;
-
-    color: #cbd5e1;
-
-    font-size: 12px;
-}
-
-
-.admin-live {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    padding: 9px 12px;
-
-    border: 1px solid rgba(255,255,255,.10);
-
-    border-radius: 999px;
-
-    color: #cbd5e1;
-
-    font-size: 10px;
-
-    white-space: nowrap;
-}
-
-
-.admin-live span {
-
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: #4ade80;
-}
-
-
-/* STATS */
-
-.admin-stats {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(6, minmax(0,1fr));
-
-    gap: 12px;
-
-    margin-bottom: 20px;
-}
-
-
-.admin-stat {
-
-    padding: 18px;
-
-    border: 1px solid #e2e8f0;
-
-    border-radius: 16px;
-
-    background: white;
-
-    box-shadow:
-        0 8px 24px
-        rgba(15,23,42,.04);
-}
-
-
-.admin-stat span {
-
-    display: block;
-
-    color: #64748b;
-
-    font-size: 10px;
-
-    font-weight: 700;
-}
-
-
-.admin-stat strong {
-
-    display: block;
-
-    margin-top: 8px;
-
-    color: #0f172a;
-
-    font-size: 25px;
-
-    letter-spacing: -.04em;
-}
-
-
-.admin-stat.warning strong {
-
-    color: #d97706;
-}
-
-
-/* PANELS */
-
-.admin-panels {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0,1fr));
-
-    gap: 18px;
-}
-
-
-.admin-panel {
-
-    padding: 22px;
-
-    border: 1px solid #e2e8f0;
-
-    border-radius: 18px;
-
-    background: white;
-}
-
-
-.admin-panel-header span {
-
-    color: #94a3b8;
-
-    font-size: 9px;
-
-    font-weight: 900;
-
-    letter-spacing: .12em;
-}
-
-
-.admin-panel-header h3 {
-
-    margin: 5px 0 18px;
-
-    font-size: 17px;
-}
-
-
-.system-row {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    padding: 13px 0;
-
-    border-top: 1px solid #f1f5f9;
-
-    color: #64748b;
-
-    font-size: 11px;
-}
-
-
-.system-row b {
-
-    color: #15803d;
-
-    font-size: 10px;
-}
-
-
-.quick-action {
-
-    display: block;
-
-    width: 100%;
-
-    margin-bottom: 8px;
-
-    padding: 12px;
-
-    border: 1px solid #e2e8f0;
-
-    border-radius: 10px;
-
-    background: #f8fafc;
-
-    color: #334155;
-
-    text-align: left;
-
-    font-size: 11px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-}
-
-
-.quick-action:hover {
-
-    border-color: #93c5fd;
-
-    background: #eff6ff;
-
-    color: #2563eb;
-}
-
-
-/* SECTION */
-
-.section-heading {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    margin-bottom: 20px;
-}
-
-
-.section-heading h2 {
-
-    margin: 6px 0 0;
-
-    font-size: 26px;
-
-    letter-spacing: -.04em;
-}
-
-
-/* TABLE */
-
-.admin-table-wrapper {
-
-    overflow-x: auto;
-
-    border: 1px solid #e2e8f0;
-
-    border-radius: 18px;
-
-    background: white;
-}
-
-
-.admin-table {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    font-size: 11px;
-}
-
-
-.admin-table th {
-
-    padding: 13px;
-
-    background: #f8fafc;
-
-    color: #64748b;
-
-    text-align: left;
-
-    font-size: 9px;
-
-    text-transform: uppercase;
-}
-
-
-.admin-table td {
-
-    padding: 14px 13px;
-
-    border-top: 1px solid #f1f5f9;
-
-}
-
-
-.status-active {
-
-    color: #15803d;
-
-    font-weight: 800;
-}
-
-
-.status-inactive {
-
-    color: #b91c1c;
-
-    font-weight: 800;
-}
-
-
-.user-action {
-
-    border: 0;
-
-    border-radius: 7px;
-
-    padding: 6px 9px;
-
-    background: #eff6ff;
-
-    color: #2563eb;
-
-    font-size: 10px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-}
-
-
-.admin-loading,
-.admin-empty-panel {
-
-    padding: 35px;
-
-    text-align: center;
-
-    color: #64748b;
-
-    font-size: 12px;
-}
-
-
-.admin-empty-panel {
-
-    border: 1px solid #e2e8f0;
-
-    border-radius: 18px;
-
-    background: white;
-}
-
-
-/* RESPONSIVE */
-
-@media(max-width:1100px) {
-
-    .admin-stats {
-
-        grid-template-columns:
-            repeat(3,1fr);
-    }
-
-}
-
-
-@media(max-width:800px) {
-
-    .admin-sidebar {
-
-        width: 70px;
-
-        padding: 15px 8px;
-    }
-
-
-    .admin-sidebar-brand div:last-child,
-    .admin-nav-item:not(.active)::after {
-
-        display: none;
-    }
-
-
-    .admin-sidebar-brand {
-
-        justify-content: center;
-    }
-
-
-    .admin-nav-item {
-
-        justify-content: center;
-    }
-
-
-    .admin-nav-item span {
-
-        margin: 0;
-    }
-
-
-    .admin-nav-item {
-
-        font-size: 0;
-    }
-
-
-    .admin-nav-item span {
-
-        font-size: 14px;
-    }
-
-
-    .admin-main {
-
-        padding: 20px 14px;
-    }
-
-
-    .admin-panels {
-
-        grid-template-columns: 1fr;
-    }
-
-}
-
-
-@media(max-width:560px) {
-
-    .admin-topbar h1 {
-
-        font-size: 22px;
-    }
-
-
-    .admin-profile div:last-child {
-
-        display: none;
-    }
-
-
-    .admin-welcome {
-
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-
-    .admin-stats {
-
-        grid-template-columns:
-            repeat(2,1fr);
-    }
-
-}
-
-</style>
-
-
-<script>
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-
-        /* =====================================================
-           NAVIGATION
-        ===================================================== */
-
-        const navItems =
-            document.querySelectorAll(
-                "[data-section]"
-            );
-
-
-        const title =
-            document.getElementById(
-                "adminPageTitle"
-            );
-
-
-        const titles = {
-
-            dashboard:
-                "Dashboard",
-
-            users:
-                "Users",
-
-            workers:
-                "Worker Verification",
-
-            jobs:
-                "Jobs",
-
-            categories:
-                "Categories",
-
-            settings:
-                "Settings"
-        };
-
-
-        function openSection(
-            section
-        ) {
-
-            document
-                .querySelectorAll(
-                    ".admin-section"
-                )
-                .forEach(
-                    function (element) {
-
-                        element.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-            const target =
-                document.getElementById(
-                    "section-" +
-                    section
-                );
-
-
-            if (target) {
-
-                target.classList.add(
-                    "active"
-                );
-            }
-
-
-            document
-                .querySelectorAll(
-                    ".admin-nav-item"
-                )
-                .forEach(
-                    function (item) {
-
-                        item.classList.toggle(
-                            "active",
-                            item.dataset.section ===
-                                section
-                        );
-
-                    }
-                );
-
-
-            title.textContent =
-                titles[section] ||
-                "Admin";
-
-
-            if (section === "users") {
-
-                loadUsers();
-
-            }
-
-
-            if (section === "jobs") {
-
-                loadJobs();
-
-            }
-
-
-            if (section === "categories") {
-
-                loadCategories();
-
-            }
-
-        }
-
-
-        navItems.forEach(
-            function (item) {
-
-                item.addEventListener(
-                    "click",
-                    function () {
-
-                        openSection(
-                            item.dataset.section
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-
-        /* =====================================================
-           DASHBOARD
-        ===================================================== */
-
-        async function loadDashboard() {
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/admin/dashboard",
-                        {
-                            credentials:
-                                "include"
-                        }
-                    );
-
-
-                if (
-                    response.status === 401 ||
-                    response.status === 403
-                ) {
-
-                    window.location.replace(
-                        "/admin/login"
-                    );
-
-                    return;
-                }
-
-
-                const result =
-                    await response.json();
-
-
-                if (
-                    !result.stats
-                ) {
-
-                    return;
-                }
-
-
-                const stats =
-                    result.stats;
-
-
-                document.getElementById(
-                    "totalUsers"
-                ).textContent =
-                    stats.total_users;
-
-
-                document.getElementById(
-                    "totalWorkers"
-                ).textContent =
-                    stats.total_workers;
-
-
-                document.getElementById(
-                    "totalCustomers"
-                ).textContent =
-                    stats.total_customers;
-
-
-                document.getElementById(
-                    "totalJobs"
-                ).textContent =
-                    stats.total_jobs;
-
-
-                document.getElementById(
-                    "totalApplications"
-                ).textContent =
-                    stats.total_applications;
-
-
-                document.getElementById(
-                    "pendingWorkers"
-                ).textContent =
-                    stats.pending_workers;
-
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-            }
-
-        }
-
-
-        /* =====================================================
-           ADMIN PROFILE
-        ===================================================== */
-
-        async function loadAdmin() {
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/admin/me",
-                        {
-                            credentials:
-                                "include"
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    window.location.replace(
-                        "/admin/login"
-                    );
-
-                    return;
-                }
-
-
-                const result =
-                    await response.json();
-
-
-                if (
-                    result.user
-                ) {
-
-                    document.getElementById(
-                        "adminName"
-                    ).textContent =
-                        result.user.full_name;
-                }
-
-
-            } catch (error) {
-
-                window.location.replace(
-                    "/admin/login"
-                );
-
-            }
-
-        }
-
-
-        /* =====================================================
-           USERS
-        ===================================================== */
-
-        async function loadUsers() {
-
-            const container =
-                document.getElementById(
-                    "usersContainer"
-                );
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/admin/users",
-                        {
-                            credentials:
-                                "include"
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    return;
-                }
-
-
-                const result =
-                    await response.json();
-
-
-                let html = `
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>User</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-
-                result.users.forEach(
-                    function (user) {
-
-                        html += `
-                            <tr>
-
-                                <td>
-                                    #${user.id}
-                                </td>
-
-                                <td>
                                     <strong>
-                                        ${escapeHtml(
-                                            user.full_name
-                                        )}
+                                        Worker verification
                                     </strong>
-                                </td>
 
-                                <td>
-                                    ${escapeHtml(
-                                        user.email
-                                    )}
-                                </td>
+                                    <span>
+                                        Pending workers
+                                    </span>
 
-                                <td>
-                                    ${escapeHtml(
-                                        user.role
-                                    )}
-                                </td>
+                                </div>
 
-                                <td class="${
-                                    user.is_active
-                                        ? "status-active"
-                                        : "status-inactive"
-                                }">
+                                <b id="attentionWorkers">
+                                    —
+                                </b>
 
-                                    ${
-                                        user.is_active
-                                            ? "Active"
-                                            : "Inactive"
-                                    }
+                            </button>
 
-                                </td>
 
-                                <td>
+                            <button
+                                class="sf-attention-item"
+                                data-section="jobs"
+                            >
 
-                                    <button
-                                        class="user-action"
-                                        data-user-id="${user.id}"
-                                        data-active="${user.is_active}"
-                                    >
-                                        ${
-                                            user.is_active
-                                                ? "Deactivate"
-                                                : "Activate"
-                                        }
-                                    </button>
+                                <div class="sf-attention-icon blue">
+                                    ▣
+                                </div>
 
-                                </td>
+                                <div>
 
-                            </tr>
-                        `;
+                                    <strong>
+                                        Job approvals
+                                    </strong>
 
-                    }
-                );
+                                    <span>
+                                        Jobs waiting for review
+                                    </span>
 
+                                </div>
 
-                html += `
-                        </tbody>
-                    </table>
-                `;
+                                <b id="attentionJobs">
+                                    —
+                                </b>
 
+                            </button>
 
-                container.innerHTML =
-                    html;
 
+                            <button
+                                class="sf-attention-item"
+                                data-section="applications"
+                            >
 
-                container
-                    .querySelectorAll(
-                        ".user-action"
-                    )
-                    .forEach(
-                        function (button) {
+                                <div class="sf-attention-icon purple">
+                                    ✓
+                                </div>
 
-                            button.addEventListener(
-                                "click",
-                                function () {
+                                <div>
 
-                                    updateUser(
-                                        button.dataset.userId,
-                                        button.dataset.active === "true"
-                                    );
+                                    <strong>
+                                        Applications
+                                    </strong>
 
-                                }
-                            );
+                                    <span>
+                                        Applications in workflow
+                                    </span>
 
-                        }
-                    );
+                                </div>
 
+                                <b id="attentionApplications">
+                                    —
+                                </b>
 
-            } catch (error) {
+                            </button>
 
-                container.innerHTML =
-                    `<div class="admin-loading">
-                        Unable to load users.
-                    </div>`;
+                        </div>
 
-            }
+                    </article>
 
-        }
+                </div>
 
 
-        async function updateUser(
-            userId,
-            currentStatus
-        ) {
+                <!-- =================================================
+                     QUICK ACTIONS
+                ================================================== -->
 
-            try {
+                <div class="sf-panel">
 
-                const response =
-                    await fetch(
-                        `/api/admin/users/${userId}/status`,
-                        {
-                            method: "PATCH",
+                    <div class="sf-panel-header">
 
-                            credentials:
-                                "include",
+                        <div>
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
+                            <span class="sf-panel-label">
+                                OPERATIONS
+                            </span>
 
-                            body:
-                                JSON.stringify({
-                                    is_active:
-                                        !currentStatus
-                                })
-                        }
-                    );
+                            <h3>
+                                Quick Actions
+                            </h3>
 
+                        </div>
 
-                if (response.ok) {
+                    </div>
 
-                    loadUsers();
 
-                    loadDashboard();
+                    <div class="sf-quick-actions">
 
-                }
+                        <button
+                            class="sf-quick-action"
+                            data-section="agents"
+                        >
+                            <span>◉</span>
+                            <strong>
+                                Manage Agents
+                            </strong>
+                            <small>
+                                Agents & service areas
+                            </small>
+                        </button>
+
+
+                        <button
+                            class="sf-quick-action"
+                            data-section="jobs"
+                        >
+                            <span>▣</span>
+                            <strong>
+                                Review Jobs
+                            </strong>
+                            <small>
+                                Approve marketplace jobs
+                            </small>
+                        </button>
+
+
+                        <button
+                            class="sf-quick-action"
+                            data-section="workers"
+                        >
+                            <span>♟</span>
+                            <strong>
+                                Verify Workers
+                            </strong>
+                            <small>
+                                Manage worker verification
+                            </small>
+                        </button>
 
-            } catch (error) {
 
-                console.error(
-                    error
-                );
+                        <button
+                            class="sf-quick-action"
+                            data-section="audit"
+                        >
+                            <span>◌</span>
+                            <strong>
+                                Audit Logs
+                            </strong>
+                            <small>
+                                Security & activity history
+                            </small>
+                        </button>
 
-            }
+                    </div>
 
-        }
+                </div>
 
+            </section>
 
-        /* =====================================================
-           JOBS
-        ===================================================== */
 
-        async function loadJobs() {
+            <!-- =================================================
+                 USERS
+            ================================================== -->
 
-            const container =
-                document.getElementById(
-                    "jobsContainer"
-                );
+            <section
+                class="sf-page-section"
+                id="section-users"
+            >
 
+                <div class="sf-section-heading">
 
-            try {
+                    <div>
+                        <span class="sf-eyebrow">
+                            USER MANAGEMENT
+                        </span>
 
-                const response =
-                    await fetch(
-                        "/api/admin/jobs",
-                        {
-                            credentials:
-                                "include"
-                        }
-                    );
+                        <h2>
+                            Users
+                        </h2>
 
+                        <p>
+                            Manage platform users and account status.
+                        </p>
+                    </div>
 
-                const result =
-                    await response.json();
+                    <button
+                        class="sf-primary-button"
+                        id="refreshUsers"
+                    >
+                        ↻ Refresh
+                    </button>
 
+                </div>
 
-                let html =
-                    `<table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Customer ID</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
 
+                <div class="sf-panel">
 
-                result.jobs.forEach(
-                    function (job) {
+                    <div class="sf-table-toolbar">
 
-                        html += `
-                            <tr>
-                                <td>
-                                    #${job.id}
-                                </td>
+                        <input
+                            type="search"
+                            id="userSearch"
+                            placeholder="Search users..."
+                        />
 
-                                <td>
-                                    ${job.customer_id || "—"}
-                                </td>
-                            </tr>
-                        `;
+                        <select id="userRoleFilter">
 
-                    }
-                );
+                            <option value="">
+                                All Roles
+                            </option>
 
+                            <option value="customer">
+                                Customer
+                            </option>
 
-                html +=
-                    `</tbody></table>`;
+                            <option value="worker">
+                                Worker
+                            </option>
 
+                            <option value="agent">
+                                Agent
+                            </option>
 
-                container.innerHTML =
-                    html;
+                            <option value="admin">
+                                Admin
+                            </option>
 
+                        </select>
 
-            } catch (error) {
+                    </div>
 
-                container.innerHTML =
-                    `<div class="admin-loading">
-                        Unable to load jobs.
-                    </div>`;
 
-            }
+                    <div class="sf-table-wrapper">
 
-        }
+                        <table class="sf-data-table">
 
+                            <thead>
 
-        /* =====================================================
-           CATEGORIES
-        ===================================================== */
+                                <tr>
 
-        async function loadCategories() {
+                                    <th>
+                                        User
+                                    </th>
 
-            const container =
-                document.getElementById(
-                    "categoriesContainer"
-                );
+                                    <th>
+                                        Contact
+                                    </th>
 
+                                    <th>
+                                        Role
+                                    </th>
 
-            try {
+                                    <th>
+                                        Verification
+                                    </th>
 
-                const response =
-                    await fetch(
-                        "/api/admin/categories",
-                        {
-                            credentials:
-                                "include"
-                        }
-                    );
+                                    <th>
+                                        Status
+                                    </th>
 
+                                    <th>
+                                        Action
+                                    </th>
 
-                const result =
-                    await response.json();
+                                </tr>
 
+                            </thead>
 
-                let html =
-                    `<table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
+                            <tbody id="usersTableBody">
 
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="sf-loading">
+                                            Loading users...
+                                        </div>
+                                    </td>
+                                </tr>
 
-                result.categories.forEach(
-                    function (category) {
+                            </tbody>
 
-                        html += `
-                            <tr>
-                                <td>
-                                    #${category.id}
-                                </td>
+                        </table>
 
-                                <td>
-                                    ${escapeHtml(
-                                        category.name
-                                    )}
-                                </td>
-                            </tr>
-                        `;
+                    </div>
 
-                    }
-                );
+                    <div
+                        class="sf-pagination"
+                        id="usersPagination"
+                    ></div>
 
+                </div>
 
-                html +=
-                    `</tbody></table>`;
+            </section>
 
 
-                container.innerHTML =
-                    html;
+            <!-- =================================================
+                 AGENTS
+            ================================================== -->
 
+            <section
+                class="sf-page-section"
+                id="section-agents"
+            >
 
-            } catch (error) {
+                <div class="sf-section-heading">
 
-                container.innerHTML =
-                    `<div class="admin-loading">
-                        Unable to load categories.
-                    </div>`;
+                    <div>
 
-            }
+                        <span class="sf-eyebrow">
+                            FIELD OPERATIONS
+                        </span>
 
-        }
+                        <h2>
+                            Agents
+                        </h2>
 
+                        <p>
+                            Manage agents, permissions and service areas.
+                        </p>
 
-        /* =====================================================
-           HTML ESCAPE
-        ===================================================== */
+                    </div>
 
-        function escapeHtml(value) {
+                    <button
+                        class="sf-primary-button"
+                        id="openCreateAgent"
+                    >
+                        + Create Agent
+                    </button>
 
-            return String(value ?? "")
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;")
-                .replaceAll("'", "&#039;");
-        }
+                </div>
 
 
-        /* =====================================================
-           LOGOUT
-        ===================================================== */
+                <div
+                    class="sf-agent-grid"
+                    id="agentsGrid"
+                >
 
-        document
-            .getElementById(
-                "adminLogout"
-            )
-            .addEventListener(
-                "click",
-                async function () {
+                    <div class="sf-loading-card">
+                        Loading agents...
+                    </div>
 
-                    try {
+                </div>
 
-                        await fetch(
-                            "/api/admin/logout",
-                            {
-                                method: "POST",
+            </section>
 
-                                credentials:
-                                    "include"
-                            }
-                        );
 
-                    } finally {
+            <!-- =================================================
+                 WORKERS
+            ================================================== -->
 
-                        window.location.replace(
-                            "/admin/login"
-                        );
+            <section
+                class="sf-page-section"
+                id="section-workers"
+            >
 
-                    }
+                <div class="sf-section-heading">
 
-                }
-            );
+                    <div>
 
+                        <span class="sf-eyebrow">
+                            WORKFORCE
+                        </span>
 
-        /* =====================================================
-           START
-        ===================================================== */
+                        <h2>
+                            Worker Verification
+                        </h2>
 
-        loadAdmin();
+                        <p>
+                            Review and manage worker verification status.
+                        </p>
 
-        loadDashboard();
+                    </div>
 
-    }
-);
+                </div>
 
-</script>
+
+                <div class="sf-panel">
+
+                    <div class="sf-empty-state">
+
+                        <div class="sf-empty-icon">
+                            ♟
+                        </div>
+
+                        <h3>
+                            Worker verification center
+                        </h3>
+
+                        <p>
+                            Connect this section to your worker listing
+                            endpoint to display the verification queue.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 JOBS
+            ================================================== -->
+
+            <section
+                class="sf-page-section"
+                id="section-jobs"
+            >
+
+                <div class="sf-section-heading">
+
+                    <div>
+
+                        <span class="sf-eyebrow">
+                            MARKETPLACE
+                        </span>
+
+                        <h2>
+                            Jobs
+                        </h2>
+
+                        <p>
+                            Review, approve and manage marketplace jobs.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sf-panel">
+
+                    <div class="sf-table-toolbar">
+
+                        <select id="jobStatusFilter">
+
+                            <option value="">
+                                All statuses
+                            </option>
+
+                            <option value="pending_review">
+                                Pending Review
+                            </option>
+
+                            <option value="agent_review">
+                                Agent Review
+                            </option>
+
+                            <option value="admin_review">
+                                Admin Review
+                            </option>
+
+                            <option value="approved">
+                                Approved
+                            </option>
+
+                            <option value="rejected">
+                                Rejected
+                            </option>
+
+                        </select>
+
+                        <button
+                            class="sf-secondary-button"
+                            id="refreshJobs"
+                        >
+                            ↻ Refresh
+                        </button>
+
+                    </div>
+
+
+                    <div class="sf-table-wrapper">
+
+                        <table class="sf-data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Job
+                                    </th>
+
+                                    <th>
+                                        Customer
+                                    </th>
+
+                                    <th>
+                                        Budget
+                                    </th>
+
+                                    <th>
+                                        Location
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="jobsTableBody">
+
+                                <tr>
+
+                                    <td colspan="6">
+
+                                        <div class="sf-loading">
+                                            Loading jobs...
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div
+                        class="sf-pagination"
+                        id="jobsPagination"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 APPLICATIONS
+            ================================================== -->
+
+            <section
+                class="sf-page-section"
+                id="section-applications"
+            >
+
+                <div class="sf-section-heading">
+
+                    <div>
+
+                        <span class="sf-eyebrow">
+                            HIRING WORKFLOW
+                        </span>
+
+                        <h2>
+                            Applications
+                        </h2>
+
+                        <p>
+                            Review worker applications and hiring decisions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sf-panel">
+
+                    <div class="sf-table-wrapper">
+
+                        <table class="sf-data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Job
+                                    </th>
+
+                                    <th>
+                                        Worker
+                                    </th>
+
+                                    <th>
+                                        Proposed
+                                    </th>
+
+                                    <th>
+                                        Availability
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="applicationsTableBody">
+
+                                <tr>
+
+                                    <td colspan="6">
+
+                                        <div class="sf-loading">
+                                            Loading applications...
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CATEGORIES
+            ================================================== -->
+
+            <section
+                class="sf-page-section"
+                id="section-categories"
+            >
+
+                <div class="sf-section-heading">
+
+                    <div>
+
+                        <span class="sf-eyebrow">
+                            MARKETPLACE STRUCTURE
+                        </span>
+
+                        <h2>
+                            Categories
+                        </h2>
+
+                        <p>
+                            Manage marketplace service categories.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="sf-category-grid"
+                    id="categoriesGrid"
+                >
+
+                    <div class="sf-loading-card">
+                        Loading categories...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 AUDIT
+            ================================================== -->
+
+            <section
+                class="sf-page-section"
+                id="section-audit"
+            >
+
+                <div class="sf-section-heading">
+
+                    <div>
+
+                        <span class="sf-eyebrow">
+                            SECURITY
+                        </span>
+
+                        <h2>
+                            Audit Logs
+                        </h2>
+
+                        <p>
+                            Complete administrator activity history.
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="sf-secondary-button"
+                        id="refreshAudit"
+                    >
+                        ↻ Refresh
+                    </button>
+
+                </div>
+
+
+                <div class="sf-panel">
+
+                    <div class="sf-table-wrapper">
+
+                        <table class="sf-data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Time
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                    <th>
+                                        Resource
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        IP
+                                    </th>
+
+                                    <th>
+                                        Details
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="auditTableBody">
+
+                                <tr>
+
+                                    <td colspan="6">
+
+                                        <div class="sf-loading">
+                                            Loading audit logs...
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div
+                        class="sf-pagination"
+                        id="auditPagination"
+                    ></div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     CREATE AGENT MODAL
+========================================================== -->
+
+<div
+    class="sf-modal"
+    id="createAgentModal"
+    aria-hidden="true"
+>
+
+    <div class="sf-modal-backdrop"></div>
+
+    <div class="sf-modal-card">
+
+        <div class="sf-modal-header">
+
+            <div>
+
+                <span class="sf-eyebrow">
+                    FIELD OPERATIONS
+                </span>
+
+                <h3>
+                    Create New Agent
+                </h3>
+
+            </div>
+
+            <button
+                class="sf-modal-close"
+                id="closeCreateAgent"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="createAgentForm">
+
+
+            <div class="sf-form-grid">
+
+                <div class="sf-form-field">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="full_name"
+                        required
+                        maxlength="150"
+                        placeholder="Agent full name"
+                    >
+
+                </div>
+
+
+                <div class="sf-form-field">
+
+                    <label>
+                        Designation
+                    </label>
+
+                    <input
+                        type="text"
+                        name="designation"
+                        placeholder="Area Agent"
+                    >
+
+                </div>
+
+
+                <div class="sf-form-field">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        required
+                        placeholder="agent@example.com"
+                    >
+
+                </div>
+
+
+                <div class="sf-form-field">
+
+                    <label>
+                        Phone
+                    </label>
+
+                    <input
+                        type="tel"
+                        name="phone"
+                        required
+                        placeholder="Phone number"
+                    >
+
+                </div>
+
+
+                <div class="sf-form-field full">
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                        minlength="10"
+                        placeholder="Minimum 10 characters"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="sf-area-builder">
+
+                <div class="sf-area-builder-header">
+
+                    <div>
+
+                        <strong>
+                            Service Areas
+                        </strong>
+
+                        <small>
+                            Assign at least one service area.
+                        </small>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="sf-secondary-button"
+                        id="addAreaButton"
+                    >
+                        + Add Area
+                    </button>
+
+                </div>
+
+
+                <div id="agentAreasContainer">
+
+                    <div class="sf-area-row">
+
+                        <input
+                            name="district"
+                            placeholder="District"
+                            required
+                        >
+
+                        <input
+                            name="police_station"
+                            placeholder="Police Station"
+                        >
+
+                        <input
+                            name="area"
+                            placeholder="Area"
+                        >
+
+                        <input
+                            name="pincode"
+                            placeholder="Pincode"
+                            maxlength="6"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="sf-modal-footer">
+
+                <button
+                    type="button"
+                    class="sf-secondary-button"
+                    id="cancelCreateAgent"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="sf-primary-button"
+                >
+                    Create Agent
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOAST
+========================================================== -->
+
+<div
+    class="sf-toast-container"
+    id="toastContainer"
+></div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='js/admin/dashboard.js') }}"></script>
 
 {% endblock %}
