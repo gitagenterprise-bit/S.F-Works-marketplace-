@@ -17,6 +17,7 @@ from sqlalchemy import (
     func,
     or_
 )
+
 from sqlalchemy.exc import (
     IntegrityError,
     SQLAlchemyError
@@ -30,9 +31,12 @@ from models import (
     Job,
     JobApplication,
     Category,
+
     AgentProfile,
     AgentArea,
+    AgentAreaAssignment,
     AgentPermission,
+
     AuditLog,
     ApprovalRecord
 )
@@ -53,16 +57,38 @@ admin_bp = Blueprint(
 
 
 # =========================================================
-# HELPERS
+# CONSTANTS
+# =========================================================
+
+DEFAULT_AGENT_PERMISSIONS = [
+
+    "jobs.view",
+    "jobs.review",
+
+    "applications.view",
+    "applications.review",
+
+    "workers.view",
+    "workers.review",
+
+    "customers.view",
+
+    "doctors.view",
+    "chambers.view",
+
+    "bookings.view",
+    "bookings.review"
+]
+
+
+# =========================================================
+# STANDARD ERROR RESPONSE
 # =========================================================
 
 def error_response(
     message,
     status_code=400
 ):
-    """
-    Standard API error response.
-    """
 
     return jsonify({
         "status": "error",
@@ -75,9 +101,6 @@ def error_response(
 # =========================================================
 
 def current_admin():
-    """
-    Return currently authenticated active administrator.
-    """
 
     identity = get_jwt_identity()
 
@@ -88,7 +111,6 @@ def current_admin():
         TypeError,
         ValueError
     ):
-
         return None
 
     user = db.session.get(
@@ -109,7 +131,7 @@ def current_admin():
 
 
 # =========================================================
-# AUDIT LOG HELPER
+# AUDIT LOG
 # =========================================================
 
 def write_audit_log(
@@ -122,16 +144,19 @@ def write_audit_log(
     description=None,
     details=None
 ):
-    """
-    Centralized audit logger.
-
-    IMPORTANT:
-    Do not commit here.
-    Caller controls the transaction.
-    """
 
     if actor is None:
         actor = current_admin()
+
+    log_details = details
+
+    if (
+        log_details is None
+        and description
+    ):
+        log_details = {
+            "description": description
+        }
 
     log = AuditLog(
 
@@ -157,18 +182,7 @@ def write_audit_log(
             "User-Agent"
         ),
 
-        details=(
-            details
-            if details is not None
-            else (
-                {
-                    "description":
-                        description
-                }
-                if description
-                else None
-            )
-        )
+        details=log_details
     )
 
     db.session.add(log)
@@ -177,7 +191,7 @@ def write_audit_log(
 
 
 # =========================================================
-# APPROVAL RECORD HELPER
+# APPROVAL RECORD
 # =========================================================
 
 def create_approval_record(
@@ -187,53 +201,34 @@ def create_approval_record(
     action,
     remarks=None
 ):
-    """
-    Create approval history record.
-
-    No commit here.
-    """
 
     record = ApprovalRecord(
 
-        resource_type=
-            resource_type,
+        resource_type=resource_type,
 
-        resource_id=
-            resource_id,
+        resource_id=resource_id,
 
-        actor_id=
-            actor.id,
+        actor_id=actor.id,
 
-        actor_role=
-            actor.role,
+        actor_role=actor.role,
 
-        action=
-            action,
+        action=action,
 
-        remarks=
-            remarks
+        remarks=remarks
     )
 
-    db.session.add(
-        record
-    )
+    db.session.add(record)
 
     return record
 
 
 # =========================================================
-# GENERATE UNIQUE AGENT CODE
+# GENERATE UNIQUE EMPLOYEE CODE
 # =========================================================
 
-def generate_agent_code():
-    """
-    Generate unique production-safe agent code.
+def generate_employee_code():
 
-    Example:
-        AG-K8F4X2Q
-    """
-
-    for _ in range(10):
+    for _ in range(20):
 
         code = (
             "AG-"
@@ -244,9 +239,9 @@ def generate_agent_code():
         )
 
         existing = (
-            Agent.query
+            AgentProfile.query
             .filter_by(
-                agent_code=code
+                employee_code=code
             )
             .first()
         )
@@ -255,8 +250,269 @@ def generate_agent_code():
             return code
 
     raise RuntimeError(
-        "Unable to generate unique agent code."
+        "Unable to generate unique agent employee code."
     )
+
+
+# =========================================================
+# NORMALIZE AREA
+# =========================================================
+
+def normalize_area(item):
+
+    if not isinstance(
+        item,
+        dict
+    ):
+        raise ValueError(
+            "Each area must be an object."
+        )
+
+    name = str(
+        item.get(
+            "name",
+            ""
+        )
+    ).strip()
+
+    area_type = str(
+        item.get(
+            "area_type",
+            "locality"
+        )
+    ).strip().lower()
+
+    district = (
+        str(
+            item.get(
+                "district",
+                ""
+            )
+        ).strip()
+        or None
+    )
+
+    police_station = (
+        str(
+            item.get(
+                "police_station",
+                ""
+            )
+        ).strip()
+        or None
+    )
+
+    locality = (
+        str(
+            item.get(
+                "locality",
+                ""
+            )
+        ).strip()
+        or None
+    )
+
+    pincode = (
+        str(
+            item.get(
+                "pincode",
+                ""
+            )
+        ).strip()
+        or None
+    )
+
+    state = (
+        str(
+            item.get(
+                "state",
+                ""
+            )
+        ).strip()
+        or None
+    )
+
+    if not name:
+
+        # Backward compatibility:
+        # allow "area" from old frontend payload.
+
+        name = (
+            locality
+            or police_station
+            or district
+        )
+
+    if not name:
+
+        raise ValueError(
+            "Area name is required."
+        )
+
+    if not area_type:
+
+        raise ValueError(
+            "Area type is required."
+        )
+
+    if pincode:
+
+        if (
+            not pincode.isdigit()
+            or len(pincode) != 6
+        ):
+
+            raise ValueError(
+                "Pincode must contain exactly 6 digits."
+            )
+
+    return {
+
+        "name":
+            name,
+
+        "area_type":
+            area_type,
+
+        "district":
+            district,
+
+        "police_station":
+            police_station,
+
+        "locality":
+            locality,
+
+        "pincode":
+            pincode,
+
+        "state":
+            state
+    }
+
+
+# =========================================================
+# FIND OR CREATE AREA
+# =========================================================
+
+def get_or_create_area(
+    normalized
+):
+
+    area = (
+        AgentArea.query
+        .filter_by(
+
+            name=
+                normalized["name"],
+
+            area_type=
+                normalized["area_type"],
+
+            district=
+                normalized["district"],
+
+            police_station=
+                normalized["police_station"],
+
+            locality=
+                normalized["locality"],
+
+            pincode=
+                normalized["pincode"]
+        )
+        .first()
+    )
+
+    if area:
+
+        if not area.is_active:
+            area.is_active = True
+
+        return area
+
+    area = AgentArea(
+
+        name=
+            normalized["name"],
+
+        area_type=
+            normalized["area_type"],
+
+        district=
+            normalized["district"],
+
+        police_station=
+            normalized["police_station"],
+
+        locality=
+            normalized["locality"],
+
+        pincode=
+            normalized["pincode"],
+
+        state=
+            normalized["state"],
+
+        is_active=True
+    )
+
+    db.session.add(area)
+
+    db.session.flush()
+
+    return area
+
+
+# =========================================================
+# SERIALIZE AREA
+# =========================================================
+
+def serialize_area(
+    area,
+    assignment=None
+):
+
+    return {
+
+        "id":
+            area.id,
+
+        "name":
+            area.name,
+
+        "area_type":
+            area.area_type,
+
+        "district":
+            area.district,
+
+        "police_station":
+            area.police_station,
+
+        "locality":
+            area.locality,
+
+        "pincode":
+            area.pincode,
+
+        "state":
+            area.state,
+
+        "is_active":
+            (
+                assignment.is_active
+                if assignment
+                else area.is_active
+            ),
+
+        "assignment_id":
+            (
+                assignment.id
+                if assignment
+                else None
+            )
+    }
 
 
 # =========================================================
@@ -267,33 +523,67 @@ def serialize_agent(
     agent,
     include_permissions=True
 ):
-    """
-    Convert Agent model into API-safe JSON.
-    """
 
     user = agent.user
+
+    areas = []
+
+    for assignment in agent.areas:
+
+        if not assignment.area:
+            continue
+
+        areas.append(
+            serialize_area(
+                assignment.area,
+                assignment
+            )
+        )
 
     data = {
 
         "id":
             agent.id,
 
-        "agent_code":
-            agent.agent_code,
+        "employee_code":
+            agent.employee_code,
 
         "designation":
             agent.designation,
 
-        "is_active":
-            agent.is_active,
+        "is_verified":
+            agent.is_verified,
+
+        "verification_status":
+            agent.verification_status,
+
+        "force_password_change":
+            agent.force_password_change,
+
+        "last_login_at": (
+
+            agent.last_login_at.isoformat()
+
+            if agent.last_login_at
+
+            else None
+        ),
 
         "created_at": (
+
             agent.created_at.isoformat()
-            if getattr(
-                agent,
-                "created_at",
-                None
-            )
+
+            if agent.created_at
+
+            else None
+        ),
+
+        "updated_at": (
+
+            agent.updated_at.isoformat()
+
+            if agent.updated_at
+
             else None
         ),
 
@@ -319,6 +609,11 @@ def serialize_agent(
                 if user
                 else None,
 
+            "role":
+                user.role
+                if user
+                else None,
+
             "is_active":
                 user.is_active
                 if user
@@ -330,30 +625,8 @@ def serialize_agent(
                 else False
         },
 
-        "areas": [
-
-            {
-                "id":
-                    area.id,
-
-                "district":
-                    area.district,
-
-                "police_station":
-                    area.police_station,
-
-                "area":
-                    area.area,
-
-                "pincode":
-                    area.pincode,
-
-                "is_active":
-                    area.is_active
-            }
-
-            for area in agent.areas
-        ]
+        "areas":
+            areas
     }
 
     if include_permissions:
@@ -379,119 +652,8 @@ def serialize_agent(
 
 
 # =========================================================
-# NORMALIZE AREA
-# =========================================================
-
-def normalize_area(item):
-    """
-    Validate and normalize area payload.
-    """
-
-    if not isinstance(
-        item,
-        dict
-    ):
-
-        raise ValueError(
-            "Each area must be an object."
-        )
-
-    district = str(
-        item.get(
-            "district",
-            ""
-        )
-    ).strip()
-
-    if not district:
-
-        raise ValueError(
-            "District is required."
-        )
-
-    police_station = (
-        str(
-            item.get(
-                "police_station",
-                ""
-            )
-        ).strip()
-        or None
-    )
-
-    area = (
-        str(
-            item.get(
-                "area",
-                ""
-            )
-        ).strip()
-        or None
-    )
-
-    pincode = (
-        str(
-            item.get(
-                "pincode",
-                ""
-            )
-        ).strip()
-        or None
-    )
-
-    if pincode:
-
-        if (
-            not pincode.isdigit()
-            or len(pincode) != 6
-        ):
-
-            raise ValueError(
-                "Pincode must contain exactly 6 digits."
-            )
-
-    return {
-        "district":
-            district,
-
-        "police_station":
-            police_station,
-
-        "area":
-            area,
-
-        "pincode":
-            pincode
-    }
-
-
-# =========================================================
-# DEFAULT AGENT PERMISSIONS
-# =========================================================
-
-DEFAULT_AGENT_PERMISSIONS = [
-
-    "jobs.view",
-    "jobs.review",
-
-    "applications.view",
-    "applications.review",
-
-    "workers.view",
-    "workers.review",
-
-    "customers.view",
-
-    "doctors.view",
-    "chambers.view",
-
-    "bookings.view",
-    "bookings.review"
-]
-
-
-# =========================================================
 # ADMIN LOGIN
+# POST /api/admin/login
 # =========================================================
 
 @admin_bp.post("/login")
@@ -607,6 +769,7 @@ def admin_login():
 
 # =========================================================
 # ADMIN LOGOUT
+# POST /api/admin/logout
 # =========================================================
 
 @admin_bp.post("/logout")
@@ -630,7 +793,8 @@ def admin_logout():
 
 
 # =========================================================
-# CURRENT ADMIN
+# ADMIN ME
+# GET /api/admin/me
 # =========================================================
 
 @admin_bp.get("/me")
@@ -675,8 +839,11 @@ def admin_me():
                 admin.is_verified,
 
             "created_at": (
+
                 admin.created_at.isoformat()
+
                 if admin.created_at
+
                 else None
             )
         }
@@ -685,6 +852,7 @@ def admin_me():
 
 # =========================================================
 # DASHBOARD
+# GET /api/admin/dashboard
 # =========================================================
 
 @admin_bp.get("/dashboard")
@@ -790,6 +958,7 @@ def admin_dashboard():
 
 # =========================================================
 # USERS
+# GET /api/admin/users
 # =========================================================
 
 @admin_bp.get("/users")
@@ -859,8 +1028,11 @@ def admin_users():
                     user.is_verified,
 
                 "created_at": (
+
                     user.created_at.isoformat()
+
                     if user.created_at
+
                     else None
                 )
             }
@@ -894,6 +1066,7 @@ def admin_users():
 
 # =========================================================
 # USER STATUS
+# PATCH /api/admin/users/<id>/status
 # =========================================================
 
 @admin_bp.patch(
@@ -905,13 +1078,6 @@ def update_user_status(
 ):
 
     admin = current_admin()
-
-    if not admin:
-
-        return error_response(
-            "Administrator account not found.",
-            401
-        )
 
     user = db.session.get(
         User,
@@ -1031,6 +1197,7 @@ def update_user_status(
 
 # =========================================================
 # VERIFY USER
+# PATCH /api/admin/users/<id>/verify
 # =========================================================
 
 @admin_bp.patch(
@@ -1104,6 +1271,7 @@ def verify_user(
 
 # =========================================================
 # CREATE AGENT
+# POST /api/admin/agents
 # =========================================================
 
 @admin_bp.post("/agents")
@@ -1205,10 +1373,10 @@ def create_agent():
     if not isinstance(
         areas,
         list
-    ) or not areas:
+    ):
 
         return error_response(
-            "At least one service area is required.",
+            "Areas must be an array.",
             400
         )
 
@@ -1220,11 +1388,10 @@ def create_agent():
         )
 
     # -----------------------------------------------------
-    # NORMALIZE AREAS BEFORE DATABASE TRANSACTION
+    # NORMALIZE AREAS
     # -----------------------------------------------------
 
     normalized_areas = []
-
     area_keys = set()
 
     try:
@@ -1236,15 +1403,26 @@ def create_agent():
             )
 
             key = (
-                normalized["district"].lower(),
+
+                normalized["name"].lower(),
+
+                normalized["area_type"].lower(),
+
+                (
+                    normalized["district"]
+                    or ""
+                ).lower(),
+
                 (
                     normalized["police_station"]
                     or ""
                 ).lower(),
+
                 (
-                    normalized["area"]
+                    normalized["locality"]
                     or ""
                 ).lower(),
+
                 normalized["pincode"]
                 or ""
             )
@@ -1256,9 +1434,7 @@ def create_agent():
                     409
                 )
 
-            area_keys.add(
-                key
-            )
+            area_keys.add(key)
 
             normalized_areas.append(
                 normalized
@@ -1272,7 +1448,7 @@ def create_agent():
         )
 
     # -----------------------------------------------------
-    # EMAIL / PHONE DUPLICATE CHECK
+    # DUPLICATE USER
     # -----------------------------------------------------
 
     existing = (
@@ -1338,30 +1514,33 @@ def create_agent():
         db.session.flush()
 
         # -------------------------------------------------
-        # AGENT
+        # AGENT PROFILE
         # -------------------------------------------------
 
-        agent_code = (
-            generate_agent_code()
-        )
-
-        agent = Agent(
+        agent = AgentProfile(
 
             user_id=
                 user.id,
 
-            agent_code=
-                agent_code,
+            employee_code=
+                generate_employee_code(),
 
-            designation=
+            designation=(
                 designation
-                or "Area Agent",
+                or "Area Agent"
+            ),
+
+            is_verified=
+                True,
+
+            verification_status=
+                "approved",
+
+            force_password_change=
+                True,
 
             created_by=
-                admin.id,
-
-            is_active=
-                True
+                admin.id
         )
 
         db.session.add(
@@ -1376,51 +1555,71 @@ def create_agent():
 
         for normalized in normalized_areas:
 
-            agent_area = AgentArea(
-
-                agent_id=
-                    agent.id,
-
-                district=
-                    normalized["district"],
-
-                police_station=
-                    normalized["police_station"],
-
-                area=
-                    normalized["area"],
-
-                pincode=
-                    normalized["pincode"],
-
-                is_active=
-                    True
+            area = get_or_create_area(
+                normalized
             )
 
-            db.session.add(
-                agent_area
+            existing_assignment = (
+                AgentAreaAssignment.query
+                .filter_by(
+
+                    agent_id=
+                        agent.id,
+
+                    area_id=
+                        area.id
+                )
+                .first()
             )
+
+            if existing_assignment:
+
+                existing_assignment.is_active = True
+
+            else:
+
+                assignment = AgentAreaAssignment(
+
+                    agent_id=
+                        agent.id,
+
+                    area_id=
+                        area.id,
+
+                    assigned_by=
+                        admin.id,
+
+                    is_active=
+                        True
+                )
+
+                db.session.add(
+                    assignment
+                )
 
         # -------------------------------------------------
         # DEFAULT PERMISSIONS
         # -------------------------------------------------
 
-        for permission_name in DEFAULT_AGENT_PERMISSIONS:
-
-            permission = AgentPermission(
-
-                agent_id=
-                    agent.id,
-
-                permission=
-                    permission_name,
-
-                is_allowed=
-                    True
-            )
+        for permission_name in (
+            DEFAULT_AGENT_PERMISSIONS
+        ):
 
             db.session.add(
-                permission
+                AgentPermission(
+
+                    agent_id=
+                        agent.id,
+
+                    permission=
+                        permission_name,
+
+                    is_allowed=
+                        True,
+
+                    granted_by=
+                        admin.id
+                )
             )
 
         # -------------------------------------------------
@@ -1444,14 +1643,15 @@ def create_agent():
                 "active",
 
             description=(
-                f"Agent {agent.agent_code} "
+                f"Agent "
+                f"{agent.employee_code} "
                 f"created by administrator."
             ),
 
             details={
 
-                "agent_code":
-                    agent.agent_code,
+                "employee_code":
+                    agent.employee_code,
 
                 "user_id":
                     user.id,
@@ -1509,6 +1709,7 @@ def create_agent():
 
 # =========================================================
 # AGENT LIST
+# GET /api/admin/agents
 # =========================================================
 
 @admin_bp.get("/agents")
@@ -1516,9 +1717,9 @@ def create_agent():
 def admin_agents():
 
     agents = (
-        Agent.query
+        AgentProfile.query
         .order_by(
-            Agent.created_at.desc()
+            AgentProfile.created_at.desc()
         )
         .all()
     )
@@ -1537,11 +1738,12 @@ def admin_agents():
             for agent
             in agents
         ]
-    }), 200
+    })
 
 
 # =========================================================
 # AGENT STATUS
+# PATCH /api/admin/agents/<id>/status
 # =========================================================
 
 @admin_bp.patch(
@@ -1555,7 +1757,7 @@ def update_agent_status(
     admin = current_admin()
 
     agent = db.session.get(
-        Agent,
+        AgentProfile,
         agent_id
     )
 
@@ -1584,7 +1786,16 @@ def update_agent_status(
             400
         )
 
-    old_status = agent.is_active
+    user = agent.user
+
+    if not user:
+
+        return error_response(
+            "Agent user account not found.",
+            500
+        )
+
+    old_status = user.is_active
 
     if old_status == is_active:
 
@@ -1596,19 +1807,20 @@ def update_agent_status(
             "message":
                 "Agent status is already up to date.",
 
-            "is_active":
-                agent.is_active
-        }), 200
+            "agent": {
 
-    # -----------------------------------------------------
-    # Update Agent + User Together
-    # -----------------------------------------------------
+                "id":
+                    agent.id,
 
-    agent.is_active = is_active
+                "employee_code":
+                    agent.employee_code,
 
-    if agent.user:
+                "is_active":
+                    user.is_active
+            }
+        })
 
-        agent.user.is_active = is_active
+    user.is_active = is_active
 
     write_audit_log(
 
@@ -1636,11 +1848,6 @@ def update_agent_status(
             "active"
             if is_active
             else "suspended"
-        ),
-
-        description=(
-            f"Agent {agent.agent_code} "
-            f"status changed."
         )
     )
 
@@ -1670,23 +1877,18 @@ def update_agent_status(
             "id":
                 agent.id,
 
-            "agent_code":
-                agent.agent_code,
+            "employee_code":
+                agent.employee_code,
 
             "is_active":
-                agent.is_active,
-
-            "user_is_active": (
-                agent.user.is_active
-                if agent.user
-                else False
-            )
+                user.is_active
         }
-    }), 200
+    })
 
 
 # =========================================================
 # ADD AGENT AREA
+# POST /api/admin/agents/<id>/areas
 # =========================================================
 
 @admin_bp.post(
@@ -1700,7 +1902,7 @@ def add_agent_area(
     admin = current_admin()
 
     agent = db.session.get(
-        Agent,
+        AgentProfile,
         agent_id
     )
 
@@ -1728,193 +1930,112 @@ def add_agent_area(
             400
         )
 
-    district = normalized[
-        "district"
-    ]
+    try:
 
-    police_station = normalized[
-        "police_station"
-    ]
-
-    area = normalized[
-        "area"
-    ]
-
-    pincode = normalized[
-        "pincode"
-    ]
-
-    # -----------------------------------------------------
-    # DUPLICATE AREA
-    # -----------------------------------------------------
-
-    existing = (
-        AgentArea.query
-        .filter_by(
-
-            agent_id=
-                agent.id,
-
-            district=
-                district,
-
-            police_station=
-                police_station,
-
-            area=
-                area,
-
-            pincode=
-                pincode
+        area = get_or_create_area(
+            normalized
         )
-        .first()
-    )
 
-    if existing:
+        assignment = (
+            AgentAreaAssignment.query
+            .filter_by(
 
-        if not existing.is_active:
+                agent_id=
+                    agent.id,
 
-            existing.is_active = True
-
-            write_audit_log(
-
-                actor=admin,
-
-                action=
-                    "agent.area_reactivated",
-
-                resource_type=
-                    "agent_area",
-
-                resource_id=
-                    existing.id,
-
-                description=(
-                    f"Previously inactive area "
-                    f"reactivated for agent "
-                    f"{agent.agent_code}."
-                )
+                area_id=
+                    area.id
             )
+            .first()
+        )
 
-            try:
+        if assignment:
 
-                db.session.commit()
-
-            except SQLAlchemyError:
-
-                db.session.rollback()
+            if assignment.is_active:
 
                 return error_response(
-                    "Unable to reactivate agent area.",
-                    500
+                    "This area is already assigned to this agent.",
+                    409
                 )
 
-            return jsonify({
+            assignment.is_active = True
+            assignment.assigned_by = admin.id
 
-                "status":
-                    "success",
+            action = (
+                "agent.area_reactivated"
+            )
 
-                "message":
-                    "Previously assigned area reactivated.",
+            message = (
+                "Previously assigned area reactivated."
+            )
 
-                "area": {
+        else:
 
-                    "id":
-                        existing.id,
+            assignment = AgentAreaAssignment(
 
-                    "district":
-                        existing.district,
+                agent_id=
+                    agent.id,
 
-                    "police_station":
-                        existing.police_station,
+                area_id=
+                    area.id,
 
-                    "area":
-                        existing.area,
+                assigned_by=
+                    admin.id,
 
-                    "pincode":
-                        existing.pincode,
+                is_active=
+                    True
+            )
 
-                    "is_active":
-                        existing.is_active
-                }
-            }), 200
+            db.session.add(
+                assignment
+            )
 
-        return error_response(
-            "This area is already assigned.",
-            409
+            action = (
+                "agent.area_added"
+            )
+
+            message = (
+                "Agent area assigned successfully."
+            )
+
+        db.session.flush()
+
+        write_audit_log(
+
+            actor=admin,
+
+            action=action,
+
+            resource_type=
+                "agent_area_assignment",
+
+            resource_id=
+                assignment.id,
+
+            new_status=
+                "active",
+
+            details={
+
+                "agent_id":
+                    agent.id,
+
+                "area_id":
+                    area.id,
+
+                "district":
+                    area.district,
+
+                "police_station":
+                    area.police_station,
+
+                "locality":
+                    area.locality,
+
+                "pincode":
+                    area.pincode
+            }
         )
-
-    # -----------------------------------------------------
-    # CREATE AREA
-    # -----------------------------------------------------
-
-    agent_area = AgentArea(
-
-        agent_id=
-            agent.id,
-
-        district=
-            district,
-
-        police_station=
-            police_station,
-
-        area=
-            area,
-
-        pincode=
-            pincode,
-
-        is_active=
-            True
-    )
-
-    db.session.add(
-        agent_area
-    )
-
-    # IMPORTANT:
-    # Need ID before audit.
-    db.session.flush()
-
-    write_audit_log(
-
-        actor=admin,
-
-        action=
-            "agent.area_added",
-
-        resource_type=
-            "agent_area",
-
-        resource_id=
-            agent_area.id,
-
-        new_status=
-            "active",
-
-        description=(
-            f"Area assigned to agent "
-            f"{agent.agent_code}."
-        ),
-
-        details={
-
-            "district":
-                district,
-
-            "police_station":
-                police_station,
-
-            "area":
-                area,
-
-            "pincode":
-                pincode
-        }
-    )
-
-    try:
 
         db.session.commit()
 
@@ -1923,7 +2044,7 @@ def add_agent_area(
         db.session.rollback()
 
         return error_response(
-            "This area is already assigned.",
+            "This area is already assigned to this agent.",
             409
         )
 
@@ -1942,33 +2063,19 @@ def add_agent_area(
             "success",
 
         "message":
-            "Agent area assigned successfully.",
+            message,
 
-        "area": {
-
-            "id":
-                agent_area.id,
-
-            "district":
-                agent_area.district,
-
-            "police_station":
-                agent_area.police_station,
-
-            "area":
-                agent_area.area,
-
-            "pincode":
-                agent_area.pincode,
-
-            "is_active":
-                agent_area.is_active
-        }
+        "area":
+            serialize_area(
+                area,
+                assignment
+            )
     }), 201
 
 
 # =========================================================
-# DEACTIVATE AGENT AREA
+# AGENT AREA STATUS
+# PATCH /api/admin/agents/<agent_id>/areas/<area_id>/status
 # =========================================================
 
 @admin_bp.patch(
@@ -1983,7 +2090,7 @@ def update_agent_area_status(
     admin = current_admin()
 
     agent = db.session.get(
-        Agent,
+        AgentProfile,
         agent_id
     )
 
@@ -1994,23 +2101,24 @@ def update_agent_area_status(
             404
         )
 
-    agent_area = db.session.get(
-        AgentArea,
-        area_id
+    assignment = (
+        AgentAreaAssignment.query
+        .filter_by(
+
+            agent_id=
+                agent.id,
+
+            area_id=
+                area_id
+        )
+        .first()
     )
 
-    if not agent_area:
+    if not assignment:
 
         return error_response(
-            "Agent area not found.",
+            "Agent area assignment not found.",
             404
-        )
-
-    if agent_area.agent_id != agent.id:
-
-        return error_response(
-            "This area does not belong to this agent.",
-            403
         )
 
     data = request.get_json(
@@ -2031,7 +2139,7 @@ def update_agent_area_status(
             400
         )
 
-    if agent_area.is_active == is_active:
+    if assignment.is_active == is_active:
 
         return jsonify({
 
@@ -2042,12 +2150,12 @@ def update_agent_area_status(
                 "Area status is already up to date.",
 
             "is_active":
-                agent_area.is_active
-        }), 200
+                assignment.is_active
+        })
 
-    old_status = agent_area.is_active
+    old_status = assignment.is_active
 
-    agent_area.is_active = is_active
+    assignment.is_active = is_active
 
     write_audit_log(
 
@@ -2060,10 +2168,10 @@ def update_agent_area_status(
         ),
 
         resource_type=
-            "agent_area",
+            "agent_area_assignment",
 
         resource_id=
-            agent_area.id,
+            assignment.id,
 
         old_status=(
             "active"
@@ -2102,19 +2210,20 @@ def update_agent_area_status(
         "area": {
 
             "id":
-                agent_area.id,
+                assignment.area_id,
+
+            "assignment_id":
+                assignment.id,
 
             "is_active":
-                agent_area.is_active
+                assignment.is_active
         }
-    }), 200
+    })
 
 
 # =========================================================
 # REMOVE AGENT AREA
-# =========================================================
-# Backward-compatible DELETE endpoint.
-# Does NOT physically delete the record.
+# DELETE /api/admin/agents/<id>/areas/<area_id>
 # =========================================================
 
 @admin_bp.delete(
@@ -2129,7 +2238,7 @@ def remove_agent_area(
     admin = current_admin()
 
     agent = db.session.get(
-        Agent,
+        AgentProfile,
         agent_id
     )
 
@@ -2140,26 +2249,27 @@ def remove_agent_area(
             404
         )
 
-    agent_area = db.session.get(
-        AgentArea,
-        area_id
+    assignment = (
+        AgentAreaAssignment.query
+        .filter_by(
+
+            agent_id=
+                agent.id,
+
+            area_id=
+                area_id
+        )
+        .first()
     )
 
-    if not agent_area:
+    if not assignment:
 
         return error_response(
-            "Agent area not found.",
+            "Agent area assignment not found.",
             404
         )
 
-    if agent_area.agent_id != agent.id:
-
-        return error_response(
-            "This area does not belong to this agent.",
-            403
-        )
-
-    if not agent_area.is_active:
+    if not assignment.is_active:
 
         return jsonify({
 
@@ -2168,9 +2278,9 @@ def remove_agent_area(
 
             "message":
                 "Agent area is already inactive."
-        }), 200
+        })
 
-    agent_area.is_active = False
+    assignment.is_active = False
 
     write_audit_log(
 
@@ -2180,10 +2290,10 @@ def remove_agent_area(
             "agent.area_deactivated",
 
         resource_type=
-            "agent_area",
+            "agent_area_assignment",
 
         resource_id=
-            agent_area.id,
+            assignment.id,
 
         old_status=
             "active",
@@ -2212,11 +2322,12 @@ def remove_agent_area(
 
         "message":
             "Agent area deactivated successfully."
-    }), 200
+    })
 
 
 # =========================================================
 # JOB LIST
+# GET /api/admin/jobs
 # =========================================================
 
 @admin_bp.get("/jobs")
@@ -2297,15 +2408,21 @@ def admin_jobs():
 
             "budget": {
 
-                "min":
-                    float(job.budget_min)
+                "min": (
+                    float(
+                        job.budget_min
+                    )
                     if job.budget_min is not None
-                    else None,
+                    else None
+                ),
 
-                "max":
-                    float(job.budget_max)
+                "max": (
+                    float(
+                        job.budget_max
+                    )
                     if job.budget_max is not None
                     else None
+                )
             },
 
             "location":
@@ -2322,38 +2439,46 @@ def admin_jobs():
 
             "category": {
 
-                "id":
+                "id": (
                     job.category.id
                     if job.category
-                    else None,
+                    else None
+                ),
 
-                "name":
+                "name": (
                     job.category.name
                     if job.category
                     else None
+                )
             },
 
             "customer": {
 
-                "id":
+                "id": (
                     job.customer.id
                     if job.customer
-                    else None,
+                    else None
+                ),
 
-                "name":
+                "name": (
                     job.customer.full_name
                     if job.customer
-                    else None,
+                    else None
+                ),
 
-                "email":
+                "email": (
                     job.customer.email
                     if job.customer
                     else None
+                )
             },
 
             "created_at": (
+
                 job.created_at.isoformat()
+
                 if job.created_at
+
                 else None
             )
         })
@@ -2445,24 +2570,17 @@ def admin_job_approval(
 
     old_status = job.status
 
-    if action == "approve":
-
-        job.status = "approved"
-
-    else:
-
-        job.status = "rejected"
+    job.status = (
+        "approved"
+        if action == "approve"
+        else "rejected"
+    )
 
     create_approval_record(
-
         admin,
-
         "job",
-
         job.id,
-
         action,
-
         remarks
     )
 
@@ -2688,11 +2806,14 @@ def admin_applications():
             ),
 
             "proposed_amount": (
+
                 float(
                     application.proposed_amount
                 )
+
                 if application.proposed_amount
                 is not None
+
                 else None
             ),
 
@@ -2706,8 +2827,11 @@ def admin_applications():
                 application.status,
 
             "created_at": (
+
                 application.created_at.isoformat()
+
                 if application.created_at
+
                 else None
             )
         })
@@ -2799,13 +2923,11 @@ def admin_application_approval(
 
     old_status = application.status
 
-    if action == "approve":
-
-        application.status = "hired"
-
-    else:
-
-        application.status = "rejected"
+    application.status = (
+        "hired"
+        if action == "approve"
+        else "rejected"
+    )
 
     create_approval_record(
 
@@ -3111,8 +3233,11 @@ def admin_audit_logs():
                     log.details,
 
                 "created_at": (
+
                     log.created_at.isoformat()
+
                     if log.created_at
+
                     else None
                 )
             }
