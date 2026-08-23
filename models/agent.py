@@ -96,6 +96,14 @@ class AgentProfile(db.Model):
         foreign_keys=[created_by]
     )
 
+    jobs = db.relationship(
+        "Job",
+        foreign_keys="Job.agent_id",
+        back_populates="agent",
+        passive_deletes=True,
+        lazy="selectin"
+    )
+
     areas = db.relationship(
         "AgentAreaAssignment",
         back_populates="agent",
