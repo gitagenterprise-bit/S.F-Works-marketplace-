@@ -118,8 +118,10 @@ class User(db.Model):
     )
     audit_logs = db.relationship(
         "AuditLog",
-        back_populates="user",
-        passive_deletes=True
+        foreign_keys="AuditLog.actor_id",
+        back_populates="actor",
+        passive_deletes=True,
+        lazy="selectin"
     )
 
     # --------------------------------
