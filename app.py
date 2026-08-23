@@ -23,16 +23,115 @@ from utils.cloudinary_config import (
 
 
 # ============================================================
-# DATABASE COMPATIBILITY SYNC
+# DATABASE COMPATIBILITY HELPERS
+# ============================================================
+
+def _get_existing_columns(table_name):
+    """
+    Return existing column names for a database table.
+    """
+
+    inspector = inspect(db.engine)
+
+    if table_name not in inspector.get_table_names():
+        return set()
+
+    return {
+        column["name"]
+        for column in inspector.get_columns(table_name)
+    }
+
+
+def _add_missing_columns(
+    table_name,
+    required_columns
+):
+    """
+    Add missing columns to an existing table.
+
+    This helper is intentionally used only for backward
+    compatibility with an existing production database.
+    """
+
+    existing_columns = _get_existing_columns(
+        table_name
+    )
+
+    if not existing_columns:
+        inspector = inspect(db.engine)
+
+        if table_name not in inspector.get_table_names():
+            print(
+                f"[DB SYNC] {table_name} table does not exist. "
+                f"Skipping."
+            )
+
+            return
+
+    changed = False
+
+    for (
+        column_name,
+        column_definition
+    ) in required_columns.items():
+
+        if column_name in existing_columns:
+            continue
+
+        try:
+
+            db.session.execute(
+                text(
+                    f"""
+                    ALTER TABLE {table_name}
+                    ADD COLUMN {column_name}
+                    {column_definition}
+                    """
+                )
+            )
+
+            changed = True
+
+            print(
+                f"[DB SYNC] Added column: "
+                f"{table_name}.{column_name}"
+            )
+
+        except Exception as exc:
+
+            db.session.rollback()
+
+            print(
+                f"[DB SYNC ERROR] "
+                f"{table_name}.{column_name}: {exc}"
+            )
+
+            raise
+
+    if changed:
+
+        db.session.commit()
+
+        print(
+            f"[DB SYNC] {table_name} "
+            f"schema synchronization completed."
+        )
+
+    else:
+
+        print(
+            f"[DB SYNC] {table_name} "
+            f"schema is already up to date."
+        )
+
+
+# ============================================================
+# WORKER PROFILES SYNC
 # ============================================================
 
 def sync_worker_profiles_columns():
     """
-    Add missing worker_profiles columns to an existing database.
-
-    This is a compatibility helper for deployments where the
-    database already exists but the WorkerProfile model has
-    newer fields.
+    Synchronize missing WorkerProfile columns.
     """
 
     required_columns = {
@@ -116,118 +215,233 @@ def sync_worker_profiles_columns():
             "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
     }
 
-
-    # ========================================================
-    # DATABASE INSPECTOR
-    # ========================================================
-
-    inspector = inspect(
-        db.engine
+    _add_missing_columns(
+        "worker_profiles",
+        required_columns
     )
 
 
-    # ========================================================
-    # CHECK TABLE
-    # ========================================================
+# ============================================================
+# JOBS SCHEMA SYNC
+# ============================================================
 
-    if "worker_profiles" not in (
-        inspector.get_table_names()
-    ):
+def sync_jobs_columns():
+    """
+    Synchronize the existing jobs table with the current
+    Job model.
+
+    Important:
+    db.create_all() does NOT add columns to an existing table.
+    Therefore these compatibility columns are added manually.
+    """
+
+    required_columns = {
+
+        # ----------------------------------------------------
+        # CATEGORY
+        # ----------------------------------------------------
+
+        "category_id":
+            "INTEGER",
+
+        # ----------------------------------------------------
+        # BASIC INFORMATION
+        # ----------------------------------------------------
+
+        "title":
+            "VARCHAR(200)",
+
+        "description":
+            "TEXT",
+
+        # ----------------------------------------------------
+        # BUDGET
+        # ----------------------------------------------------
+
+        "budget_min":
+            "NUMERIC(10,2)",
+
+        "budget_max":
+            "NUMERIC(10,2)",
+
+        # ----------------------------------------------------
+        # LOCATION
+        # ----------------------------------------------------
+
+        "location":
+            "VARCHAR(255)",
+
+        "city":
+            "VARCHAR(100)",
+
+        "district":
+            "VARCHAR(100)",
+
+        "police_station":
+            "VARCHAR(100)",
+
+        "state":
+            "VARCHAR(100)",
+
+        "pincode":
+            "VARCHAR(10)",
+
+        "latitude":
+            "NUMERIC(10,7)",
+
+        "longitude":
+            "NUMERIC(10,7)",
+
+        # ----------------------------------------------------
+        # STATUS
+        # ----------------------------------------------------
+
+        "status":
+            "VARCHAR(30) DEFAULT 'open'",
+
+        "priority":
+            "VARCHAR(20) DEFAULT 'normal'",
+
+        "is_featured":
+            "BOOLEAN DEFAULT FALSE",
+
+        # ----------------------------------------------------
+        # VIEWS
+        # ----------------------------------------------------
+
+        "views":
+            "INTEGER DEFAULT 0",
+
+        # ----------------------------------------------------
+        # AGENT
+        # ----------------------------------------------------
+
+        "agent_id":
+            "INTEGER",
+
+        # ----------------------------------------------------
+        # MODERATION
+        # ----------------------------------------------------
+
+        "reviewed_by":
+            "INTEGER",
+
+        "reviewed_at":
+            "TIMESTAMP",
+
+        "rejection_reason":
+            "TEXT",
+
+        # ----------------------------------------------------
+        # SOFT DELETE
+        # ----------------------------------------------------
+
+        "deleted_at":
+            "TIMESTAMP",
+
+        "deleted_by":
+            "INTEGER",
+
+        # ----------------------------------------------------
+        # TIMESTAMPS
+        # ----------------------------------------------------
+
+        "created_at":
+            "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+
+        "updated_at":
+            "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    _add_missing_columns(
+        "jobs",
+        required_columns
+    )
+
+
+# ============================================================
+# JOB IMAGES SCHEMA SYNC
+# ============================================================
+
+def sync_job_images_columns():
+    """
+    Synchronize job_images table.
+    """
+
+    required_columns = {
+
+        "job_id":
+            "INTEGER",
+
+        "image_path":
+            "VARCHAR(500)",
+
+        "created_at":
+            "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    _add_missing_columns(
+        "job_images",
+        required_columns
+    )
+
+
+# ============================================================
+# APPLICATION SCHEMA SYNC
+# ============================================================
+
+def sync_job_applications_columns():
+    """
+    Synchronize job_applications table with the current
+    JobApplication model.
+
+    Only add columns here that are actually present in your
+    JobApplication model.
+    """
+
+    inspector = inspect(db.engine)
+
+    if "job_applications" not in inspector.get_table_names():
 
         print(
-            "[DB SYNC] worker_profiles table "
-            "does not exist. Skipping sync."
+            "[DB SYNC] job_applications table "
+            "does not exist. Skipping."
         )
 
         return
 
-
-    # ========================================================
-    # EXISTING COLUMNS
-    # ========================================================
-
-    existing_columns = {
-
-        column["name"]
-
-        for column in inspector.get_columns(
-            "worker_profiles"
-        )
-    }
+    print(
+        "[DB SYNC] job_applications "
+        "table exists."
+    )
 
 
-    changed = False
+# ============================================================
+# MAIN DATABASE COMPATIBILITY SYNC
+# ============================================================
 
+def sync_database_schema():
+    """
+    Run all compatibility schema synchronizations.
+    """
 
-    # ========================================================
-    # ADD MISSING COLUMNS
-    # ========================================================
+    print(
+        "[DB SYNC] Starting database "
+        "compatibility synchronization..."
+    )
 
-    for (
-        column_name,
-        column_type
-    ) in required_columns.items():
+    sync_worker_profiles_columns()
 
-        if column_name in existing_columns:
-            continue
+    sync_jobs_columns()
 
+    sync_job_images_columns()
 
-        try:
+    sync_job_applications_columns()
 
-            db.session.execute(
-
-                text(
-                    f"""
-                    ALTER TABLE worker_profiles
-                    ADD COLUMN {column_name} {column_type}
-                    """
-                )
-            )
-
-
-            changed = True
-
-
-            print(
-                f"[DB SYNC] Added column: "
-                f"worker_profiles.{column_name}"
-            )
-
-
-        except Exception as exc:
-
-            db.session.rollback()
-
-
-            print(
-                f"[DB SYNC ERROR] "
-                f"worker_profiles.{column_name}: "
-                f"{exc}"
-            )
-
-
-            raise
-
-
-    # ========================================================
-    # COMMIT CHANGES
-    # ========================================================
-
-    if changed:
-
-        db.session.commit()
-
-        print(
-            "[DB SYNC] worker_profiles "
-            "schema synchronization completed."
-        )
-
-    else:
-
-        print(
-            "[DB SYNC] worker_profiles "
-            "schema is already up to date."
-        )
+    print(
+        "[DB SYNC] Database compatibility "
+        "synchronization completed."
+    )
 
 
 # ============================================================
@@ -244,7 +458,6 @@ def create_app():
         __name__
     )
 
-
     # ========================================================
     # CONFIGURATION
     # ========================================================
@@ -253,25 +466,22 @@ def create_app():
         Config
     )
 
-
     # ========================================================
-    # INITIALIZE DATABASE
+    # DATABASE
     # ========================================================
 
     db.init_app(
         app
     )
 
-
     # ========================================================
-    # FLASK-MIGRATE
+    # MIGRATION
     # ========================================================
 
     migrate.init_app(
         app,
         db
     )
-
 
     # ========================================================
     # JWT
@@ -281,19 +491,18 @@ def create_app():
         app
     )
 
-
     # ========================================================
     # CLOUDINARY
     # ========================================================
 
     init_cloudinary()
 
-
     # ========================================================
     # IMPORT ALL MODELS
     #
     # IMPORTANT:
-    # Import models before db.create_all() and migrations.
+    # Every model must be imported before mapper
+    # configuration and db.create_all().
     # ========================================================
 
     from models import (
@@ -312,9 +521,35 @@ def create_app():
 
         JobImage,
 
-        JobApplication
+        JobApplication,
+
+        AgentProfile,
+
+        AgentArea,
+
+        AgentAreaAssignment,
+
+        AgentPermission,
+
+        AuditLog
     )
 
+    # Prevent unused import optimization / lint issues
+    _ = (
+        User,
+        CustomerProfile,
+        WorkerProfile,
+        WorkerPortfolio,
+        Category,
+        Job,
+        JobImage,
+        JobApplication,
+        AgentProfile,
+        AgentArea,
+        AgentAreaAssignment,
+        AgentPermission,
+        AuditLog
+    )
 
     # ========================================================
     # DATABASE INITIALIZATION
@@ -322,37 +557,35 @@ def create_app():
 
     with app.app_context():
 
+        # ----------------------------------------------------
         # Create missing tables
+        # ----------------------------------------------------
+
         db.create_all()
 
-        # Synchronize WorkerProfile columns
-        sync_worker_profiles_columns()
+        # ----------------------------------------------------
+        # Synchronize existing tables
+        # ----------------------------------------------------
 
+        sync_database_schema()
 
     # ========================================================
     # AUTH ROUTES
     # ========================================================
 
     from routes.auth import (
-
         auth_bp,
-
         auth_pages_bp
     )
 
-
     app.register_blueprint(
-
         auth_bp,
-
         url_prefix="/api/auth"
     )
 
-
     app.register_blueprint(
         auth_pages_bp
     )
-
 
     # ========================================================
     # CUSTOMER API
@@ -362,19 +595,22 @@ def create_app():
         customer_bp
     )
 
-
     app.register_blueprint(
-
         customer_bp,
-
         url_prefix="/api/customer"
     )
-    from routes.customer_pages import customer_page_bp
 
-    app.register_blueprint(
-    customer_page_bp
+    # ========================================================
+    # CUSTOMER PAGES
+    # ========================================================
+
+    from routes.customer_pages import (
+        customer_page_bp
     )
 
+    app.register_blueprint(
+        customer_page_bp
+    )
 
     # ========================================================
     # WORKER API
@@ -384,14 +620,10 @@ def create_app():
         worker_bp
     )
 
-
     app.register_blueprint(
-
         worker_bp,
-
         url_prefix="/api/worker"
     )
-
 
     # ========================================================
     # WORKER PAGES
@@ -401,11 +633,9 @@ def create_app():
         worker_pages_bp
     )
 
-
     app.register_blueprint(
         worker_pages_bp
     )
-
 
     # ========================================================
     # JOB API
@@ -415,14 +645,10 @@ def create_app():
         jobs_bp
     )
 
-
     app.register_blueprint(
-
         jobs_bp,
-
         url_prefix="/api/jobs"
     )
-
 
     # ========================================================
     # ADMIN API
@@ -432,14 +658,10 @@ def create_app():
         admin_bp
     )
 
-
     app.register_blueprint(
-
         admin_bp,
-
         url_prefix="/api/admin"
     )
-
 
     # ========================================================
     # ADMIN PAGES
@@ -449,11 +671,9 @@ def create_app():
         admin_pages_bp
     )
 
-
     app.register_blueprint(
         admin_pages_bp
     )
-
 
     # ========================================================
     # JOB PAGES
@@ -463,11 +683,9 @@ def create_app():
         job_pages_bp
     )
 
-
     app.register_blueprint(
         job_pages_bp
     )
-
 
     # ========================================================
     # PUBLIC WORKERS
@@ -477,15 +695,13 @@ def create_app():
         worker_public_bp
     )
 
-
     app.register_blueprint(
         worker_public_bp
     )
 
-
-    # ============================================================
+    # ========================================================
     # HOME PAGE
-    # ============================================================
+    # ========================================================
 
     @app.route("/")
     def home():
@@ -520,11 +736,8 @@ def create_app():
             .all()
         )
 
-
         # ====================================================
         # LATEST JOBS
-        #
-        # Only open / active jobs are displayed.
         # ====================================================
 
         jobs = (
@@ -532,18 +745,19 @@ def create_app():
             Job.query
 
             .filter(
+                Job.deleted_at.is_(None)
+            )
 
+            .filter(
                 Job.status.in_([
                     "open",
                     "OPEN",
                     "active",
                     "ACTIVE"
                 ])
-
             )
 
             .order_by(
-
                 Job.created_at.desc()
             )
 
@@ -552,9 +766,8 @@ def create_app():
             .all()
         )
 
-
         # ====================================================
-        # RENDER HOME PAGE
+        # RENDER
         # ====================================================
 
         return render_template(
@@ -566,14 +779,11 @@ def create_app():
             jobs=jobs
         )
 
-
     # ========================================================
     # HEALTH CHECK
     # ========================================================
 
-    @app.route(
-        "/health"
-    )
+    @app.route("/health")
     def health():
 
         return jsonify({
@@ -589,14 +799,11 @@ def create_app():
 
         }), 200
 
-
     # ========================================================
     # API ROOT
     # ========================================================
 
-    @app.route(
-        "/api"
-    )
+    @app.route("/api")
     def api_root():
 
         return jsonify({
@@ -612,9 +819,8 @@ def create_app():
 
         }), 200
 
-
     # ========================================================
-    # RETURN APPLICATION
+    # RETURN APP
     # ========================================================
 
     return app
