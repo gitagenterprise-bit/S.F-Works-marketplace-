@@ -103,9 +103,12 @@ class User(db.Model):
 
     job_applications = db.relationship(
         "JobApplication",
+        foreign_keys="JobApplication.worker_id",
         back_populates="worker",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        lazy="selectin"
     )
+    
     agent_profile = db.relationship(
         "AgentProfile",
         back_populates="user",
