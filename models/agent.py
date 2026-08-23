@@ -379,12 +379,7 @@ class AgentPermission(db.Model):
         foreign_keys=[granted_by]
     )
 
-    jobs = db.relationship(
-        "Job",
-        foreign_keys="Job.agent_id",
-        back_populates="agent",
-        lazy="selectin"
-    )
+    
 
     __table_args__ = (
         db.UniqueConstraint(
