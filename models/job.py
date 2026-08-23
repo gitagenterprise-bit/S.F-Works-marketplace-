@@ -294,13 +294,12 @@ class Job(db.Model):
     # Job Applications
     # -----------------------------------------------------
 
-    applications = db.relationship(
+    job_applications = db.relationship(
         "JobApplication",
-        back_populates="job",
-        cascade="all, delete-orphan",
-        passive_deletes=True
+        foreign_keys="JobApplication.worker_id",
+        back_populates="worker",
+        lazy="selectin"
     )
-
     # =====================================================
     # HELPER METHODS
     # =====================================================
