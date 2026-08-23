@@ -35,3 +35,4 @@ from models.agent import (
 from models.audit_log import (
     AuditLog
 )
+from models.agent import AgentProfile
