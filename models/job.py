@@ -296,8 +296,10 @@ class Job(db.Model):
 
     job_applications = db.relationship(
         "JobApplication",
-        foreign_keys="JobApplication.worker_id",
-        back_populates="worker",
+        foreign_keys="JobApplication.job_id",
+        back_populates="job",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
         lazy="selectin"
     )
     # =====================================================
