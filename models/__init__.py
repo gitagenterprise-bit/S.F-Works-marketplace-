@@ -36,3 +36,4 @@ from models.audit_log import (
     AuditLog
 )
 from models.agent import AgentProfile
+from models.approval_record import ApprovalRecord
