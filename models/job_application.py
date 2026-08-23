@@ -178,13 +178,12 @@ class JobApplication(db.Model):
     # -----------------------------------------------------
     # Job
     # -----------------------------------------------------
-
     job = db.relationship(
         "Job",
-        back_populates="applications",
-        foreign_keys=[job_id]
+        foreign_keys=[job_id],
+        back_populates="job_applications"
     )
-
+    
     # -----------------------------------------------------
     # Worker
     #
