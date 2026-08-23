@@ -109,7 +109,7 @@ class JobApplication(db.Model):
     agent_reviewed_by = db.Column(
         db.Integer,
         db.ForeignKey(
-            "agents.id",
+            "agent_profiles.id",
             ondelete="SET NULL"
         ),
         nullable=True,
@@ -214,7 +214,7 @@ class JobApplication(db.Model):
     # -----------------------------------------------------
 
     agent_reviewer = db.relationship(
-        "Agent",
+        "AgentProfile",
         foreign_keys=[agent_reviewed_by]
     )
 
