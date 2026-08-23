@@ -160,7 +160,7 @@ class Job(db.Model):
     agent_id = db.Column(
         db.Integer,
         db.ForeignKey(
-            "agents.id",
+            "agent_profiles.id",
             ondelete="SET NULL"
         ),
         nullable=True,
@@ -256,7 +256,7 @@ class Job(db.Model):
     # -----------------------------------------------------
 
     agent = db.relationship(
-        "Agent",
+        "AgentProfile",
         foreign_keys=[agent_id],
         back_populates="jobs"
     )
