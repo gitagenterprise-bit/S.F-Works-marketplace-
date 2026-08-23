@@ -1,6 +1,8 @@
 from models.user import User
 
-from models.customer import CustomerProfile
+from models.customer import (
+    CustomerProfile
+)
 
 from models.worker import (
     WorkerProfile
@@ -14,7 +16,9 @@ from models.worker_portfolio import (
     WorkerPortfolio
 )
 
-from models.category import Category
+from models.category import (
+    Category
+)
 
 from models.job import (
     Job,
@@ -35,5 +39,7 @@ from models.agent import (
 from models.audit_log import (
     AuditLog
 )
-from models.agent import AgentProfile
-from models.approval import ApprovalRecord
+
+from models.approval import (
+    ApprovalRecord
+)
