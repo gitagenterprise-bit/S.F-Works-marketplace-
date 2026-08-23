@@ -111,6 +111,7 @@ class User(db.Model):
     
     agent_profile = db.relationship(
         "AgentProfile",
+        foreign_keys="AgentProfile.user_id",
         back_populates="user",
         uselist=False,
         cascade="all, delete-orphan"
