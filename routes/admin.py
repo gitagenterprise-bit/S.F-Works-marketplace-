@@ -2866,6 +2866,348 @@ def admin_applications():
         }
     })
 
+# =========================================================
+# WORKERS
+# GET /api/admin/workers
+# =========================================================
+
+@admin_bp.get("/workers")
+@admin_required
+def admin_workers():
+
+    # -----------------------------------------------------
+    # PAGINATION
+    # -----------------------------------------------------
+
+    page = max(
+        request.args.get(
+            "page",
+            1,
+            type=int
+        ),
+        1
+    )
+
+    per_page = min(
+        max(
+            request.args.get(
+                "per_page",
+                25,
+                type=int
+            ),
+            1
+        ),
+        100
+    )
+
+    # -----------------------------------------------------
+    # FILTERS
+    # -----------------------------------------------------
+
+    status = (
+        request.args.get(
+            "status",
+            ""
+        )
+        .strip()
+        .lower()
+    )
+
+    search = (
+        request.args.get(
+            "search",
+            ""
+        )
+        .strip()
+    )
+
+    is_active = request.args.get(
+        "is_active"
+    )
+
+    # -----------------------------------------------------
+    # BASE QUERY
+    # -----------------------------------------------------
+
+    query = (
+        WorkerProfile.query
+        .join(
+            User,
+            WorkerProfile.user_id == User.id
+        )
+    )
+
+    # -----------------------------------------------------
+    # VERIFICATION STATUS
+    # -----------------------------------------------------
+
+    if status:
+
+        if status not in {
+            "pending",
+            "approved",
+            "rejected"
+        }:
+
+            return error_response(
+                "Invalid worker verification status.",
+                400
+            )
+
+        query = query.filter(
+            func.lower(
+                WorkerProfile.verification_status
+            ) == status
+        )
+
+    # -----------------------------------------------------
+    # ACTIVE / INACTIVE
+    # -----------------------------------------------------
+
+    if is_active is not None:
+
+        normalized_active = (
+            str(is_active)
+            .strip()
+            .lower()
+        )
+
+        if normalized_active not in {
+            "true",
+            "false"
+        }:
+
+            return error_response(
+                "is_active must be true or false.",
+                400
+            )
+
+        query = query.filter(
+            User.is_active
+            ==
+            (
+                normalized_active == "true"
+            )
+        )
+
+    # -----------------------------------------------------
+    # SEARCH
+    # -----------------------------------------------------
+
+    if search:
+
+        search_pattern = (
+            f"%{search}%"
+        )
+
+        query = query.filter(
+
+            or_(
+
+                User.full_name.ilike(
+                    search_pattern
+                ),
+
+                User.email.ilike(
+                    search_pattern
+                ),
+
+                User.phone.ilike(
+                    search_pattern
+                )
+            )
+        )
+
+    # -----------------------------------------------------
+    # ORDER + PAGINATION
+    # -----------------------------------------------------
+
+    pagination = (
+        query
+        .order_by(
+            WorkerProfile.id.desc()
+        )
+        .paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+    )
+
+    # -----------------------------------------------------
+    # SERIALIZE
+    # -----------------------------------------------------
+
+    workers = []
+
+    for worker in pagination.items:
+
+        user = worker.user
+
+        workers.append({
+
+            # =============================================
+            # WORKER
+            # =============================================
+
+            "id":
+                worker.id,
+
+            "user_id":
+                worker.user_id,
+
+            "verification_status":
+                worker.verification_status,
+
+            "is_verified":
+                worker.is_verified,
+
+            # =============================================
+            # USER
+            # =============================================
+
+            "user": {
+
+                "id": (
+                    user.id
+                    if user
+                    else None
+                ),
+
+                "full_name": (
+                    user.full_name
+                    if user
+                    else None
+                ),
+
+                "email": (
+                    user.email
+                    if user
+                    else None
+                ),
+
+                "phone": (
+                    user.phone
+                    if user
+                    else None
+                ),
+
+                "role": (
+                    user.role
+                    if user
+                    else None
+                ),
+
+                "is_active": (
+                    user.is_active
+                    if user
+                    else False
+                ),
+
+                "is_verified": (
+                    user.is_verified
+                    if user
+                    else False
+                ),
+
+                "created_at": (
+
+                    user.created_at.isoformat()
+
+                    if user
+                    and user.created_at
+
+                    else None
+                )
+            },
+
+            # =============================================
+            # WORKER PROFILE
+            # =============================================
+
+            "profile": {
+
+                "id":
+                    worker.id,
+
+                "verification_status":
+                    worker.verification_status,
+
+                "is_verified":
+                    worker.is_verified,
+
+                "created_at": (
+
+                    worker.created_at.isoformat()
+
+                    if worker.created_at
+
+                    else None
+                ),
+
+                "updated_at": (
+
+                    worker.updated_at.isoformat()
+
+                    if worker.updated_at
+
+                    else None
+                )
+            }
+        })
+
+    # -----------------------------------------------------
+    # RESPONSE
+    # -----------------------------------------------------
+
+    return jsonify({
+
+        "status":
+            "success",
+
+        "workers":
+            workers,
+
+        "pagination": {
+
+            "page":
+                pagination.page,
+
+            "per_page":
+                pagination.per_page,
+
+            "total":
+                pagination.total,
+
+            "pages":
+                pagination.pages,
+
+            "has_next":
+                pagination.has_next,
+
+            "has_prev":
+                pagination.has_prev
+        },
+
+        "filters": {
+
+            "status":
+                status or None,
+
+            "search":
+                search or None,
+
+            "is_active": (
+
+                (
+                    is_active
+                    if is_active
+                    else None
+                )
+            )
+        }
+    })
+
 
 # =========================================================
 # FINAL APPLICATION APPROVAL
