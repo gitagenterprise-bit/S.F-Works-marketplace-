@@ -30,7 +30,7 @@ from models import (
     Job,
     JobApplication,
     Category,
-    Agent,
+    AgentProfile,
     AgentArea,
     AgentPermission,
     AuditLog,
