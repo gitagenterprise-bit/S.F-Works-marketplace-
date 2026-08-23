@@ -64,7 +64,8 @@ class AuditLog(db.Model):
 
     actor = db.relationship(
         "User",
-        foreign_keys=[actor_id]
+        foreign_keys=[actor_id],
+        back_populates="audit_logs"
     )
 
     def __repr__(self):
