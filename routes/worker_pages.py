@@ -722,25 +722,29 @@ def worker_jobs_page():
 # WORKER APPLICATIONS
 # =========================================================
 
-@worker_pages_bp.route(
-    "/worker/applications",
-    methods=["GET"]
-)
+@worker_pages.route("/worker/applications")
 @jwt_required()
 def worker_applications_page():
 
-    user, worker = get_current_worker()
+    user = get_current_user()
 
-    if user is None:
+    worker = WorkerProfile.query.filter_by(
+        user_id=user.id
+    ).first()
 
-        return redirect(
-            url_for("auth.login")
-        )
+    if not worker:
+        abort(404)
+
+    applications = []
+
+    # এখানে আপনার Application model অনুযায়ী
+    # authenticated worker-এর applications query করবেন।
 
     return render_template(
         "worker/applications.html",
         user=user,
-        worker=worker
+        worker=worker,
+        applications=applications
     )
 
 
