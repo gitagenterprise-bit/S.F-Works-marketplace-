@@ -1708,7 +1708,57 @@ def create_agent():
                         normalized_areas
                     )
             }
+    )
+        # -------------------------------------------------
+        # COMMIT
+        # -------------------------------------------------
+
+        db.session.commit()
+
+    except IntegrityError:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to create agent. Email, phone, employee code, or another unique value already exists.",
+            409
         )
+
+    except SQLAlchemyError as exc:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unable to create agent.",
+            500
+        )
+
+    except Exception as exc:
+
+        db.session.rollback()
+
+        return error_response(
+            "Unexpected error while creating agent.",
+            500
+        )
+
+    # -----------------------------------------------------
+    # SUCCESS RESPONSE
+    # -----------------------------------------------------
+
+    return jsonify({
+
+        "status":
+            "success",
+
+        "message":
+            "Agent created successfully.",
+
+        "agent":
+            serialize_agent(
+                agent
+            )
+    }), 201
 # =========================================================
 # AGENT LIST
 # GET /api/admin/agents
