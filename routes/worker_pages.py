@@ -726,7 +726,12 @@ def worker_jobs_page():
 @jwt_required()
 def worker_applications_page():
 
-    user = get_current_user()
+    user_id = get_jwt_identity()
+
+    user = User.query.get(user_id)
+
+    if not user:
+        abort(404)
 
     worker = WorkerProfile.query.filter_by(
         user_id=user.id
@@ -736,9 +741,6 @@ def worker_applications_page():
         abort(404)
 
     applications = []
-
-    # এখানে আপনার Application model অনুযায়ী
-    # authenticated worker-এর applications query করবেন।
 
     return render_template(
         "worker/applications.html",
