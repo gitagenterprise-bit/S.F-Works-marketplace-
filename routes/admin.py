@@ -1626,86 +1626,98 @@ def create_agent():
         # AUDIT
         # -------------------------------------------------
 
-        write_audit_log(
+        def write_audit_log(
+            actor=None,
+            action=None,
+            resource_type=None,
+            resource_id=None,
+            new_status=None,
+            description=None,
+            details=None
+    ):
+    """
+    Centralized audit logging helper.
 
-            actor=admin,
+    Maps the admin route's audit parameters
+    to the actual AuditLog model fields.
+    """
 
-            action=
-                "agent.created",
+    # ---------------------------------------------------------
+    # Build structured audit description
+    # ---------------------------------------------------------
 
-            resource_type=
-                "agent",
+    final_description = description
 
-            resource_id=
-                agent.id,
+    if new_status:
+        status_text = f"Status changed to: {new_status}"
 
-            new_status=
-                "active",
-
-            description=(
-                f"Agent "
-                f"{agent.employee_code} "
-                f"created by administrator."
-            ),
-
-            details={
-
-                "employee_code":
-                    agent.employee_code,
-
-                "user_id":
-                    user.id,
-
-                "areas_count":
-                    len(
-                        normalized_areas
-                    )
-            }
-        )
-
-        db.session.commit()
-
-    except IntegrityError:
-
-        db.session.rollback()
-
-        return error_response(
-            "Unable to create agent because some information already exists.",
-            409
-        )
-
-    except SQLAlchemyError:
-
-        db.session.rollback()
-
-        return error_response(
-            "Unable to create agent.",
-            500
-        )
-
-    except Exception:
-
-        db.session.rollback()
-
-        return error_response(
-            "Unable to create agent.",
-            500
-        )
-
-    return jsonify({
-
-        "status":
-            "success",
-
-        "message":
-            "Agent created successfully.",
-
-        "agent":
-            serialize_agent(
-                agent
+        if final_description:
+            final_description = (
+                f"{final_description} "
+                f"{status_text}"
             )
-    }), 201
+        else:
+            final_description = status_text
 
+    # ---------------------------------------------------------
+    # Create AuditLog object
+    # ---------------------------------------------------------
+
+    log = AuditLog(
+        actor_id=(
+            actor.id
+            if actor is not None
+            else None
+        ),
+
+        action=action,
+
+        entity_type=resource_type,
+
+        entity_id=resource_id,
+
+        description=final_description,
+
+        ip_address=request.headers.get(
+            "X-Forwarded-For",
+            request.remote_addr
+        ),
+
+        user_agent=request.headers.get(
+            "User-Agent"
+        )
+    )
+
+    # ---------------------------------------------------------
+    # Add details if provided
+    # ---------------------------------------------------------
+
+    if details:
+        try:
+            import json
+
+            details_text = json.dumps(
+                details,
+                ensure_ascii=False,
+                default=str
+            )
+
+            if log.description:
+                log.description = (
+                    f"{log.description}\n"
+                    f"Details: {details_text}"
+                )
+            else:
+                log.description = (
+                    f"Details: {details_text}"
+                )
+
+        except Exception:
+            pass
+
+    db.session.add(log)
+
+    return log
 
 # =========================================================
 # AGENT LIST
