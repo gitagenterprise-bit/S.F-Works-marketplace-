@@ -134,6 +134,10 @@ def current_admin():
 # AUDIT LOG
 # =========================================================
 
+# =========================================================
+# AUDIT LOG
+# =========================================================
+
 def write_audit_log(
     actor=None,
     action=None,
@@ -148,15 +152,53 @@ def write_audit_log(
     if actor is None:
         actor = current_admin()
 
-    log_details = details
+    # -----------------------------------------------------
+    # Build audit description
+    # -----------------------------------------------------
 
-    if (
-        log_details is None
-        and description
-    ):
-        log_details = {
-            "description": description
-        }
+    parts = []
+
+    if description:
+        parts.append(
+            str(description)
+        )
+
+    if old_status is not None:
+        parts.append(
+            f"Old status: {old_status}"
+        )
+
+    if new_status is not None:
+        parts.append(
+            f"New status: {new_status}"
+        )
+
+    if details:
+        try:
+            import json
+
+            details_text = json.dumps(
+                details,
+                ensure_ascii=False,
+                default=str
+            )
+
+            parts.append(
+                f"Details: {details_text}"
+            )
+
+        except Exception:
+            parts.append(
+                f"Details: {str(details)}"
+            )
+
+    final_description = "\n".join(
+        parts
+    ) or None
+
+    # -----------------------------------------------------
+    # Create AuditLog
+    # -----------------------------------------------------
 
     log = AuditLog(
 
@@ -168,27 +210,33 @@ def write_audit_log(
 
         action=action,
 
-        resource_type=resource_type,
+        entity_type=resource_type,
 
-        resource_id=resource_id,
+        entity_id=resource_id,
 
-        old_status=old_status,
+        description=final_description,
 
-        new_status=new_status,
-
-        ip_address=request.remote_addr,
-
-        user_agent=request.headers.get(
-            "User-Agent"
+        ip_address=(
+            request.headers.get(
+                "X-Forwarded-For",
+                request.remote_addr
+            ).split(",")[0].strip()
+            if request.headers.get(
+                "X-Forwarded-For"
+            )
+            else request.remote_addr
         ),
 
-        details=log_details
+        user_agent=(
+            request.headers.get(
+                "User-Agent"
+            )
+        )
     )
 
     db.session.add(log)
 
     return log
-
 
 # =========================================================
 # APPROVAL RECORD
@@ -1625,100 +1673,42 @@ def create_agent():
         # -------------------------------------------------
         # AUDIT
         # -------------------------------------------------
+        write_audit_log(
 
-        def write_audit_log(
-            actor=None,
-            action=None,
-            resource_type=None,
-            resource_id=None,
-            new_status=None,
-            description=None,
-            details=None
-    ):
-    """
-    Centralized audit logging helper.
+            actor=admin,
 
-    Maps the admin route's audit parameters
-    to the actual AuditLog model fields.
-    """
+            action=
+                "agent.created",
 
-    # ---------------------------------------------------------
-    # Build structured audit description
-    # ---------------------------------------------------------
+            resource_type=
+                "agent",
 
-    final_description = description
+            resource_id=
+                agent.id,
 
-    if new_status:
-        status_text = f"Status changed to: {new_status}"
+            new_status=
+                "active",
 
-        if final_description:
-            final_description = (
-                f"{final_description} "
-                f"{status_text}"
-            )
-        else:
-            final_description = status_text
+            description=(
+                f"Agent "
+                f"{agent.employee_code} "
+                f"created by administrator."
+            ),
 
-    # ---------------------------------------------------------
-    # Create AuditLog object
-    # ---------------------------------------------------------
+            details={
 
-    log = AuditLog(
-        actor_id=(
-            actor.id
-            if actor is not None
-            else None
-        ),
+                "employee_code":
+                    agent.employee_code,
 
-        action=action,
+                "user_id":
+                    user.id,
 
-        entity_type=resource_type,
-
-        entity_id=resource_id,
-
-        description=final_description,
-
-        ip_address=request.headers.get(
-            "X-Forwarded-For",
-            request.remote_addr
-        ),
-
-        user_agent=request.headers.get(
-            "User-Agent"
+                "areas_count":
+                    len(
+                        normalized_areas
+                    )
+            }
         )
-    )
-
-    # ---------------------------------------------------------
-    # Add details if provided
-    # ---------------------------------------------------------
-
-    if details:
-        try:
-            import json
-
-            details_text = json.dumps(
-                details,
-                ensure_ascii=False,
-                default=str
-            )
-
-            if log.description:
-                log.description = (
-                    f"{log.description}\n"
-                    f"Details: {details_text}"
-                )
-            else:
-                log.description = (
-                    f"Details: {details_text}"
-                )
-
-        except Exception:
-            pass
-
-    db.session.add(log)
-
-    return log
-
 # =========================================================
 # AGENT LIST
 # GET /api/admin/agents
