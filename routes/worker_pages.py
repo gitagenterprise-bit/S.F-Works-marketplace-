@@ -722,7 +722,7 @@ def worker_jobs_page():
 # WORKER APPLICATIONS
 # =========================================================
 
-@worker_pages.route("/worker/applications")
+@worker_pages_bp.route("/worker/applications")
 @jwt_required()
 def worker_applications_page():
 
