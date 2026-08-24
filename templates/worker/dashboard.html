@@ -4,16 +4,15 @@
 Worker Dashboard
 {% endblock %}
 
-
 {% block page_title %}
 Worker Dashboard
 {% endblock %}
-
 
 {% block dashboard_content %}
 
 <div class="stats-grid">
 
+    <!-- AVAILABLE JOBS -->
     <div class="stat-card">
 
         <div class="stat-icon">
@@ -21,20 +20,19 @@ Worker Dashboard
         </div>
 
         <div>
-
             <span>
                 Available Jobs
             </span>
 
-            <strong>
+            <strong id="availableJobs">
                 0
             </strong>
-
         </div>
 
     </div>
 
 
+    <!-- MY APPLICATIONS -->
     <div class="stat-card">
 
         <div class="stat-icon">
@@ -42,20 +40,19 @@ Worker Dashboard
         </div>
 
         <div>
-
             <span>
                 My Applications
             </span>
 
-            <strong>
+            <strong id="myApplications">
                 0
             </strong>
-
         </div>
 
     </div>
 
 
+    <!-- COMPLETED JOBS -->
     <div class="stat-card">
 
         <div class="stat-icon">
@@ -63,19 +60,320 @@ Worker Dashboard
         </div>
 
         <div>
-
             <span>
                 Completed Jobs
             </span>
 
-            <strong>
+            <strong id="completedJobs">
                 0
             </strong>
-
         </div>
 
     </div>
 
 </div>
+
+
+<!-- =========================================================
+     QUICK ACTIONS
+========================================================= -->
+
+<div class="dashboard-section">
+
+    <div class="section-header">
+
+        <div>
+            <h2>
+                Quick Actions
+            </h2>
+
+            <p>
+                Manage your work and applications
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="quick-actions">
+
+        <a
+            href="/worker/jobs"
+            class="dashboard-action"
+        >
+            <span>
+                Browse Jobs
+            </span>
+        </a>
+
+
+        <a
+            href="/worker/applications"
+            class="dashboard-action"
+        >
+            <span>
+                My Applications
+            </span>
+        </a>
+
+
+        <a
+            href="/worker/profile"
+            class="dashboard-action"
+        >
+            <span>
+                My Profile
+            </span>
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DASHBOARD MESSAGE
+========================================================= -->
+
+<div
+    id="dashboardAlert"
+    class="dashboard-alert"
+    style="display:none;"
+></div>
+
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+(function () {
+
+    "use strict";
+
+
+    const API_BASE =
+        "/api/worker";
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initWorkerDashboard
+    );
+
+
+    async function initWorkerDashboard() {
+
+        await Promise.all([
+            loadDashboardStats(),
+            loadAvailableJobs()
+        ]);
+
+    }
+
+
+    /* ========================================================
+       API
+    ======================================================== */
+
+    async function apiFetch(
+        url,
+        options = {}
+    ) {
+
+        const response =
+            await fetch(
+                url,
+                {
+                    credentials: "include",
+
+                    ...options,
+
+                    headers: {
+                        "Accept":
+                            "application/json",
+
+                        ...(options.headers || {})
+                    }
+                }
+            );
+
+
+        let data = null;
+
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch (error) {
+
+            data = null;
+        }
+
+
+        if (!response.ok) {
+
+            const message =
+                data?.message ||
+                `Request failed (${response.status})`;
+
+            throw new Error(message);
+        }
+
+
+        return data;
+    }
+
+
+    /* ========================================================
+       LOAD DASHBOARD
+    ======================================================== */
+
+    async function loadDashboardStats() {
+
+        try {
+
+            const data =
+                await apiFetch(
+                    `${API_BASE}/dashboard`
+                );
+
+
+            const dashboard =
+                data?.dashboard || {};
+
+
+            setText(
+                "myApplications",
+                dashboard.total_applications || 0
+            );
+
+
+            /*
+             * Completed jobs is not currently returned
+             * by your backend dashboard endpoint.
+             *
+             * Therefore we calculate it from accepted
+             * applications only as a temporary fallback.
+             */
+
+            setText(
+                "completedJobs",
+                dashboard.completed_jobs || 0
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Worker dashboard error:",
+                error
+            );
+
+            showAlert(
+                error.message
+            );
+
+        }
+
+    }
+
+
+    /* ========================================================
+       AVAILABLE JOBS
+    ======================================================== */
+
+    async function loadAvailableJobs() {
+
+        try {
+
+            const data =
+                await apiFetch(
+                    `${API_BASE}/jobs?per_page=1`
+                );
+
+
+            const pagination =
+                data?.pagination || {};
+
+
+            setText(
+                "availableJobs",
+                pagination.total || 0
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Available jobs error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* ========================================================
+       TEXT
+    ======================================================== */
+
+    function setText(
+        id,
+        value
+    ) {
+
+        const element =
+            document.getElementById(id);
+
+
+        if (!element) {
+
+            return;
+        }
+
+
+        element.textContent =
+            Number(value) || 0;
+    }
+
+
+    /* ========================================================
+       ALERT
+    ======================================================== */
+
+    function showAlert(
+        message
+    ) {
+
+        const alert =
+            document.getElementById(
+                "dashboardAlert"
+            );
+
+
+        if (!alert) {
+
+            return;
+        }
+
+
+        alert.textContent =
+            message;
+
+
+        alert.style.display =
+            "block";
+    }
+
+
+})();
+
+</script>
 
 {% endblock %}
