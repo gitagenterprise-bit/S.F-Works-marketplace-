@@ -1252,11 +1252,13 @@ def update_user_status(
     "/users/<int:user_id>/verify"
 )
 @admin_required
-def verify_user(
-    user_id
-):
+def verify_user(user_id):
 
     admin = current_admin()
+
+    # -----------------------------------------------------
+    # GET USER
+    # -----------------------------------------------------
 
     user = db.session.get(
         User,
@@ -1270,6 +1272,10 @@ def verify_user(
             404
         )
 
+    # -----------------------------------------------------
+    # ALREADY VERIFIED
+    # -----------------------------------------------------
+
     if user.is_verified:
 
         return jsonify({
@@ -1281,7 +1287,29 @@ def verify_user(
                 "User is already verified."
         })
 
+    # -----------------------------------------------------
+    # VERIFY USER
+    # -----------------------------------------------------
+
     user.is_verified = True
+
+    # -----------------------------------------------------
+    # VERIFY WORKER PROFILE
+    # -----------------------------------------------------
+
+    worker = user.worker_profile
+
+    if worker:
+
+        worker.is_verified = True
+
+        worker.verification_status = (
+            "approved"
+        )
+
+    # -----------------------------------------------------
+    # AUDIT LOG
+    # -----------------------------------------------------
 
     write_audit_log(
 
@@ -1293,6 +1321,10 @@ def verify_user(
 
         resource_id=user.id
     )
+
+    # -----------------------------------------------------
+    # COMMIT
+    # -----------------------------------------------------
 
     try:
 
@@ -1307,16 +1339,45 @@ def verify_user(
             500
         )
 
+    # -----------------------------------------------------
+    # RESPONSE
+    # -----------------------------------------------------
+
     return jsonify({
 
         "status":
             "success",
 
         "message":
-            "User verified successfully."
+            "User verified successfully.",
+
+        "user": {
+
+            "id":
+                user.id,
+
+            "is_verified":
+                user.is_verified
+        },
+
+        "worker": (
+
+            {
+
+                "id":
+                    worker.id,
+
+                "is_verified":
+                    worker.is_verified,
+
+                "verification_status":
+                    worker.verification_status
+            }
+
+            if worker
+            else None
+        )
     })
-
-
 # =========================================================
 # CREATE AGENT
 # POST /api/admin/agents
